@@ -1,0 +1,14 @@
+//===F3DEX2 Flags====================================================
+// Bass constants for F3DEX2/F3DZEX enumeration values/flags
+//===================================================================
+
+
+//===0x2 gsSPModifyVertex Flags========
+constant G_MWO_POINT_RGBA(0x10)     // Modifies the color of the vertex
+constant G_MWO_POINT_ST(0x14)       // Modifies the texture coordinates
+constant G_MWO_POINT_XYSCREEN(0x18) // Modifies the X and Y position
+constant G_MWO_POINT_ZSCREEN(0x1C)  // Modifies the Z position (lower four nybbles of val should always be zero for this modification)
+
+//===0x3 gsSPBranchLessZraw Flags======
+constant G_BZ_PERSP(0x0)
+constant G_BZ_ORTHO(0x1)

@@ -1,0 +1,148 @@
+//===F3DEX2 Macros for Bass==========================================
+// "Port" the standard F3DEX2 macros into bass
+// in order to write and assemble display lists
+//
+// File is organized by byte op-codes, but
+// macros are named and match the standard
+// F3DEX2 library.
+//===================================================================
+scope flag {
+  // enumerate flags here, if needed
+}
+
+//===00 G_NOOP=========================
+macro gsDPNoOp() {
+  dw  0x00000000
+  dw  0x00000000
+}
+macro gsDPNoOpTag(tag) {
+  dw  0x00000000
+  dw  {tag} & 0xFFFFFFFF
+}
+
+//===01 G_VTX==========================
+macro gsSPVertex(vaddr, numv, vbidx) {
+  variable word1(0x010000000)
+  if {numv} {
+    word0 = word0 | ({numv} << 5)
+  }
+  if {vbidx} {
+    word0 = word0 | ((({vbidx + numv}) & 0x7F) << 1)
+  }
+
+  dw word0
+  dw {vaddr}
+}
+
+//===02 G_MODIFYVTX====================
+macro gsSPModifyVertex(vbidx, where, val) {
+  // where is an enumerated flag value
+  variable word0(0x02000000)
+
+  word0 = word0 | (where << 16) | (vbidx << 1)
+
+  dw word0
+  dw ({val} & 0xFFFFFFFF)
+}
+
+//===03 G_CULLDL=======================
+macro gsSPCullDisplayList(vfirst, vlast) {
+  variable word0(0x03000000)
+  variable word1(0x00000000)
+
+  word0 = word0 | (vfirst << 2)
+  word1 = word1 | (vlast << 2)
+
+  dw word0, word1
+}
+
+//===04 G_BRANCH_Z=====================
+// DON'T USE UNLESS YOU CAN PROVIDE A PROPER ZVAL
+macro gsSPBranchLessZraw(newdl, vbidx, zval) {
+  constant word0(0xE1000000)
+  variable word1({newdl} & 0xFFFFFFFF)
+  variable word2(0x04000000)
+  variable word3({zval} & 0xFFFFFFFF)
+
+  word2 = word2 | (({vbidx} * 5) << 12 ) | ({vbidx} << 2)
+
+  dw word0, word1, word2, word3
+}
+
+// put in macro to calculate proper z val!!!
+
+//===05 G_TRI1=========================
+macro gsSP1Triangle(variable ver0, variable ver1, variable ver2, flag) {
+  variable word1(0x05000000)
+  ver0 = ver0 << 1; ver1 = ver1 << 1; ver2 = ver2 << 1;
+
+  if {flag} == 1 {
+    word0 = word0 | (ver1 << 16) | (ver2 << 8) | ver0
+  } else if {flag} == 2 {
+    word0 = word0 | (ver2 << 16) | (ver0 << 8) | ver1
+  } else {
+    word0 = word0 | (ver0 << 16) | (ver1 << 8) | ver2
+  }
+  dw word0, 0x00000000
+}
+
+//===06 G_TRI2=========================
+macro gsSP2Triangles(variable v00, variable v01, variable v02, flag0, variable v10, variable v11, variable v12, flag1) {
+  variable word0(0x06000000)
+  variable word1(0x00000000)
+
+  v00 = v00 << 1; v01 = v01 << 1; v02 = v02 << 1;
+  v10 = v10 << 1; v11 = v11 << 1; v12 = v12 << 1;
+
+  if {flag0} == 1 {
+    word0 = word0 | (v01 << 16) | (v02 << 8) | v00
+  } else if {flag0} == 2 {
+    word0 = word0 | (v02 << 16) | (v00 << 8) | v01
+  } else {
+    word0 = word0 | (v00 << 16) | (v01 << 8) | v02
+  }
+
+  if {flag1} == 1 {
+    word1 = word1 | (v11 << 16) | (v12 << 8) | v10
+  } else if {flag0} == 2 {
+    word1 = word1 | (v12 << 16) | (v10 << 8) | v11
+  } else {
+    word1 = word1 | (v10 << 16) | (v11 << 8) | v12
+  }
+
+  dw word0, word1
+}
+
+//===06 G_QUAD=========================
+macro gsSPQuadrangle(variable v0, variable v1, variable v2, variable v3, flag) {
+  variable word0(0x07000000)
+  variable word1(0x00000000)
+
+  if {flag} == 1 {
+    word0 = word0 | (v1 << 16) | (v2 << 8) | v3
+    word1 = word1 | (v1 << 16) | (v3 << 8) | v0
+  } else if {flag} == 2 {
+    word0 = word0 | (v2 << 16) | (v3 << 8) | v0
+    word1 = word1 | (v2 << 16) | (v0 << 8) | v1
+  } else if {flag} == 3 {
+    word0 = word0 | (v3 << 16) | (v0 << 8) | v1
+    word1 = word1 | (v3 << 16) | (v1 << 8) | v2
+  } else {
+    word0 = word0 | (v0 << 16) | (v1 << 8) | v2
+    word1 = word1 | (v0 << 16) | (v2 << 8) | v3
+  }
+
+  dw word0, word1
+}
+
+//===0xD6 G_DMA_IO=====================
+// gsSPDma_io(flag, dmem, dram, size)
+
+// Does a DMA between DMEM/IMEM address dmem and DRAM address dram.
+//size bytes are presumably transfered in the process.
+// flag determines the type of transfer. Apparently:
+//    flag == 0 — Read from DMEM/IMEM to DRAM
+//    flag == 1 — Write DRAM to DMEM/IMEM
+// The exact nature of this command is unclear, since none of this opcode's macros are documented,
+// and the only available comment suggests this is a debugging tool only.
+// Therefore, you should not expect to see this in production code.
