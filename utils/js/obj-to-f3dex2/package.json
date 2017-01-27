@@ -1,0 +1,15 @@
+{
+  "name": "f3dex2-converter",
+  "version": "0.1.0",
+  "description": "Convert wavefront obj to f3dex2 for SSB64",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "tehz",
+  "license": "ISC",
+  "dependencies": {
+    "argv": "0.0.2",
+    "promise": "^7.1.1"
+  }
+}
