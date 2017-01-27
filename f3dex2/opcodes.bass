@@ -6,11 +6,8 @@
 // macros are named and match the standard
 // F3DEX2 library.
 //===================================================================
-scope flag {
-  // enumerate flags here, if needed
-}
 
-//===00 G_NOOP=========================
+//===00 G_NOOP===================================
 macro gsDPNoOp() {
   dw  0x00000000
   dw  0x00000000
@@ -20,7 +17,7 @@ macro gsDPNoOpTag(tag) {
   dw  {tag} & 0xFFFFFFFF
 }
 
-//===01 G_VTX==========================
+//===01 G_VTX====================================
 macro gsSPVertex(vaddr, numv, vbidx) {
   variable word1(0x010000000)
   if {numv} {
@@ -34,7 +31,7 @@ macro gsSPVertex(vaddr, numv, vbidx) {
   dw {vaddr}
 }
 
-//===02 G_MODIFYVTX====================
+//===02 G_MODIFYVTX==============================
 macro gsSPModifyVertex(vbidx, where, val) {
   // where is an enumerated flag value
   variable word0(0x02000000)
@@ -45,7 +42,7 @@ macro gsSPModifyVertex(vbidx, where, val) {
   dw ({val} & 0xFFFFFFFF)
 }
 
-//===03 G_CULLDL=======================
+//===03 G_CULLDL=================================
 macro gsSPCullDisplayList(vfirst, vlast) {
   variable word0(0x03000000)
   variable word1(0x00000000)
@@ -56,7 +53,7 @@ macro gsSPCullDisplayList(vfirst, vlast) {
   dw word0, word1
 }
 
-//===04 G_BRANCH_Z=====================
+//===04 G_BRANCH_Z===============================
 // DON'T USE UNLESS YOU CAN PROVIDE A PROPER ZVAL
 macro gsSPBranchLessZraw(newdl, vbidx, zval) {
   constant word0(0xE1000000)
@@ -71,7 +68,7 @@ macro gsSPBranchLessZraw(newdl, vbidx, zval) {
 
 // put in macro to calculate proper z val!!!
 
-//===05 G_TRI1=========================
+//===05 G_TRI1===================================
 macro gsSP1Triangle(variable ver0, variable ver1, variable ver2, flag) {
   variable word1(0x05000000)
   ver0 = ver0 << 1; ver1 = ver1 << 1; ver2 = ver2 << 1;
@@ -86,7 +83,7 @@ macro gsSP1Triangle(variable ver0, variable ver1, variable ver2, flag) {
   dw word0, 0x00000000
 }
 
-//===06 G_TRI2=========================
+//===06 G_TRI2===================================
 macro gsSP2Triangles(variable v00, variable v01, variable v02, flag0, variable v10, variable v11, variable v12, flag1) {
   variable word0(0x06000000)
   variable word1(0x00000000)
@@ -113,7 +110,7 @@ macro gsSP2Triangles(variable v00, variable v01, variable v02, flag0, variable v
   dw word0, word1
 }
 
-//===06 G_QUAD=========================
+//===06 G_QUAD===================================
 macro gsSPQuadrangle(variable v0, variable v1, variable v2, variable v3, flag) {
   variable word0(0x07000000)
   variable word1(0x00000000)
@@ -135,7 +132,7 @@ macro gsSPQuadrangle(variable v0, variable v1, variable v2, variable v3, flag) {
   dw word0, word1
 }
 
-//===0xD6 G_DMA_IO=====================
+//===0xD6 G_DMA_IO===============================
 // gsSPDma_io(flag, dmem, dram, size)
 
 // Does a DMA between DMEM/IMEM address dmem and DRAM address dram.
@@ -146,3 +143,33 @@ macro gsSPQuadrangle(variable v0, variable v1, variable v2, variable v3, flag) {
 // The exact nature of this command is unclear, since none of this opcode's macros are documented,
 // and the only available comment suggests this is a debugging tool only.
 // Therefore, you should not expect to see this in production code.
+
+//===0xD7 G_TEXTURE==============================
+macro gsSPTexture(scaleS, scaleT, level, tile, on) {
+  // 'on' is a boolean (0 | 1)
+  variable word0(0xD7000000)
+  variable word1(0x00000000)
+
+  word0 = word0 | (({level} & 0x7) << 11) | ( ({title} & 0x7) < 8) | ({on} & 0x7)
+  word1 = word1 | ( ({scaleS} & 0xFFFF) << 16) | ({scaleT} & 0xFFFF)
+
+  dw word0, word1
+}
+
+//===0xD8 G_POPMTX===============================
+macro gsSPPopMatrixN(which, num) {
+  // 'which' is ignored lol
+  variable word0(0xD8380002)
+  variable word1( ({num} << 6) & 0xFFFFFFFF )
+
+  dw word0, word1
+}
+
+//===0xD9 G_GEOMETRYMODE=========================
+macro gsSPGeomentryMode(clearbits, setbits) {
+  variable word0(0xD9000000)
+
+  word0 = word0 | (~{clearbits} & 0xFFFFFF)
+
+  dw word0, {setbits}
+}

@@ -1,14 +1,46 @@
 //===F3DEX2 Flags====================================================
 // Bass constants for F3DEX2/F3DZEX enumeration values/flags
+// http://n64devkit.square7.ch/header/gbi.htm
 //===================================================================
 
 
-//===0x2 gsSPModifyVertex Flags========
+//===0x2 gsSPModifyVertex Flags==================
 constant G_MWO_POINT_RGBA(0x10)     // Modifies the color of the vertex
 constant G_MWO_POINT_ST(0x14)       // Modifies the texture coordinates
 constant G_MWO_POINT_XYSCREEN(0x18) // Modifies the X and Y position
 constant G_MWO_POINT_ZSCREEN(0x1C)  // Modifies the Z position (lower four nybbles of val should always be zero for this modification)
 
-//===0x3 gsSPBranchLessZraw Flags======
+//===0x3 gsSPBranchLessZraw Flags================
 constant G_BZ_PERSP(0x0)
 constant G_BZ_ORTHO(0x1)
+
+//===0xD8 gsSPPopMatrixN Flags===================
+// literally useless, but included for completeness
+constant G_MTX_MODELVIEW(0x00)
+constant G_MTX_PROJECTION(0x04)
+
+//===0xD9 gsSPGeomentryMode Flags================
+// for "(clear||set)bits" parameter
+constant G_ZBUFFER(0x00000001)
+constant G_SHADE(0x00000004)          // enable Gouraud interp
+constant G_TEXTURE_ENABLE(0x00000000)	// Ignored
+constant G_SHADING_SMOOTH(0x00200000)	// flat or smooth shaded
+constant G_CULL_FRONT(0x00000200)
+constant G_CULL_BACK(0x00000400)
+constant G_CULL_BOTH(0x00000600)	    // To make code cleaner
+constant G_FOG(0x00010000)
+constant G_LIGHTING(0x00020000)
+constant G_TEXTURE_GEN(0x00040000)
+constant G_TEXTURE_GEN_LINEAR(0x00080000)
+constant G_LOD(0x00100000)	         // NOT IMPLEMENTED
+constant G_CLIPPING(0x00800000)      // Ignored by F3DEX2; technically defined in the header as 0x0 for F3DEX2
+
+//===0xDA gsSPMatrix Flags=======================
+// for "params" parameter
+
+constant G_MTX_NOPUSH(0x00)
+constant G_MTX_PUSH(0x01)
+constant G_MTX_MUL(0x00)
+constant G_MTX_LOAD(0x02)
+constant G_MTX_MODELVIEW(0x00)
+constant G_MTX_PROJECTION(0x04)
