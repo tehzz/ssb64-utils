@@ -150,8 +150,8 @@ macro gsSPTexture(scaleS, scaleT, level, tile, on) {
   variable word0(0xD7000000)
   variable word1(0x00000000)
 
-  word0 = word0 | (({level} & 0x7) << 11) | ( ({title} & 0x7) < 8) | ({on} & 0x7)
-  word1 = word1 | ( ({scaleS} & 0xFFFF) << 16) | ({scaleT} & 0xFFFF)
+  word0 = word0 | ( ({level} & 0x7) << 11 ) | ( ({title} & 0x7) < 8 ) | ({on} & 0x7)
+  word1 = word1 | ( ({scaleS} & 0xFFFF) << 16 ) | ({scaleT} & 0xFFFF)
 
   dw word0, word1
 }
@@ -172,4 +172,97 @@ macro gsSPGeomentryMode(clearbits, setbits) {
   word0 = word0 | (~{clearbits} & 0xFFFFFF)
 
   dw word0, {setbits}
+}
+
+//===0xDA G_MTX==================================
+macro gsSPMatrix(mtxaddr, params) {
+  constant G_MTX_PUSH(0x01)
+  variable word0(0xDA380000)
+
+  word0 = word0 | ( ({params} & 0xFF) ^ G_MTX_PUSH )
+
+  dw word0, {mtxaddr}
+}
+
+//===0xDB G_MOVEWORD=============================
+macro gsMoveWd(index, offset, data) {
+  variable word0(0xDB000000)
+
+  word0 = word0 | ( ({index} & 0xFF) << 16) | ({offset} & 0xFFFF)
+
+  dw word0, {data}
+}
+
+//===0xDC G_MOVEMEM==============================
+// the function gsMoveMem is imaginary: all of the macros that use this opcode do so directly,
+// as opposed to going through another function.
+// Since no general macro exists for this opcode, gsMoveMem was invented for illustrative purposes.
+macro gsMoveMem(size, index, offset, address) {
+  variable word0(0xDC000000)
+
+  word0 = word0 | ( (((({size} - 1) / 8) & 0x1F ) << 3 ) << 16 )
+  word0 = word0 | ( ({offset} / 8) << 8 ) | ( {index} & 0xFF )
+
+  dw word0, {address}
+}
+
+//===0xDD G_LOAD_UCODE===========================
+macro gsSPLoadUcodeEx(tstart, dstart, dsize) {
+  variable word0(0xE1000000)
+  variable word2(0xDD000000)
+
+  word2 = word2 | ( {dsize} & 0xFFFF )
+
+  dw word0, {dstart}
+  dw word2, {tstart}
+}
+
+//===0xDE G_DL===================================
+macro gsSPDisplayList(dl){
+  variable word0(0xDE000000)
+
+  dw word0, {dl}
+}
+macro gsSPBranchList(dl){
+  variable word0(0xDE010000)
+
+  dw word0, {dl}
+}
+
+//===0xDF G_ENDDL================================
+macro gsSPEndDisplayList() {
+  dw 0xDF000000, 0x00000000
+}
+
+//===0xE0 G_SPNOOP===============================
+macro gsSPNoOp() {
+  dw 0xF0000000, 0x00000000
+}
+
+//===0xE1 G_RDPHALF_1============================
+// NOTE: this macro emits both an E1 and an F1 code
+// E1 code is used in other macros as well (make list?)
+macro gsDPWord(wordhi, wordlo) {
+  dw 0xE1000000, {wordhi}
+  dw 0xF1000000, {wordlo}
+}
+
+//===0xE2 G_SETOTHERMODE_L=======================
+//===0xE3 G_SETOTHERMODE_H=======================
+macro gsSPSetOtherMode(half, shift, length, data) {
+  variable word0(0)
+  if {half} == 0xE2 {
+    // for low
+    word0 = word0 | (0xE2 << 24)
+  } else if {half} == 0xE3 {
+    // for high
+    word0 = word0 | (0xE3 << 24)
+  } else {
+    error "{half} is not a proper magic number for gsSPSetOtherMode. Use 0xE2 (low) or 0xE3 (high)"
+  }
+
+  word0 = word0 | ((32 - ({shift} & 0xFF) - ({length} & 0xFF)) << 8)
+  word0 = word0 | ({length} - 1 & 0xFF)
+
+  dw word0, {data}
 }
