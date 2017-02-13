@@ -27,8 +27,8 @@ function bankOBJ( parsed ){
     })
     // check for full banks
     const bankFull = banks.map( (b,i) => {
-      console.log(`Vertices in Bank[${i}]: ${b.length}
-        Attempt to add ${vToAdd[i]} more...`)
+      //console.log(`Vertices in Bank[${i}]: ${b.length}
+      //  Attempting to add ${vToAdd[i]} more vertices...`)
 
       return b.length + vToAdd[i] <= 32
     })
@@ -48,7 +48,7 @@ function bankOBJ( parsed ){
       if(loc < 0) banks[openBank].addFullVertex(face.vertIDs[i])
     })
     // add face 'i' to banks[index]
-    console.log(`Adding Face[${i}] to Bank[${openBank}]`)
+    //console.log(`Adding Face[${i}] to Bank[${openBank}]`)
     banks[openBank].faces.push(i)
 
   })

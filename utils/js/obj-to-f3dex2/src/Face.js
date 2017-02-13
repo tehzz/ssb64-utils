@@ -2,10 +2,11 @@ function Face( verticies ) {
   this.initVerts = verticies
   this.linkedVerts = null;
   this.vertIDs = null;
+  this.mtl = null;
 }
 
-Face.prototype.setVertices = function( vs ){
-  this.linkedVerts = vs
+Face.prototype.setMTL = function( mtl ) {
+  this.mtl = mtl
 
   return this
 }

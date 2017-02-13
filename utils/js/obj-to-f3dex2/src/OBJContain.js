@@ -1,10 +1,12 @@
 function parsedOBJ(){
-  this.Vertices = []
-  this.VTex     = []
-  this.VNormals = []
-  this.Faces    = []
-  this.Comments = []
-  this.Unknown  = []
+  this.Vertices  = []
+  this.VTex      = []
+  this.VNormals  = []
+  this.Faces     = []
+  this.mtllib    = []
+  this.Materials = new Map
+  this.Comments  = []
+  this.Unknown   = []
 }
 
 parsedOBJ.prototype.linkFace = function( face ){
