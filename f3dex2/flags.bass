@@ -41,8 +41,8 @@ constant G_MTX_NOPUSH(0x00)
 constant G_MTX_PUSH(0x01)
 constant G_MTX_MUL(0x00)
 constant G_MTX_LOAD(0x02)
-constant G_MTX_MODELVIEW(0x00)
-constant G_MTX_PROJECTION(0x04)
+//constant G_MTX_MODELVIEW(0x00)
+//constant G_MTX_PROJECTION(0x04)
 
 //===0xDB gsMoveWd Flags=========================
 // for "index" parameter
@@ -109,10 +109,10 @@ constant G_MWO_MATRIX_ZX_ZY_F(0x30)
 constant G_MWO_MATRIX_ZZ_ZW_F(0x34)
 constant G_MWO_MATRIX_WX_WY_F(0x38)
 constant G_MWO_MATRIX_WZ_WW_F(0x3c)
-constant G_MWO_POINT_RGBA(0x10)
-constant G_MWO_POINT_ST(0x14)
-constant G_MWO_POINT_XYSCREEN(0x18)
-constant G_MWO_POINT_ZSCREEN(0x1c)
+//constant G_MWO_POINT_RGBA(0x10)
+//constant G_MWO_POINT_ST(0x14)
+//constant G_MWO_POINT_XYSCREEN(0x18)
+//constant G_MWO_POINT_ZSCREEN(0x1c)
 
 //===0xDC gsMoveMem Flags========================
 // for 'index' parameter

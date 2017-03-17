@@ -1,0 +1,33 @@
+//color vertex
+
+macro Vertex_Color(x, y, z, s, t, r, g, b, a) {
+  // store positions as int16
+  dh  {x}, {y}, {z}
+  // pad
+  dh  0x0000
+  //store texture coordinates as signed 10.5 fixed point
+  print "Text s: {s}; Text t: {t}\n"
+  print "Multipled by 32: \n"
+  print "Text s: "; print ({s} * 32.0 & 0xFFFF); print "; "
+  print "Text t: "; print ({t} * 32.0 & 0xFFFF); print "\n"
+  dh  ({s} * 32 & 0xFFFF)
+  dh  ({t} * 32 & 0xFFFF)
+  // store 8bit color values
+  db  {r},{g},{b},{a}
+}
+
+macro Vertex_Normal(x, y, z, s, t, nx, ny, nz, a) {
+  // store positions as int16
+  dh  {x}, {y}, {z}
+  // pad
+  dh  0x0000
+  //store texture coordinates as signed 10.5 fixed point
+  print "Text s: {s}; Text t: {t}\n"
+  dh  ({s} * 32 & 0xFFFF)
+  dh  ({t} * 32 & 0xFFFF)
+  // store normals as signed 8 (I guess really signed fixed point 0.7...?)
+  // check if 1 > nx > 0 ? to find unit vector normals or proper s8 normal
+  db  {nx}, {ny}, {nz}
+  // store vertex alpha
+  db  {a}
+}
