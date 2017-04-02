@@ -1,0 +1,7 @@
+[package]
+name = "bass_sym_to_nemu"
+version = "0.1.0"
+authors = ["tehzz"]
+
+[dependencies]
+clap = "^2.22.2"

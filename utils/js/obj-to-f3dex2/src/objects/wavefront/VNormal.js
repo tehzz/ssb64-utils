@@ -1,4 +1,4 @@
-const int = require('./util/int.js')
+const int = require('../../util/int.js')
 
 /* "The coordinates of the normal range from -1.0 to 1.0.
    In other words, -128 must be specified for the -1.0 value,
@@ -24,13 +24,12 @@ function VNormal( i, j, k ){
 }
 
 
-VNormal.prototype.convertToS8 = function(){
-  console.log(this)
-  this.i = unitToS8(this.i)
-  this.j = unitToS8(this.j)
-  this.k = unitToS8(this.k)
-  console.log(this)
-  return this
+VNormal.prototype.getCoordsAsN64 = function(){
+  return {
+    i : int.toFixedS8_7(this.i),
+    j : int.toFixedS8_7(this.j),
+    k : int.toFixedS8_7(this.k),
+  }
 }
 
 module.exports = VNormal

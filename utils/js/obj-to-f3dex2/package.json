@@ -4,12 +4,14 @@
   "description": "Convert wavefront obj to f3dex2 for SSB64",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "tehz",
   "license": "ISC",
   "dependencies": {
     "argv": "0.0.2",
+    "equals": "^1.0.5",
     "promise": "^7.1.1"
   }
 }

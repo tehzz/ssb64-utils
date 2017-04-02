@@ -1,4 +1,4 @@
-const Color = require('./Color.js')
+const Color = require('../Color.js')
 
 function Material(name) {
   this.name = name;

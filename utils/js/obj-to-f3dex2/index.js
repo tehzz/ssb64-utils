@@ -4,7 +4,8 @@ const Promise = require('promise'),
       path    = require('path'),
       parseOBJ = require('./src/parse-obj.js'),
       parseMTL = require('./src/parse-mtl.js'),
-      bankOBJ = require('./src/bank-obj.js')
+      cvrtToFED3X = require('./src/convert-to-f3dex2.js')
+      bankOBJ  = require('./src/bank-obj.js')
 
 // promisify fs calls
 const fs = {
@@ -16,16 +17,37 @@ const fs = {
 argv.option(require('./cli-options.js'))
 
 let {targets, options} = argv.run(),
-    file = path.parse(targets[0])
+    file;
 
-console.log(targets, options)
+// check if there is an input file
+if ( !options['file'] ) {
+  console.log("ERROR: Enter an input '.obj' to parse!")
+  argv.help();
+
+  process.exitCode = 1;
+  return false
+}
+
+file = path.parse(options['file'])
+
+// make sure that a file was specified, not just the '-f' flag
+if ( file.base === 'true' ) {
+  console.log("ERROR: Please specify the input '.obj' file; don't just enter the '-f' flag!")
+  argv.help();
+
+  process.exitCode = 1;
+  return false
+}
+
+//console.log(targets, options)
+//console.log(file)
 
 // read target file
 fs.readFile(path.format(file), 'utf-8')
 .catch(err => {
-  console.log("File Read Error?")
+  console.log("File Read Error")
   console.log(err)
-  throw err
+  throw new Error("fs.readFile")
 })
 .then( contents => contents.split('\n').map( x => x.trim() ) )
 .then( parseOBJ )
@@ -38,8 +60,25 @@ fs.readFile(path.format(file), 'utf-8')
   return Promise.all([ parsed, ...mtls ])
 })
 .then( parseMTL )
-.then(console.log)
+.then( cvrtToFED3X )
+.then( ([p, n64]) => {
+  //console.log(p)
+  console.log(n64[0])
+
+  return [p,n64]
+})
 /*
+.then( bankOBJ )
+.then(([p,b]) =>{
+  console.log(p['Materials'])
+  let vertex = p['Faces'][0].vertIDs[0][0],
+      vn = p['Faces'][0].vertIDs[0][2]
+
+  console.log(p['Faces'][0], p['Vertices'][vertex])
+  console.log(p['VNormals'][vn])
+  console.log(p['VNormals'][vn].convertToN64())
+})
+
 .then( bankOBJ )
 .then( ([p,b]) =>{
   //parsed['Vertices'].forEach(vertex => vertex.scale(options['scale']).toInt())
@@ -78,7 +117,13 @@ fs.readFile(path.format(file), 'utf-8')
 .then(console.log)
 */
 .catch(err => {
-  console.log("Unknown Error... :(")
-  console.log(err)
-  throw err
+  switch (err.message) {
+    case "fs.readFile":
+      console.log("fs.readFile error propogated to final catch. \nAborting Program")
+      break;
+    default:
+      console.log("Unknown Error in final Promise 'catch' statment. \nLogging and throwing to Node")
+      console.log(err)
+      throw err
+  }
 })

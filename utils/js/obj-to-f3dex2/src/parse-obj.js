@@ -1,10 +1,6 @@
-const Vertex    = require('./Vertex.js'),
-      VTexture  = require('./VTexture.js'),
-      VNormal   = require('./VNormal.js'),
-      Face      = require('./Face.js'),
-      parsedOBJ = require('./OBJContain.js');
+const {Vertex, VTexture, VNormal, Face, Container} = require('./objects/obj.js')
 
-const parsed = new parsedOBJ();
+const parsed = new Container();
 
 
 function parse(lines){
@@ -61,7 +57,7 @@ function parse(lines){
         face.setVIds(curVert,
                      curVT,
                      curVN)
-        // if there's a mtl, set it
+        // if there's a mtl, set this face to use it
         if( curMTL ) face.setMTL(curMTL)
         // push to array
         parsed['Faces'].push(face)

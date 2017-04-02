@@ -1,4 +1,4 @@
-const int = require('./util/int.js')
+const int = require('../util/int.js')
 
 function Color(r,g,b, a = null) {
   this.r = r

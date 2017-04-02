@@ -1,4 +1,4 @@
-const Material = require('./Material.js')
+const Material = require('./objects/obj.js').Material
 
 function parse([p, ...mtls]) {
 
@@ -56,6 +56,11 @@ function parse([p, ...mtls]) {
         case 'd':
           let alpha = Number.parseFloat(values.pop())
           curMtl.setAlpha(alpha)
+        break;
+
+        case 'Tr':
+        //others use 'Tr' (inverted: Tr = 1 - d)
+          curMtl.setAlpha( 1.0 - Number.parseFloat(values.pop()) )
         break;
 
         case 'illum':
