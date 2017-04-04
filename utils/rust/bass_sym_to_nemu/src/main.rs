@@ -2,9 +2,10 @@
 extern crate clap;
 use clap::{App, Arg};
 
-//use std::fs::File;
-//use std::io::{Read, BufReader};
-//use std::path::Path;
+//http://stackoverflow.com/questions/31192956/whats-the-de-facto-way-of-reading-and-writing-files-in-rust-1-x
+use std::fs::File;
+use std::io::{BufReader, BufRead};
+use std::path::Path;
 
 fn main() {
     let matches = App::new("Bass Symbol to Nemu Bookmark Converter")
@@ -32,5 +33,17 @@ and removed the bookmark's name")
 
     if let Some(indent) = matches.value_of("indent"){
         println!("Value for indent: {}", indent);
+    }
+
+    let path = Path::new(matches.value_of("INPUT").unwrap());
+
+    let f = File::open(path).expect("Unable to read file");
+    let br = BufReader::new(f);
+
+    for line in br.lines(){
+        for substr in line.unwrap().split_whitespace(){
+            println!("Substr: {}", substr );
+        }
+        //println!("{}", line.unwrap());
     }
 }
