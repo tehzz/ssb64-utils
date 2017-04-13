@@ -1,5 +1,5 @@
 [package]
-name = "bass_sym_to_nemu"
+name = "bass_to_nemu"
 version = "0.1.0"
 authors = ["tehzz"]
 
