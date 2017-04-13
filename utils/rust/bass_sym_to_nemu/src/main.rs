@@ -1,7 +1,7 @@
 // http://stackoverflow.com/questions/31192956/whats-the-de-facto-way-of-reading-and-writing-files-in-rust-1-x
 use std::fs::File;
-use std::io::{BufReader};
-use std::path::Path;
+use std::io::{BufReader, BufWriter, Write};
+use std::path::{Path, PathBuf};
 
 extern crate clap;
 use clap::{App, Arg};
@@ -12,8 +12,7 @@ use flat::flatten;
 fn main() {
     let matches = cli().get_matches();
 
-
-
+    //--Start debugging stuff... remove eventually...
     if let Some(input) = matches.value_of("INPUT") {
         println!("Value for INPUT: {}", input);
     }
@@ -21,12 +20,14 @@ fn main() {
     if let Some(indent) = matches.value_of("indent"){
         println!("Value for indent: {}", indent);
     }
+    //--End Debugging BS
 
+    // Get BufReader of file from INPUT from clap
     let path = Path::new(matches.value_of("INPUT").unwrap());
+    let f    = File::open(path).expect("Unable to read input file");
+    let br   = BufReader::new(f);
 
-    let f = File::open(path).expect("Unable to read file");
-    let br = BufReader::new(f);
-
+    // re-format the file!
     let output =
         if matches.is_present("flatten") {
             flatten(Box::new(br))
@@ -35,6 +36,17 @@ fn main() {
             flatten(Box::new(br))
         };
 
+    println!("Test of FP:\n{}", output);
+
+    // write the reformated string out to a file!
+    let mut output_path = PathBuf::from(path);
+    output_path.set_extension("nbm");
+
+    let o = File::create(output_path)
+            .expect("Unable to create output file :(");
+
+    let mut bw = BufWriter::new(o);
+    bw.write_all(output.as_bytes()).expect("Unable to write output file");
     /*
     let test_addr = SymbolInfo {
         addr: 0xA1234,
@@ -45,7 +57,7 @@ fn main() {
     println!("Test of SymbolInfo Print: {}", test_addr.print());
     */
 
-    println!("Test of FP:\n{}", output);
+
 }
 
 fn cli<'a,'b>() -> App<'a,'b> {
