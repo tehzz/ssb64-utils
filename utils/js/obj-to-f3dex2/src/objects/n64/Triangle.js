@@ -1,12 +1,12 @@
 function Triangle(){
-  this.verticies = [];
+  this.objV = [];
   this.bank = null;
   this.bankVertices = [];
 }
 
 Triangle.prototype = {
   addVertex: function(v){
-    this['verticies'].push(v)
+    this['objV'].push(v)
 
     return this
   },

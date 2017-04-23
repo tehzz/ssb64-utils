@@ -4,8 +4,8 @@ const Promise = require('promise'),
       path    = require('path'),
       parseOBJ = require('./src/parse-obj.js'),
       parseMTL = require('./src/parse-mtl.js'),
-      cvrtToFED3X = require('./src/convert-to-f3dex2.js')
-      bankOBJ  = require('./src/bank-obj.js')
+      cvrtToFED3X = require('./src/cvrt-f3dex-geo.js'),
+      organizeDL = require('./src/organize-dl.js')
 
 // promisify fs calls
 const fs = {
@@ -61,69 +61,25 @@ fs.readFile(path.format(file), 'utf-8')
 })
 .then( parseMTL )
 .then( cvrtToFED3X )
-.then( ([p, n64]) => {
+.then( organizeDL )
+.then( ([p, dl]) => {
   //console.log(p)
-  console.log(n64[0])
-
-  return [p,n64]
+  console.log(dl)
+  for( mesh in dl.mesh) {
+    console.log(dl.mesh[mesh].bankVertices)
+  }
+  return [p,dl]
 })
-/*
-.then( bankOBJ )
-.then(([p,b]) =>{
-  console.log(p['Materials'])
-  let vertex = p['Faces'][0].vertIDs[0][0],
-      vn = p['Faces'][0].vertIDs[0][2]
-
-  console.log(p['Faces'][0], p['Vertices'][vertex])
-  console.log(p['VNormals'][vn])
-  console.log(p['VNormals'][vn].convertToN64())
-})
-
-.then( bankOBJ )
-.then( ([p,b]) =>{
-  //parsed['Vertices'].forEach(vertex => vertex.scale(options['scale']).toInt())
-  //console.log(b)
-  console.log(`Total Faces: ${p.Faces.length-1}`)
-  p.VNormals.forEach( vn => vn.convertToS8() )
-
-  return [p,b]
-})
-.catch( err => {
-  console.log('Error parsing .obj file?')
-  console.log(err)
-
-  throw err
-})
-/*
-.then( ([p,b]) => {
-  let output = ''
-  b.forEach( (bank,i) => {
-    output += `// Drawing Bank ${i} \n`
-    output += `gsSPVertex(Bank${i}, ${bank.length}, 0) \n`
-    bank.faces.forEach(face => {
-      //console.log(p.Faces[face].vertIDs)
-      //find vert ids within bank...
-      let [v0,v1,v2] = p.Faces[face].vertIDs.map( v => {
-        //console.log(v[0])
-        return bank.findVertex(v[0])
-      })
-
-      output += `gsSP1Triangle(${v0}, ${v1}, ${v2}, 0) \n`
-    })
-  })
-
-  return output
-})
-.then(console.log)
-*/
 .catch(err => {
   switch (err.message) {
     case "fs.readFile":
       console.log("fs.readFile error propogated to final catch. \nAborting Program")
+      process.exitCode = 1;
       break;
     default:
       console.log("Unknown Error in final Promise 'catch' statment. \nLogging and throwing to Node")
       console.log(err)
+      process.exitCode = 1;
       throw err
   }
 })

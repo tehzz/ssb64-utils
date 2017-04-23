@@ -8,7 +8,7 @@ function Color(r,g,b, a = null) {
 }
 
 // convert from float 0 to 1 to int 0 to 255
-Color.prototype.to8bit = function(float) {
+Color.prototype.to8bit = function() {
   for (chan in this) {
     const color = this[chan]
     if( color !== null && color >= 0 && color <= 1) {
