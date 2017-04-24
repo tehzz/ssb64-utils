@@ -24,7 +24,7 @@ fn main() {
 
     // Get BufReader of file from INPUT from clap
     let path = Path::new(matches.value_of("INPUT").unwrap());
-    let f    = File::open(path).expect("Unable to read input file");
+    let f    = File::open(path).expect("Unable to read input file\n\n");
     let br   = BufReader::new(f);
 
     // re-format the file!
@@ -39,11 +39,25 @@ fn main() {
     println!("Test of FP:\n{}", output);
 
     // write the reformated string out to a file!
-    let mut output_path = PathBuf::from(path);
-    output_path.set_extension("nbm");
+    let output_path =
+        if let Some(custom_output) = matches.value_of("output") {
+            let mut temp = PathBuf::from(custom_output);
+            match temp.extension() {
+                Some(_) => (),
+                None    => { temp.set_extension("nbm");
+                            ()
+                            }
+            };
+            temp
+        } else {
+            let mut temp = PathBuf::from(path);
+            temp.set_extension("nbm");
+            temp
+        };
+
 
     let o = File::create(output_path)
-            .expect("Unable to create output file :(");
+            .expect("Unable to create output file :(\n\n");
 
     let mut bw = BufWriter::new(o);
     bw.write_all(output.as_bytes()).expect("Unable to write output file");
@@ -82,5 +96,13 @@ and removed the bookmark's name")
             .long("flatten")
             .multiple(false)
             .help("Make a quick one-to-one mapping between bass' output symbol file and Nemu's bookmarks")
+        )
+        .arg(Arg::with_name("output")
+            .short("o")
+            .long("output")
+            .takes_value(true)
+            .multiple(false)
+            .help("Explicitly set the name of the output file. Will automatically add \".nbm\" if no extension is specified
+By default, the output file is \"<INPUT>.nbm\"")
         )
 }
