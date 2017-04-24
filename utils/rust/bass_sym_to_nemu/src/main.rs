@@ -44,9 +44,10 @@ fn main() {
             let mut temp = PathBuf::from(custom_output);
             match temp.extension() {
                 Some(_) => (),
-                None    => { temp.set_extension("nbm");
-                            ()
-                            }
+                None    => {
+                    temp.set_extension("nbm");
+                    ()
+                }
             };
             temp
         } else {
