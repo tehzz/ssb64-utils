@@ -15,25 +15,25 @@ function convert( p, scale ) {
   //  convert face to f3dex_Triangle? (or maybe square in the future)
   let n64_mesh = p.Faces.map( (face, i) => {
     const material = face['mtl'];
-    let geometery;
+    let geometry;
 
-    // convert face to an f3dex geometery
+    // convert face to an f3dex geometry
     switch (face.vertIDs.length) {
       case 3:
-        geometery = new Triangle()
+        geometry = new Triangle()
       break;
 
       default:
         console.log(`Face with ${face.vertIDs.length} vertices. Please implement... ):`)
-        throw new Error("OBJ Face to F3dex geometery")
+        throw new Error("OBJ Face to F3dex geometry")
     }
 
-    // attach obj v/vt/vn indices to the new geometery
+    // attach obj v/vt/vn indices to the new geometry
     face.vertIDs.forEach( ([v,vt,vn]) => {
-      geometery.addVertex([v,vt,vn, material]);
+      geometry.addVertex([v,vt,vn, material]);
     })
 
-    return geometery
+    return geometry
   })
 
 

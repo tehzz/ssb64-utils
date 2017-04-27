@@ -68,7 +68,7 @@ fs.readFile(path.format(file), 'utf-8')
   for( mesh in dl.mesh) {
     console.log(dl.mesh[mesh].bankVertices)
   }
-
+  /*
   let test = dl.mesh.reduce( (acc, geo, i, arr) => {
     let collect, current;
     //check geometry
@@ -79,7 +79,7 @@ fs.readFile(path.format(file), 'utf-8')
 
         break;
       default:
-        console.log(`Mesh[${i}] is an unknown geometery :(`)
+        console.log(`Mesh[${i}] is an unknown geometry :(`)
     }
 
     current = collect[collect.length-1]
@@ -92,9 +92,15 @@ fs.readFile(path.format(file), 'utf-8')
     }
 
     return acc
-  }, { "tri": [], "rect": []})
+  }, { "tri": [], "rect": []}) */
 
-  console.log(test)
+  const testfn = require('./src/gen-dl-cmds.js')
+  let test = testfn(dl.mesh)
+  for ( bank in test ) {
+    console.log(`Bank ${bank}: ${test[bank].getBank()}`)
+    console.log(test[bank])
+  }
+  //console.log(test)
   return [p,dl]
 })
 .catch(err => {

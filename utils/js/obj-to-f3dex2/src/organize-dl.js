@@ -12,10 +12,10 @@ function organize( [p, mesh] ) {
   // instantiate new Display List
   let dl = new Dlist();
 
-  // move mesh geometery into dl
+  // move mesh geometry into dl
   dl.setMesh(mesh)
 
-  // step through each geometery, converting and adding its vertices to the DL
+  // step through each geometry, converting and adding its vertices to the DL
   mesh.forEach( (geo, i) => {
     // convert each objV into an N64 Vertex (color or normal)
     let verts = geo.objV.map( ( [v, vt, vn, mtl] ) => {
@@ -64,7 +64,7 @@ function organize( [p, mesh] ) {
       }
     })
 
-    // update geometery's bank property and bank vertex locations
+    // update geometry's bank property and bank vertex locations
     geo.setBank(openBank)
     bankedVLocs.forEach( loc => geo.bankVertex(loc) )
   })
