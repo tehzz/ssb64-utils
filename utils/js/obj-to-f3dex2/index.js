@@ -64,10 +64,37 @@ fs.readFile(path.format(file), 'utf-8')
 .then( organizeDL )
 .then( ([p, dl]) => {
   //console.log(p)
-  console.log(dl)
+  //console.log(dl)
   for( mesh in dl.mesh) {
     console.log(dl.mesh[mesh].bankVertices)
   }
+
+  let test = dl.mesh.reduce( (acc, geo, i, arr) => {
+    let collect, current;
+    //check geometry
+    switch (geo.bankVertices.length) {
+      case 3 :
+        console.log(`Mesh[${i}] is a Triangle`)
+        collect = acc['tri']
+
+        break;
+      default:
+        console.log(`Mesh[${i}] is an unknown geometery :(`)
+    }
+
+    current = collect[collect.length-1]
+
+    if ( current === undefined || current.length === 2) {
+      // add new set of two triangles
+      collect.push( [i])
+    } else {
+      current.push(i)
+    }
+
+    return acc
+  }, { "tri": [], "rect": []})
+
+  console.log(test)
   return [p,dl]
 })
 .catch(err => {
