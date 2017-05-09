@@ -1,0 +1,2347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="14">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>24</ID>
+      <Description>"Player 1 Health"</Description>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002002C</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>31</ID>
+      <Description>"Player 1 Shield"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020034</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>26</ID>
+      <Description>"Player 1 Running Speed"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020060</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>63</ID>
+      <Description>"Current # of Jumps Player 1"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002014B</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>397</ID>
+      <Description>"Player 1 Character ID"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020008</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>64</ID>
+      <Description>"Player 1 Is In Air Flag"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002014C</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>362</ID>
+      <Description>"Player 1 Movement State?"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002018C</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>25</ID>
+      <Description>"Address For Start of Char Data"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>115</ID>
+      <Description>"Player 1 Moveset Offset"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101B0D04</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>29</ID>
+      <Description>"Player 2 Health"</Description>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002002C</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>88</ID>
+      <Description>"Player 2 Shield"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020034</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>206</ID>
+      <Description>"Player 3 Health"</Description>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002002C</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>207</ID>
+      <Description>"Player 3 Shield"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020034</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>208</ID>
+      <Description>"Player 4 Health"</Description>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002002C</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>209</ID>
+      <Description>"Player 4 Shield"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020034</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>19</ID>
+      <Description>"Character Size Multiplier"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020000</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>43</ID>
+      <Description>"Walking Speed Multiplier"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020020</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>291</ID>
+      <Description>"Brake Force"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020024</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>44</ID>
+      <Description>"Initial Dash Speed"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020028</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>292</ID>
+      <Description>"Dash Deceleration"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002002C</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>45</ID>
+      <Description>"Running Speed"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020030</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>46</ID>
+      <Description>"Delay before Jumping"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020034</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>293</ID>
+      <Description>"Jump #1 Starting X-Air Velocity"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020038</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>48</ID>
+      <Description>"Jump Height Multiplier"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002003C</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>49</ID>
+      <Description>"Jump Height Adder"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020040</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>294</ID>
+      <Description>"Jump #2 Starting X-Air Velocity"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020044</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>50</ID>
+      <Description>"Jump #2 Multiplier"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020048</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>51</ID>
+      <Description>"X-Air Acceleration"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002004C</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>52</ID>
+      <Description>"X-Air Max Speed"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020050</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>53</ID>
+      <Description>"X-Air Resistance"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020054</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>54</ID>
+      <Description>"Fall Speed Acceleration"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020058</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>55</ID>
+      <Description>"Max Falling Speed"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002005C</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>56</ID>
+      <Description>"Max Fast Fall Speed"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020060</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>57</ID>
+      <Description>"Number of Jumps"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020064</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>58</ID>
+      <Description>"Weight"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020068</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>107</ID>
+      <Description>"Jab 1 Frame Window"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002006C</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>108</ID>
+      <Description>"Dash traveling connection F"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020070</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>109</ID>
+      <Description>"Shield Radius"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020074</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>290</ID>
+      <Description>"Y-Velocity after shield break"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020078</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>373</ID>
+      <Description>"Item Throw Damage Multiplier"</Description>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900200E4</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>374</ID>
+      <Description>"Item Throw Velocity"</Description>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900200E6</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>411</ID>
+      <Description>"Player 1 Depth"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020040</Offset>
+        <Offset>900208E8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>412</ID>
+      <Description>"Player 1 Height"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020044</Offset>
+        <Offset>900208E8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>413</ID>
+      <Description>"Player 1 Width"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020048</Offset>
+        <Offset>900208E8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>199</ID>
+      <Description>"Player 1 Vulnerability State"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900205B8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>90</ID>
+      <Description>"Player 2 Vulnerability State"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900205B8</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>93</ID>
+      <Description>"Controller Port 1 Controlled By?"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900201B0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>94</ID>
+      <Description>"Controller Port 2 Controlled By?"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900201B0</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>204</ID>
+      <Description>"Controller Port 3 Controlled By?"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900201B0</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>205</ID>
+      <Description>"Controller Port 4 Controlled By?"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900201B0</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>96</ID>
+      <Description>"P1 Shield &amp; Jump Counter"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020B1C</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>121</ID>
+      <Description>"Player 1 Controlled by?"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020020</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>122</ID>
+      <Description>"Player 2 Controlled by?"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020020</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>202</ID>
+      <Description>"Player 3 Controlled by?"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020020</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>203</ID>
+      <Description>"Player 4 Controlled by?"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020020</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>299</ID>
+      <Description>"Player 1 Cpu Level"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020010</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>300</ID>
+      <Description>"Player 2 Cpu Level"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020010</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>301</ID>
+      <Description>"Player 3 Cpu Level"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020010</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>302</ID>
+      <Description>"Player 4 Cpu Level"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020010</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>295</ID>
+      <Description>"Player 1 Handicap Level"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020011</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>296</ID>
+      <Description>"Player 2 Handicap Level"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020011</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>297</ID>
+      <Description>"Player 3 Handicap Level"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020011</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>298</ID>
+      <Description>"Player 4 Handicap Level"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020011</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>308</ID>
+      <Description>"All Hitboxes on (Set to 0)"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10112C04</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>309</ID>
+      <Description>"Player 1 HitBox Code"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9001FFFC</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>310</ID>
+      <Description>"Player 2 Hitbox Code"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9001FFFC</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>311</ID>
+      <Description>"Player 3 Hitbox Code"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9001FFFC</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>312</ID>
+      <Description>"Player 4 Hitbox Code"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D8C</Address>
+      <Offsets>
+        <Offset>9001FFFC</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>127</ID>
+      <Description>"Player 1 appear"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>100C50E8</Address>
+      <Offsets>
+        <Offset>90020020</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>129</ID>
+      <Description>"Player 2 Appear"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>100C50E8</Address>
+      <Offsets>
+        <Offset>90020094</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>131</ID>
+      <Description>"Player 3 Appear"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>100C50E8</Address>
+      <Offsets>
+        <Offset>90020108</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>200</ID>
+      <Description>"Player 4 Appear"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>100C50E8</Address>
+      <Offsets>
+        <Offset>9002017C</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>132</ID>
+      <Description>"Stage Select"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>100C50E8</Address>
+      <Offsets>
+        <Offset>90020002</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>133</ID>
+      <Description>"1P Mode Stage #"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>100C4AE4</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Camera Control Horizontal"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>1015146A</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"Camera Control Vertical"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>10151466</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>2</ID>
+      <Description>"Camera 1"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020860</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>3</ID>
+      <Description>"Camera 2"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020864</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>4</ID>
+      <Description>"Camera 3"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020860</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>5</ID>
+      <Description>"Camera 4"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020864</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>414</ID>
+      <Description>"Player 1 DI State (80140878)"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020A00</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>395</ID>
+      <Description>"P1 Joystick Input Frame Counter"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020268</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>284</ID>
+      <Description>"Player 1 Hitlag"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020040</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>306</ID>
+      <Description>"Player 1 Knockback Reduction 1"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900207E4</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>409</ID>
+      <Description>"Player 1 Knockback Reduction 2"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900207E8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>242</ID>
+      <Description>"Knockback of Player 1's Last Hit"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900207B4</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>392</ID>
+      <Description>"Player 1 Shield Stun"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020B34</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>253</ID>
+      <Description>"Player 1 Hitstun Duration"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020B18</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>20</ID>
+      <Description>"Player 1 X Position"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020000</Offset>
+        <Offset>90020078</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>195</ID>
+      <Description>"Player 1 X-Velocity"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020048</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>196</ID>
+      <Description>"Player 1 Knockback X-Velocity"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020054</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>21</ID>
+      <Description>"Player 1 Y Position"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020004</Offset>
+        <Offset>90020078</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>59</ID>
+      <Description>"Player 1 Y-Velocity"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002004C</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>197</ID>
+      <Description>"Player 1 Knockback Y-Velocity"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020058</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>420</ID>
+      <Description>"Player 2 DI State (80140878)"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020A00</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>421</ID>
+      <Description>"P2 Joystick Input Frame Counter"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020268</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>285</ID>
+      <Description>"Player 2 Hitlag"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020040</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>307</ID>
+      <Description>"Player 2 Knockback Reduction 1"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900207E4</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>410</ID>
+      <Description>"Player 2 Knockback Reduction 2"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900207E8</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>289</ID>
+      <Description>"Knockback of Player 2's Last Hit"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900207B4</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>394</ID>
+      <Description>"Player 2 Shield Stun"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020B34</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>254</ID>
+      <Description>"Player 2 Hitstun Duration"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020B18</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>73</ID>
+      <Description>"Player 2 X Position"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020000</Offset>
+        <Offset>90020078</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>143</ID>
+      <Description>"Player 2 X-Velocity"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020048</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>146</ID>
+      <Description>"Player 2 Knockback X-Velocity"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020054</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>74</ID>
+      <Description>"Player 2 Y Position"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020004</Offset>
+        <Offset>90020078</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>144</ID>
+      <Description>"Player 2 Y-Velocity"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002004C</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>145</ID>
+      <Description>"Player 2 Knockback Y-Velocity"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020058</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>417</ID>
+      <Description>"Player 2 Movement State?"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150d84</Address>
+      <Offsets>
+        <Offset>9002018C</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>338</ID>
+      <Description>"Player 3 X Position"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020000</Offset>
+        <Offset>90020078</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>339</ID>
+      <Description>"Player 3 Y Position"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020004</Offset>
+        <Offset>90020078</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>337</ID>
+      <Description>"Player 4 X Position"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020000</Offset>
+        <Offset>90020078</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>340</ID>
+      <Description>"Player 4 Y Position"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020004</Offset>
+        <Offset>90020078</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>243</ID>
+      <Description>"Random # Generation Seed"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>1005B940</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>148</ID>
+      <Description>"Dream Land Wind"</Description>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>10151412</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>215</ID>
+      <Description>"Dream Land Tree"</Description>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>10151416</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>149</ID>
+      <Description>"Player 1 Player State #1"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900209DC</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>363</ID>
+      <Description>"Player 1 Player State #2"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900209E0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>372</ID>
+      <Description>"Player 1 Player State #3"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900209E4</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>316</ID>
+      <Description>"Default Hurtbox Color 1"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>10112784</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>315</ID>
+      <Description>"Default Hurtbox Color 2"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>1011279C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>342</ID>
+      <Description>"Training Mode Player 1 Color"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101585A4</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>288</ID>
+      <Description>"Player 1 Body Color"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900202A8</Offset>
+        <Offset>90020004</Offset>
+        <Offset>900205F0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>283</ID>
+      <Description>"Player 1 Body Appearance"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020280</Offset>
+        <Offset>90020004</Offset>
+        <Offset>900205F0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>155</ID>
+      <Description>"Frame Counter"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020078</Offset>
+        <Offset>90020004</Offset>
+        <Offset>900205F0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>153</ID>
+      <Description>"Invisibility Pointer?"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020020</Offset>
+        <Offset>90020004</Offset>
+        <Offset>900205F0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>317</ID>
+      <Description>"Player 1 Charge State"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150d84</Address>
+      <Offsets>
+        <Offset>90020ADC</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>375</ID>
+      <Description>"Player 1 Jab Frame Window"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020150</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>389</ID>
+      <Description>"Player 1 Hitbox Timer"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020868</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>391</ID>
+      <Description>"Training Mode Combo Counter"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101B0B60</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>416</ID>
+      <Description>"P1 VS Mode Combo Counter"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>100C4D7C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>415</ID>
+      <Description>"P2 VS Mode Combo Counter"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>100C4DF0</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>418</ID>
+      <Description>"P3 VS Mode Combo Counter"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>100C4E64</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>419</ID>
+      <Description>"P4 VS Mode Combo Counter"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>100C4ED8</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>386</ID>
+      <Description>"Player 1 Frame Counter"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002001C</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>157</ID>
+      <Description>"Player 1 Flag"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020180</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>159</ID>
+      <Description>"P1 Z Cancel Frame Counter"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020160</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>198</ID>
+      <Description>"Player 2 Flag"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020180</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>168</ID>
+      <Description>"P2 Z Cancel Frame Counter"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020160</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>164</ID>
+      <Description>"-Y Blast Line"</Description>
+      <ShowAsSigned>1</ShowAsSigned>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>10151300</Address>
+      <Offsets>
+        <Offset>90020074</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>165</ID>
+      <Description>"Y Blast Line"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>10151300</Address>
+      <Offsets>
+        <Offset>90020076</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>166</ID>
+      <Description>"-X Blast Line"</Description>
+      <ShowAsSigned>1</ShowAsSigned>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>10151300</Address>
+      <Offsets>
+        <Offset>90020078</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>167</ID>
+      <Description>"X Blast Line"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>10151300</Address>
+      <Offsets>
+        <Offset>9002007A</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>341</ID>
+      <Description>"No Effects (0 = ON)"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>1006683C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>314</ID>
+      <Description>"Player Icon Always On 1"</Description>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>1015E234</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>313</ID>
+      <Description>"Player Icon Always On 2"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10107284</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>239</ID>
+      <Description>"Player 1 Icon over Head"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>10151780</Address>
+      <Offsets>
+        <Offset>9002051C</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>238</ID>
+      <Description>"Player 2 Icon over Head"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>10151780</Address>
+      <Offsets>
+        <Offset>90020614</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>188</ID>
+      <Description>"Training Mode HUD #1"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101517D4</Address>
+      <Offsets>
+        <Offset>90020174</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>189</ID>
+      <Description>"Training Mode HUD #2"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101517D4</Address>
+      <Offsets>
+        <Offset>900203BC</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>190</ID>
+      <Description>"Training Mode HUD #3"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101517D4</Address>
+      <Offsets>
+        <Offset>9002062C</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>191</ID>
+      <Description>"Training Mode HUD #4"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101517D4</Address>
+      <Offsets>
+        <Offset>900207BC</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>192</ID>
+      <Description>"Training Mode HUD #5"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101517D4</Address>
+      <Offsets>
+        <Offset>900208B4</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>193</ID>
+      <Description>"Training Mode HUD #6"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101517D4</Address>
+      <Offsets>
+        <Offset>900209AC</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>211</ID>
+      <Description>"Player 1 HUD"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101517D4</Address>
+      <Offsets>
+        <Offset>9001F8DC</Offset>
+        <Offset>90020004</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>212</ID>
+      <Description>"Player 2 HUD"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101517D4</Address>
+      <Offsets>
+        <Offset>9001FBB4</Offset>
+        <Offset>90020004</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>213</ID>
+      <Description>"Player 1 Stock Icon"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101517D4</Address>
+      <Offsets>
+        <Offset>9001FE8C</Offset>
+        <Offset>90020004</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>214</ID>
+      <Description>"Player 2 Stock Icon"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101517D4</Address>
+      <Offsets>
+        <Offset>9001FF84</Offset>
+        <Offset>90020004</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>216</ID>
+      <Description>"Middle BG"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>9002001C</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>218</ID>
+      <Description>"Dream Land Platform"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>900214B0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>219</ID>
+      <Description>"Lower Part of BG"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>90021700</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>220</ID>
+      <Description>"Dream Land Pool #1"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>900218A0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>221</ID>
+      <Description>"Dream Land Pool #2"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>90021970</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>222</ID>
+      <Description>"Bottom Part of BG"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>90021DF0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>241</ID>
+      <Description>"Remove Bottom BG"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>90021DF8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>224</ID>
+      <Description>"Right Fence"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>90021EC8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>226</ID>
+      <Description>"Left Fence"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>90021F98</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>227</ID>
+      <Description>"Bottom BG Part 2"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>90022060</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>229</ID>
+      <Description>"Tree Eye Disabler"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>90022267</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>231</ID>
+      <Description>"Tree Mouth Disabler"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>9002262F</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>232</ID>
+      <Description>"Tree Mouth"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>90022638</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>233</ID>
+      <Description>"Tree eyes"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>90022270</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>234</ID>
+      <Description>"Top Flowers"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>90022C68</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>235</ID>
+      <Description>"Top Flower Disabler"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>90022C67</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>236</ID>
+      <Description>"Bottom Flowers"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>900232D0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>237</ID>
+      <Description>"Bottom Flower Disabler"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>900232C7</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>305</ID>
+      <Description>"Hide Platform (2 = Hidden)"</Description>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>101B2004</Address>
+      <Offsets>
+        <Offset>900214B9</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>303</ID>
+      <Description>"Player 1 Shadow Radius"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002007C</Offset>
+        <Offset>900209C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>304</ID>
+      <Description>"Player 2 Shadow Radius"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002007C</Offset>
+        <Offset>900209C8</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>240</ID>
+      <Description>"Music"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>100B9110</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>357</ID>
+      <Description>"Stage Hazard Damage"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10151300</Address>
+      <Offsets>
+        <Offset>900200AC</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>358</ID>
+      <Description>"Stage Hazard Angle"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10151300</Address>
+      <Offsets>
+        <Offset>900200B0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>359</ID>
+      <Description>"Stage Hazard Kb Scaling"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10151300</Address>
+      <Offsets>
+        <Offset>900200B4</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>360</ID>
+      <Description>"Stage Hazard Fixed Knockback"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10151300</Address>
+      <Offsets>
+        <Offset>900200B8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>361</ID>
+      <Description>"Stage Hazard Base Knockback"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10151300</Address>
+      <Offsets>
+        <Offset>900200BC</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>248</ID>
+      <Description>"Staleness Multiplier"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>1014B820</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>249</ID>
+      <Description>"Level 1 Multiplier"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>1014B824</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>250</ID>
+      <Description>"Level 2 Multiplier"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>1014B828</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>251</ID>
+      <Description>"Level 3 Multiplier"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>1014B82C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>256</ID>
+      <Description>"Player 1 Damage Physical"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900202A0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>257</ID>
+      <Description>"Player 1 Effect Physical"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900202A4</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>258</ID>
+      <Description>"Player 1 Hitbox Size Physical"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900202B8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>255</ID>
+      <Description>"Player 1 Angle Physical"</Description>
+      <ShowAsSigned>1</ShowAsSigned>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900202BC</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>259</ID>
+      <Description>"Player 1 Kb Scaling Physical"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900202C0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>260</ID>
+      <Description>"Player 1 Fixed Kb Physical"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900202C4</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>261</ID>
+      <Description>"Player 1 Base Kb Physical"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900202C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>329</ID>
+      <Description>"P 1 Shield Damage Physical"</Description>
+      <ShowAsSigned>1</ShowAsSigned>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150d84</Address>
+      <Offsets>
+        <Offset>900202CC</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>393</ID>
+      <Description>"Player 1 Clang Physical"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>900202D2</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>275</ID>
+      <Description>"P1 PK Thunder X Location"</Description>
+      <ShowAsSigned>1</ShowAsSigned>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020AE4</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>271</ID>
+      <Description>"P1 Pk Thunder Y Location"</Description>
+      <ShowAsSigned>1</ShowAsSigned>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020AFC</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>328</ID>
+      <Description>"Player 1 Projectile Pointer"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101ACFF0</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>322</ID>
+      <Description>"Player 1 Damage Projectile"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101ACFF0</Address>
+      <Offsets>
+        <Offset>90020104</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>325</ID>
+      <Description>"Player 1 Effect Projectile"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101ACFF0</Address>
+      <Offsets>
+        <Offset>9002010C</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>336</ID>
+      <Description>"Player 1 Hitbox Size Projectile"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>101ACFF0</Address>
+      <Offsets>
+        <Offset>90020128</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>324</ID>
+      <Description>"Player 1 Angle Projectile"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101ACFF0</Address>
+      <Offsets>
+        <Offset>9002012C</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>323</ID>
+      <Description>"Player 1 Kb Scaling Projectile"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101ACFF0</Address>
+      <Offsets>
+        <Offset>90020130</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>327</ID>
+      <Description>"Player 1 Fixed Kb Projectile"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101ACFF0</Address>
+      <Offsets>
+        <Offset>90020134</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>326</ID>
+      <Description>"Player 1 Base Kb Projectile"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101ACFF0</Address>
+      <Offsets>
+        <Offset>90020138</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>332</ID>
+      <Description>"P 1 Shield Damage Projectile"</Description>
+      <ShowAsSigned>1</ShowAsSigned>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>101ACFF0</Address>
+      <Offsets>
+        <Offset>9002013C</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>278</ID>
+      <Description>"Player 1 Damage Reduction"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002081C</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>279</ID>
+      <Description>"Player 1 Animation State"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020024</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>276</ID>
+      <Description>"Player 2 Damage Reduction"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>9002081C</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>277</ID>
+      <Description>"Player 2 Animation state"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10150D84</Address>
+      <Offsets>
+        <Offset>90020024</Offset>
+        <Offset>90020000</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>378</ID>
+      <Description>"Player 1 Damage Item"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10151460</Address>
+      <Offsets>
+        <Offset>90020298</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>379</ID>
+      <Description>"Player 1 Effect Item"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10151460</Address>
+      <Offsets>
+        <Offset>900202A4</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>380</ID>
+      <Description>"Player 1 Hitbox Size Item"</Description>
+      <Color>80000008</Color>
+      <VariableType>Float</VariableType>
+      <Address>10151460</Address>
+      <Offsets>
+        <Offset>900202C0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>381</ID>
+      <Description>"Player 1 Angle Item"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10151460</Address>
+      <Offsets>
+        <Offset>900202C4</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>382</ID>
+      <Description>"Player 1 Kb Scaling Item"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10151460</Address>
+      <Offsets>
+        <Offset>900202C8</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>383</ID>
+      <Description>"Player 1 Fixed Kb Item"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10151460</Address>
+      <Offsets>
+        <Offset>900202CC</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>384</ID>
+      <Description>"Player 1 Base Kb Item"</Description>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10151460</Address>
+      <Offsets>
+        <Offset>900202D0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>385</ID>
+      <Description>"Player 1 Shield Damage Item"</Description>
+      <ShowAsSigned>1</ShowAsSigned>
+      <Color>80000008</Color>
+      <VariableType>4 Bytes</VariableType>
+      <Address>10151460</Address>
+      <Offsets>
+        <Offset>900202D4</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>387</ID>
+      <Description>"Unlock All Characters"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>2 Bytes</VariableType>
+      <Address>100C493A</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>388</ID>
+      <Description>"Unlock Other stuff"</Description>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>100C4934</Address>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
