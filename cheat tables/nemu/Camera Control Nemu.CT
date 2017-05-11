@@ -4,7 +4,7 @@
     <CheatEntry>
       <ID>155</ID>
       <Description>"Frame Counter"</Description>
-      <LastState Value="9" Activated="0" RealAddress="103348B8"/>
+      <LastState Value="??" Activated="0" RealAddress="00000000"/>
       <Color>80000008</Color>
       <VariableType>Float</VariableType>
       <Address>10150D84</Address>
@@ -17,7 +17,7 @@
     <CheatEntry>
       <ID>341</ID>
       <Description>"No Effects (0 = ON)"</Description>
-      <LastState Value="80279A98" Activated="0" RealAddress="1006683C"/>
+      <LastState Value="??" Activated="0" RealAddress="1006683C"/>
       <ShowAsHex>1</ShowAsHex>
       <Color>80000008</Color>
       <VariableType>4 Bytes</VariableType>
@@ -34,7 +34,7 @@
         <CheatEntry>
           <ID>391</ID>
           <Description>"Training Mode Combo Counter"</Description>
-          <LastState Value="00" Activated="0" RealAddress="101B0B60"/>
+          <LastState Value="??" Activated="0" RealAddress="101B0B60"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
@@ -43,7 +43,7 @@
         <CheatEntry>
           <ID>25</ID>
           <Description>"Address For Start of Char Data"</Description>
-          <LastState Value="802E1428" Activated="0" RealAddress="102888F8"/>
+          <LastState Value="??" Activated="0" RealAddress="00000000"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -63,7 +63,7 @@
             <CheatEntry>
               <ID>397</ID>
               <Description>"Player 1 Character ID"</Description>
-              <LastState Value="8" Activated="0" RealAddress="10287F38"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
               <Address>10150D84</Address>
@@ -74,7 +74,7 @@
             <CheatEntry>
               <ID>127</ID>
               <Description>"Player 1 appear"</Description>
-              <LastState Value="0202" Activated="0" RealAddress="100C4D28"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>2 Bytes</VariableType>
@@ -86,7 +86,7 @@
             <CheatEntry>
               <ID>20</ID>
               <Description>"Player 1 X Position"</Description>
-              <LastState Value="0" Activated="0" RealAddress="103348E4"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>10150D84</Address>
@@ -98,7 +98,7 @@
             <CheatEntry>
               <ID>195</ID>
               <Description>"Player 1 X-Velocity"</Description>
-              <LastState Value="0" Activated="0" RealAddress="10287F78"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>10150D84</Address>
@@ -109,7 +109,7 @@
             <CheatEntry>
               <ID>21</ID>
               <Description>"Player 1 Y Position"</Description>
-              <LastState Value="0" Activated="0" RealAddress="103348E8"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>10150D84</Address>
@@ -121,7 +121,7 @@
             <CheatEntry>
               <ID>59</ID>
               <Description>"Player 1 Y-Velocity"</Description>
-              <LastState Value="0" Activated="0" RealAddress="10287F7C"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>10150D84</Address>
@@ -132,7 +132,7 @@
             <CheatEntry>
               <ID>416</ID>
               <Description>"P1 VS Mode Combo Counter"</Description>
-              <LastState Value="0" Activated="0" RealAddress="100C4D7C"/>
+              <LastState Value="??" Activated="0" RealAddress="100C4D7C"/>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
               <Address>100C4D7C</Address>
@@ -140,7 +140,7 @@
             <CheatEntry>
               <ID>211</ID>
               <Description>"Player 1 HUD"</Description>
-              <LastState Value="0" Activated="0" RealAddress="10338764"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <Color>80000008</Color>
               <VariableType>Byte</VariableType>
               <Address>101517D4</Address>
@@ -152,7 +152,7 @@
             <CheatEntry>
               <ID>213</ID>
               <Description>"Player 1 Stock Icon"</Description>
-              <LastState Value="0" Activated="0" RealAddress="10338D14"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <Color>80000008</Color>
               <VariableType>Byte</VariableType>
               <Address>101517D4</Address>
@@ -174,7 +174,7 @@
             <CheatEntry>
               <ID>129</ID>
               <Description>"Player 2 Appear"</Description>
-              <LastState Value="0008" Activated="0" RealAddress="100C4D9C"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>2 Bytes</VariableType>
@@ -186,7 +186,7 @@
             <CheatEntry>
               <ID>73</ID>
               <Description>"Player 2 X Position"</Description>
-              <LastState Value="??" Activated="0" RealAddress="90020000"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>10150D84</Address>
@@ -199,7 +199,7 @@
             <CheatEntry>
               <ID>143</ID>
               <Description>"Player 2 X-Velocity"</Description>
-              <LastState Value="0" Activated="0" RealAddress="10288AC8"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>10150D84</Address>
@@ -211,7 +211,7 @@
             <CheatEntry>
               <ID>144</ID>
               <Description>"Player 2 Y-Velocity"</Description>
-              <LastState Value="0" Activated="0" RealAddress="10288ACC"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>10150D84</Address>
@@ -223,7 +223,7 @@
             <CheatEntry>
               <ID>74</ID>
               <Description>"Player 2 Y Position"</Description>
-              <LastState Value="??" Activated="0" RealAddress="90020004"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>10150D84</Address>
@@ -236,7 +236,7 @@
             <CheatEntry>
               <ID>415</ID>
               <Description>"P2 VS Mode Combo Counter"</Description>
-              <LastState Value="0" Activated="0" RealAddress="100C4DF0"/>
+              <LastState Value="??" Activated="0" RealAddress="100C4DF0"/>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
               <Address>100C4DF0</Address>
@@ -244,7 +244,7 @@
             <CheatEntry>
               <ID>212</ID>
               <Description>"Player 2 HUD"</Description>
-              <LastState Value="0" Activated="0" RealAddress="10338A3C"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <Color>80000008</Color>
               <VariableType>Byte</VariableType>
               <Address>101517D4</Address>
@@ -256,7 +256,7 @@
             <CheatEntry>
               <ID>214</ID>
               <Description>"Player 2 Stock Icon"</Description>
-              <LastState Value="0" Activated="0" RealAddress="10338E0C"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <Color>80000008</Color>
               <VariableType>Byte</VariableType>
               <Address>101517D4</Address>
@@ -278,7 +278,7 @@
             <CheatEntry>
               <ID>131</ID>
               <Description>"Player 3 Appear"</Description>
-              <LastState Value="021C" Activated="0" RealAddress="100C4E10"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>2 Bytes</VariableType>
@@ -290,7 +290,7 @@
             <CheatEntry>
               <ID>338</ID>
               <Description>"Player 3 X Position"</Description>
-              <LastState Value="??" Activated="0" RealAddress="90020000"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>10150D84</Address>
@@ -304,7 +304,7 @@
             <CheatEntry>
               <ID>339</ID>
               <Description>"Player 3 Y Position"</Description>
-              <LastState Value="??" Activated="0" RealAddress="90020004"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>10150D84</Address>
@@ -318,7 +318,7 @@
             <CheatEntry>
               <ID>418</ID>
               <Description>"P3 VS Mode Combo Counter"</Description>
-              <LastState Value="0" Activated="0" RealAddress="100C4E64"/>
+              <LastState Value="??" Activated="0" RealAddress="100C4E64"/>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
               <Address>100C4E64</Address>
@@ -336,7 +336,7 @@
             <CheatEntry>
               <ID>200</ID>
               <Description>"Player 4 Appear"</Description>
-              <LastState Value="021C" Activated="0" RealAddress="100C4E84"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>2 Bytes</VariableType>
@@ -348,7 +348,7 @@
             <CheatEntry>
               <ID>337</ID>
               <Description>"Player 4 X Position"</Description>
-              <LastState Value="??" Activated="0" RealAddress="90020000"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>10150D84</Address>
@@ -363,7 +363,7 @@
             <CheatEntry>
               <ID>340</ID>
               <Description>"Player 4 Y Position"</Description>
-              <LastState Value="??" Activated="0" RealAddress="90020004"/>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>10150D84</Address>
@@ -378,7 +378,7 @@
             <CheatEntry>
               <ID>419</ID>
               <Description>"P4 VS Mode Combo Counter"</Description>
-              <LastState Value="0" Activated="0" RealAddress="100C4ED8"/>
+              <LastState Value="??" Activated="0" RealAddress="100C4ED8"/>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
               <Address>100C4ED8</Address>
@@ -398,7 +398,7 @@
         <CheatEntry>
           <ID>2</ID>
           <Description>"Camera 1"</Description>
-          <LastState Value="0" Activated="0" RealAddress="102892E0"/>
+          <LastState Value="??" Activated="0" RealAddress="00000000"/>
           <Color>80000008</Color>
           <VariableType>Float</VariableType>
           <Address>10150D84</Address>
@@ -410,7 +410,7 @@
         <CheatEntry>
           <ID>3</ID>
           <Description>"Camera 2"</Description>
-          <LastState Value="0" Activated="0" RealAddress="102892E4"/>
+          <LastState Value="??" Activated="0" RealAddress="00000000"/>
           <Color>80000008</Color>
           <VariableType>Float</VariableType>
           <Address>10150D84</Address>
@@ -422,7 +422,7 @@
         <CheatEntry>
           <ID>4</ID>
           <Description>"Camera 3"</Description>
-          <LastState Value="1" Activated="0" RealAddress="10288790"/>
+          <LastState Value="??" Activated="0" RealAddress="00000000"/>
           <Color>80000008</Color>
           <VariableType>Float</VariableType>
           <Address>10150D84</Address>
@@ -433,7 +433,7 @@
         <CheatEntry>
           <ID>5</ID>
           <Description>"Camera 4"</Description>
-          <LastState Value="1" Activated="0" RealAddress="10288794"/>
+          <LastState Value="??" Activated="0" RealAddress="00000000"/>
           <Color>80000008</Color>
           <VariableType>Float</VariableType>
           <Address>10150D84</Address>
@@ -454,7 +454,7 @@
         <CheatEntry>
           <ID>132</ID>
           <Description>"Stage Select"</Description>
-          <LastState Value="6" Activated="0" RealAddress="100C4D0A"/>
+          <LastState Value="??" Activated="0" RealAddress="00000000"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
           <Address>100C50E8</Address>
@@ -465,7 +465,7 @@
         <CheatEntry>
           <ID>133</ID>
           <Description>"1P Mode Stage #"</Description>
-          <LastState Value="00" Activated="0" RealAddress="100C4AE4"/>
+          <LastState Value="??" Activated="0" RealAddress="100C4AE4"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
@@ -474,7 +474,7 @@
         <CheatEntry>
           <ID>243</ID>
           <Description>"Random # Generation Seed"</Description>
-          <LastState Value="8404C7A2" Activated="0" RealAddress="1005B940"/>
+          <LastState Value="??" Activated="0" RealAddress="1005B940"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -483,7 +483,7 @@
         <CheatEntry>
           <ID>148</ID>
           <Description>"Dream Land Wind"</Description>
-          <LastState Value="13" Activated="0" RealAddress="10151412"/>
+          <LastState Value="??" Activated="0" RealAddress="10151412"/>
           <Color>80000008</Color>
           <VariableType>2 Bytes</VariableType>
           <Address>10151412</Address>
@@ -491,7 +491,7 @@
         <CheatEntry>
           <ID>215</ID>
           <Description>"Dream Land Tree"</Description>
-          <LastState Value="45" Activated="0" RealAddress="10151416"/>
+          <LastState Value="??" Activated="0" RealAddress="10151416"/>
           <Color>80000008</Color>
           <VariableType>2 Bytes</VariableType>
           <Address>10151416</Address>
@@ -509,7 +509,7 @@
         <CheatEntry>
           <ID>164</ID>
           <Description>"-Y Blast Line"</Description>
-          <LastState Value="-3500" Activated="0" RealAddress="10236A78"/>
+          <LastState Value="??" Activated="0" RealAddress="00000000"/>
           <ShowAsSigned>1</ShowAsSigned>
           <Color>80000008</Color>
           <VariableType>2 Bytes</VariableType>
@@ -521,7 +521,7 @@
         <CheatEntry>
           <ID>165</ID>
           <Description>"Y Blast Line"</Description>
-          <LastState Value="8300" Activated="0" RealAddress="10236A7A"/>
+          <LastState Value="??" Activated="0" RealAddress="00000000"/>
           <ShowAsSigned>0</ShowAsSigned>
           <Color>80000008</Color>
           <VariableType>2 Bytes</VariableType>
@@ -533,7 +533,7 @@
         <CheatEntry>
           <ID>166</ID>
           <Description>"-X Blast Line"</Description>
-          <LastState Value="-9000" Activated="0" RealAddress="10236A7C"/>
+          <LastState Value="??" Activated="0" RealAddress="00000000"/>
           <ShowAsSigned>1</ShowAsSigned>
           <Color>80000008</Color>
           <VariableType>2 Bytes</VariableType>
@@ -545,7 +545,7 @@
         <CheatEntry>
           <ID>167</ID>
           <Description>"X Blast Line"</Description>
-          <LastState Value="9000" Activated="0" RealAddress="10236A7E"/>
+          <LastState Value="??" Activated="0" RealAddress="00000000"/>
           <ShowAsSigned>0</ShowAsSigned>
           <Color>80000008</Color>
           <VariableType>2 Bytes</VariableType>
@@ -567,7 +567,7 @@
         <CheatEntry>
           <ID>436</ID>
           <Description>"Active Camera"</Description>
-          <LastState Value="8010CCC0" Activated="0" RealAddress="101514BC"/>
+          <LastState Value="??" Activated="0" RealAddress="101514BC"/>
           <ShowAsHex>1</ShowAsHex>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
@@ -576,7 +576,7 @@
         <CheatEntry>
           <ID>439</ID>
           <Description>"Current Camera Index"</Description>
-          <LastState Value="1" Activated="0" RealAddress="101514B4"/>
+          <LastState Value="??" Activated="0" RealAddress="101514B4"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>101514B4</Address>
@@ -584,7 +584,7 @@
         <CheatEntry>
           <ID>438</ID>
           <Description>"Previous Camera Index"</Description>
-          <LastState Value="4" Activated="0" RealAddress="101514B8"/>
+          <LastState Value="??" Activated="0" RealAddress="101514B8"/>
           <Color>80000008</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>101514B8</Address>
@@ -600,7 +600,7 @@
             <CheatEntry>
               <ID>440</ID>
               <Description>"Camera 0x0 [VS Mode]"</Description>
-              <LastState Value="8010C734" Activated="0" RealAddress="1014EBB4"/>
+              <LastState Value="??" Activated="0" RealAddress="1014EBB4"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
@@ -608,8 +608,8 @@
             </CheatEntry>
             <CheatEntry>
               <ID>441</ID>
-              <Description>"Camera 0x1 [Char 1 Zoom]"</Description>
-              <LastState Value="8010CAE0" Activated="0" RealAddress="1014EBB8"/>
+              <Description>"Camera 0x1 [Char Zoom]"</Description>
+              <LastState Value="??" Activated="0" RealAddress="1014EBB8"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
@@ -617,8 +617,8 @@
             </CheatEntry>
             <CheatEntry>
               <ID>442</ID>
-              <Description>"Camera 0x2 [Char 2 Zoom]"</Description>
-              <LastState Value="8010CC74" Activated="0" RealAddress="1014EBBC"/>
+              <Description>"Camera 0x2 [Unknown]"</Description>
+              <LastState Value="??" Activated="0" RealAddress="1014EBBC"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
@@ -626,8 +626,8 @@
             </CheatEntry>
             <CheatEntry>
               <ID>443</ID>
-              <Description>"Camera 0x3 [Char 3 Zoom]"</Description>
-              <LastState Value="8010CB48" Activated="0" RealAddress="1014EBC0"/>
+              <Description>"Camera 0x3 [Unknown]"</Description>
+              <LastState Value="??" Activated="0" RealAddress="1014EBC0"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
@@ -636,7 +636,7 @@
             <CheatEntry>
               <ID>444</ID>
               <Description>"Camera 0x4 [BtT/BtP Pause]"</Description>
-              <LastState Value="8010CCC0" Activated="0" RealAddress="1014EBC4"/>
+              <LastState Value="??" Activated="0" RealAddress="1014EBC4"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
@@ -645,7 +645,7 @@
             <CheatEntry>
               <ID>445</ID>
               <Description>"Camera 0x5 [BtT/BtP Normal]"</Description>
-              <LastState Value="8010CDAC" Activated="0" RealAddress="1014EBC8"/>
+              <LastState Value="??" Activated="0" RealAddress="1014EBC8"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
@@ -654,11 +654,69 @@
             <CheatEntry>
               <ID>446</ID>
               <Description>"Camera 0x6 [Unknown]"</Description>
-              <LastState Value="8010C8C4" Activated="0" RealAddress="1014EBCC"/>
+              <LastState Value="??" Activated="0" RealAddress="1014EBCC"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
               <VariableType>4 Bytes</VariableType>
               <Address>1014EBCC</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>455</ID>
+          <Description>"Character Camera Pointers"</Description>
+          <Options moManualExpandCollapse="1"/>
+          <LastState Value="" Activated="0" RealAddress="00000000"/>
+          <Color>80000008</Color>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>456</ID>
+              <Description>"P1 Camera Pointer"</Description>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>100C50E8</Address>
+              <Offsets>
+                <Offset>90020078</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>457</ID>
+              <Description>"P2 Camera Pointer"</Description>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>100C50E8</Address>
+              <Offsets>
+                <Offset>900200EC</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>458</ID>
+              <Description>"P3 Camera Pointer"</Description>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>100C50E8</Address>
+              <Offsets>
+                <Offset>90020160</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>459</ID>
+              <Description>"P4 Camera Pointer"</Description>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>4 Bytes</VariableType>
+              <Address>100C50E8</Address>
+              <Offsets>
+                <Offset>900201D4</Offset>
+              </Offsets>
             </CheatEntry>
           </CheatEntries>
         </CheatEntry>
@@ -673,9 +731,18 @@
       <GroupHeader>1</GroupHeader>
       <CheatEntries>
         <CheatEntry>
+          <ID>454</ID>
+          <Description>"Paused Character of Focus"</Description>
+          <LastState Value="??" Activated="0" RealAddress="101514F4"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>101514F4</Address>
+        </CheatEntry>
+        <CheatEntry>
           <ID>1</ID>
           <Description>"Pause Camera Control Vertical (rads)"</Description>
-          <LastState Value="-0.34906587" Activated="0" RealAddress="10151464"/>
+          <LastState Value="??" Activated="0" RealAddress="10151464"/>
           <Color>80000008</Color>
           <VariableType>Float</VariableType>
           <Address>10151464</Address>
@@ -683,7 +750,7 @@
             <CheatEntry>
               <ID>425</ID>
               <Description>"Pause Vertical Camera Limit"</Description>
-              <LastState Value="0.34906587" Activated="0" RealAddress="10150CA0"/>
+              <LastState Value="??" Activated="0" RealAddress="10150CA0"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>10150CA0</Address>
@@ -691,7 +758,7 @@
             <CheatEntry>
               <ID>426</ID>
               <Description>"Pause Vertical Neg Camera Limit"</Description>
-              <LastState Value="-0.34906587" Activated="0" RealAddress="10150CA8"/>
+              <LastState Value="??" Activated="0" RealAddress="10150CA8"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>10150CA8</Address>
@@ -701,7 +768,7 @@
         <CheatEntry>
           <ID>0</ID>
           <Description>"Pause Camera Control Horizontal (rads)"</Description>
-          <LastState Value="0.7803470492" Activated="0" RealAddress="10151468"/>
+          <LastState Value="??" Activated="0" RealAddress="10151468"/>
           <Color>80000008</Color>
           <VariableType>Float</VariableType>
           <Address>10151468</Address>
@@ -709,7 +776,7 @@
             <CheatEntry>
               <ID>423</ID>
               <Description>"Pause Horizontal Camera Limit"</Description>
-              <LastState Value="0.8726646304" Activated="0" RealAddress="10150C94"/>
+              <LastState Value="??" Activated="0" RealAddress="10150C94"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>10150C94</Address>
@@ -717,7 +784,7 @@
             <CheatEntry>
               <ID>424</ID>
               <Description>"Pause Horizontal Neg Camera Limit"</Description>
-              <LastState Value="-0.8726646304" Activated="0" RealAddress="10150C9C"/>
+              <LastState Value="??" Activated="0" RealAddress="10150C9C"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>10150C9C</Address>
@@ -727,7 +794,7 @@
         <CheatEntry>
           <ID>427</ID>
           <Description>"Pause Camera Zoom"</Description>
-          <LastState Value="1570" Activated="0" RealAddress="10151500"/>
+          <LastState Value="??" Activated="0" RealAddress="10151500"/>
           <Color>80000008</Color>
           <VariableType>Float</VariableType>
           <Address>10151500</Address>
@@ -735,7 +802,7 @@
         <CheatEntry>
           <ID>428</ID>
           <Description>"Pause Camera FOV?"</Description>
-          <LastState Value="29" Activated="0" RealAddress="10151508"/>
+          <LastState Value="??" Activated="0" RealAddress="10151508"/>
           <Color>80000008</Color>
           <VariableType>Float</VariableType>
           <Address>10151508</Address>
@@ -754,7 +821,7 @@
           <ID>448</ID>
           <Description>"BtT Pause Pan X-1"</Description>
           <Options moRecursiveSetValue="1"/>
-          <LastState Value="0" Activated="0" RealAddress="1015150C"/>
+          <LastState Value="??" Activated="0" RealAddress="1015150C"/>
           <Color>80000008</Color>
           <VariableType>Float</VariableType>
           <Address>1015150C</Address>
@@ -762,7 +829,7 @@
             <CheatEntry>
               <ID>449</ID>
               <Description>"BtP Pause Pan X-2"</Description>
-              <LastState Value="0" Activated="0" RealAddress="10151518"/>
+              <LastState Value="??" Activated="0" RealAddress="10151518"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>10151518</Address>
@@ -773,7 +840,7 @@
           <ID>450</ID>
           <Description>"BtP Pause Pan Y-1"</Description>
           <Options moRecursiveSetValue="1"/>
-          <LastState Value="0" Activated="0" RealAddress="10151510"/>
+          <LastState Value="??" Activated="0" RealAddress="10151510"/>
           <Color>80000008</Color>
           <VariableType>Float</VariableType>
           <Address>10151510</Address>
@@ -781,7 +848,7 @@
             <CheatEntry>
               <ID>451</ID>
               <Description>"BtP Pause Pan Y-2"</Description>
-              <LastState Value="0" Activated="0" RealAddress="1015151C"/>
+              <LastState Value="??" Activated="0" RealAddress="1015151C"/>
               <Color>80000008</Color>
               <VariableType>Float</VariableType>
               <Address>1015151C</Address>
@@ -791,7 +858,7 @@
         <CheatEntry>
           <ID>453</ID>
           <Description>"BtP Pause Camera Zoom"</Description>
-          <LastState Value="15000" Activated="0" RealAddress="10151520"/>
+          <LastState Value="??" Activated="0" RealAddress="10151520"/>
           <Color>80000008</Color>
           <VariableType>Float</VariableType>
           <Address>10151520</Address>
@@ -799,10 +866,69 @@
         <CheatEntry>
           <ID>452</ID>
           <Description>"BtP Pause BG Texture Zoom?"</Description>
-          <LastState Value="0" Activated="0" RealAddress="10151514"/>
+          <LastState Value="??" Activated="0" RealAddress="10151514"/>
           <Color>80000008</Color>
           <VariableType>Float</VariableType>
           <Address>10151514</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>460</ID>
+      <Description>"BtT/BtP Normal Camera"</Description>
+      <Options moManualExpandCollapse="1"/>
+      <LastState Value="" Activated="0" RealAddress="00000000"/>
+      <Color>80000008</Color>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>461</ID>
+          <Description>"BtT/BtP Char to Follow"</Description>
+          <LastState Value="??" Activated="0" RealAddress="10151524"/>
+          <ShowAsHex>1</ShowAsHex>
+          <Color>80000008</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>10151524</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>462</ID>
+          <Description>"BtT X Rotation [rad]"</Description>
+          <LastState Value="??" Activated="0" RealAddress="10151528"/>
+          <Color>80000008</Color>
+          <VariableType>Float</VariableType>
+          <Address>10151528</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>463</ID>
+          <Description>"BtT Y Rotation [rad]"</Description>
+          <LastState Value="??" Activated="0" RealAddress="1015152C"/>
+          <Color>80000008</Color>
+          <VariableType>Float</VariableType>
+          <Address>1015152C</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>464</ID>
+          <Description>"BtT Zoom"</Description>
+          <LastState Value="??" Activated="0" RealAddress="10151530"/>
+          <Color>80000008</Color>
+          <VariableType>Float</VariableType>
+          <Address>10151530</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>465</ID>
+          <Description>"BtT Char Following Speed"</Description>
+          <LastState Value="??" Activated="0" RealAddress="10151534"/>
+          <Color>80000008</Color>
+          <VariableType>Float</VariableType>
+          <Address>10151534</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>466</ID>
+          <Description>"BtT Secondary Zoom ?"</Description>
+          <LastState Value="??" Activated="0" RealAddress="10151538"/>
+          <Color>80000008</Color>
+          <VariableType>Float</VariableType>
+          <Address>10151538</Address>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
