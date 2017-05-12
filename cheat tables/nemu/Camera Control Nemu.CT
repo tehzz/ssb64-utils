@@ -2,6 +2,23 @@
 <CheatTable CheatEngineTableVersion="18">
   <CheatEntries>
     <CheatEntry>
+      <ID>470</ID>
+      <Description>"VS Stage Global"</Description>
+      <LastState Value="??" Activated="0" RealAddress="100C4D0A"/>
+      <ShowAsHex>1</ShowAsHex>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>100C4D0A</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>471</ID>
+      <Description>"VS Item Freq"</Description>
+      <LastState Value="??" Activated="0" RealAddress="100C4D27"/>
+      <Color>80000008</Color>
+      <VariableType>Byte</VariableType>
+      <Address>100C4D27</Address>
+    </CheatEntry>
+    <CheatEntry>
       <ID>155</ID>
       <Description>"Frame Counter"</Description>
       <LastState Value="??" Activated="0" RealAddress="00000000"/>
@@ -51,6 +68,50 @@
           <Offsets>
             <Offset>900209C8</Offset>
           </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>467</ID>
+          <Description>"VS Mode Fixed Addr"</Description>
+          <Options moManualExpandCollapse="1"/>
+          <LastState Value="" Activated="0" RealAddress="00000000"/>
+          <Color>80000008</Color>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>468</ID>
+              <Description>"P1 Char"</Description>
+              <LastState Value="??" Activated="0" RealAddress="100C4D28"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>Byte</VariableType>
+              <Address>100C4D28</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>469</ID>
+              <Description>"P1 In-Game?"</Description>
+              <LastState Value="??" Activated="0" RealAddress="100C4D29"/>
+              <Color>80000008</Color>
+              <VariableType>Byte</VariableType>
+              <Address>100C4D29</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>472</ID>
+              <Description>"P2 Char"</Description>
+              <LastState Value="??" Activated="0" RealAddress="100C4D9C"/>
+              <ShowAsHex>1</ShowAsHex>
+              <Color>80000008</Color>
+              <VariableType>Byte</VariableType>
+              <Address>100C4D9C</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>473</ID>
+              <Description>"P2 In Game?"</Description>
+              <LastState Value="??" Activated="0" RealAddress="100C4D9D"/>
+              <Color>80000008</Color>
+              <VariableType>Byte</VariableType>
+              <Address>100C4D9D</Address>
+            </CheatEntry>
+          </CheatEntries>
         </CheatEntry>
         <CheatEntry>
           <ID>430</ID>
@@ -388,62 +449,6 @@
       </CheatEntries>
     </CheatEntry>
     <CheatEntry>
-      <ID>420</ID>
-      <Description>"Madao Character Cameras"</Description>
-      <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
-      <LastState Value="" Activated="0" RealAddress="00000000"/>
-      <Color>80000008</Color>
-      <GroupHeader>1</GroupHeader>
-      <CheatEntries>
-        <CheatEntry>
-          <ID>2</ID>
-          <Description>"Camera 1"</Description>
-          <LastState Value="??" Activated="0" RealAddress="00000000"/>
-          <Color>80000008</Color>
-          <VariableType>Float</VariableType>
-          <Address>10150D84</Address>
-          <Offsets>
-            <Offset>90020860</Offset>
-            <Offset>90020000</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>3</ID>
-          <Description>"Camera 2"</Description>
-          <LastState Value="??" Activated="0" RealAddress="00000000"/>
-          <Color>80000008</Color>
-          <VariableType>Float</VariableType>
-          <Address>10150D84</Address>
-          <Offsets>
-            <Offset>90020864</Offset>
-            <Offset>90020000</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>4</ID>
-          <Description>"Camera 3"</Description>
-          <LastState Value="??" Activated="0" RealAddress="00000000"/>
-          <Color>80000008</Color>
-          <VariableType>Float</VariableType>
-          <Address>10150D84</Address>
-          <Offsets>
-            <Offset>90020860</Offset>
-          </Offsets>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>5</ID>
-          <Description>"Camera 4"</Description>
-          <LastState Value="??" Activated="0" RealAddress="00000000"/>
-          <Color>80000008</Color>
-          <VariableType>Float</VariableType>
-          <Address>10150D84</Address>
-          <Offsets>
-            <Offset>90020864</Offset>
-          </Offsets>
-        </CheatEntry>
-      </CheatEntries>
-    </CheatEntry>
-    <CheatEntry>
       <ID>434</ID>
       <Description>"Stage Info"</Description>
       <Options moManualExpandCollapse="1"/>
@@ -453,7 +458,7 @@
       <CheatEntries>
         <CheatEntry>
           <ID>132</ID>
-          <Description>"Stage Select"</Description>
+          <Description>"Current VS Stage"</Description>
           <LastState Value="??" Activated="0" RealAddress="00000000"/>
           <Color>80000008</Color>
           <VariableType>Byte</VariableType>
@@ -716,6 +721,62 @@
               <Address>100C50E8</Address>
               <Offsets>
                 <Offset>900201D4</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>420</ID>
+          <Description>"Madao Character Cameras"</Description>
+          <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
+          <LastState Value="" Activated="0" RealAddress="00000000"/>
+          <Color>80000008</Color>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>2</ID>
+              <Description>"Camera 1"</Description>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
+              <Color>80000008</Color>
+              <VariableType>Float</VariableType>
+              <Address>10150D84</Address>
+              <Offsets>
+                <Offset>90020860</Offset>
+                <Offset>90020000</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>3</ID>
+              <Description>"Camera 2"</Description>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
+              <Color>80000008</Color>
+              <VariableType>Float</VariableType>
+              <Address>10150D84</Address>
+              <Offsets>
+                <Offset>90020864</Offset>
+                <Offset>90020000</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>4</ID>
+              <Description>"Camera 3"</Description>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
+              <Color>80000008</Color>
+              <VariableType>Float</VariableType>
+              <Address>10150D84</Address>
+              <Offsets>
+                <Offset>90020860</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>5</ID>
+              <Description>"Camera 4"</Description>
+              <LastState Value="??" Activated="0" RealAddress="00000000"/>
+              <Color>80000008</Color>
+              <VariableType>Float</VariableType>
+              <Address>10150D84</Address>
+              <Offsets>
+                <Offset>90020864</Offset>
               </Offsets>
             </CheatEntry>
           </CheatEntries>
