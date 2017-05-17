@@ -63,44 +63,22 @@ fs.readFile(path.format(file), 'utf-8')
 .then( cvrtToFED3X )
 .then( organizeDL )
 .then( ([p, dl]) => {
-  //console.log(p)
-  //console.log(dl)
-  for( mesh in dl.mesh) {
-    console.log(dl.mesh[mesh].bankVertices)
+  console.log(dl.mesh.length)
+  console.log(dl.mesh[0])
+  for (vBank of dl.vBanks) {
+    console.log(`vBank id ${vBank.id} length = ${vBank.length()}`)
+    //console.log(vBank)
   }
-  /*
-  let test = dl.mesh.reduce( (acc, geo, i, arr) => {
-    let collect, current;
-    //check geometry
-    switch (geo.bankVertices.length) {
-      case 3 :
-        console.log(`Mesh[${i}] is a Triangle`)
-        collect = acc['tri']
 
-        break;
-      default:
-        console.log(`Mesh[${i}] is an unknown geometry :(`)
-    }
-
-    current = collect[collect.length-1]
-
-    if ( current === undefined || current.length === 2) {
-      // add new set of two triangles
-      collect.push( [i])
-    } else {
-      current.push(i)
-    }
-
-    return acc
-  }, { "tri": [], "rect": []}) */
+  /*for( mesh in dl.mesh) {
+    console.log(dl.mesh[mesh].bankVertices)
+  }*/
 
   const testfn = require('./src/gen-dl-cmds.js')
-  let test = testfn(dl.mesh)
-  for ( bank in test ) {
-    console.log(`Bank ${bank}: ${test[bank].getBank()}`)
-    console.log(test[bank])
-  }
-  //console.log(test)
+  let test = testfn([p,dl])
+  console.log(test[1])
+  console.log(test[1].printCmds())
+  console.log( [].concat.apply([], dl.vBanks.map( vb => vb.print() )) )
   return [p,dl]
 })
 .catch(err => {

@@ -30,6 +30,10 @@ VBank.prototype = {
   },
   length: function() {
     return this.vertices.length
+  },
+  print: function() {
+    return [`Bank${this.id}:`]
+      .concat(this.vertices.map( v => v.print() ))
   }
 }
 

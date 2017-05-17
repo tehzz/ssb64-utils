@@ -8,6 +8,9 @@
 **/
 
 module.exports = {
+  G_VTX  : require('./cmds/VTX.js'),
   G_TRI1 : require('./cmds/TRI1.js'),
-  G_TRI2 : require('./cmds/TRI2.js')
+  G_TRI2 : require('./cmds/TRI2.js'),
+  G_RDPPIPESYNC : require('./cmds/RDPPIPESYNC.js'),
+  G_ENDDL : require('./cmds/ENDDL.js')
 }

@@ -4,8 +4,11 @@
  */
 
 function dlist() {
+  /** {VBank[]} */
   this.vBanks = [];
+  /** {F3DEX2[]} */
   this.commands = [];
+  /** {Geometry[]} **/
   this.mesh = [];
   //this.textures = new Map();
 }
@@ -16,15 +19,20 @@ dlist.prototype = {
 
     return this
   },
-  command : {
-    add : function(cmd) {
-      this.commands.push(cmd)
+  /** @param {FEDEX2[]} cmdArr - array of f3dex2 objects **/
+  concatCmds : function(cmdArr) {
+    this.commands = this.commands.concat(cmdArr)
 
-      return this
-    },
-    print : function () {
-
-    }
+    return this
+  },
+  /** @param {FEDEX2} cmd - a single f3dex2 objects **/
+  pushCmd : function(cmd) {
+    this.commands.push(cmd)
+    return this
+  },
+  /** @returns {string[]} **/
+  printCmds : function () {
+    return this.commands.map(cmd => cmd.print())
   },
   setMesh : function( mesh ) {
     this.mesh = mesh

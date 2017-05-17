@@ -30,7 +30,8 @@ G_TRI2.prototype = {
    * @returns {string}
   **/
   print : function(){
-    let v = this.vertIndices;
+    let v = this.vertIndices,
+        flag = this.flag
 
     return `gsSP2Triangle(${v[0]}, ${v[1]}, ${v[2]}, ${flag}, ${v[3]}, ${v[4]}, ${v[5]}, ${flag})`
   },
@@ -51,7 +52,7 @@ G_TRI2.prototype = {
         word2 &= (v[4] << 2) << 8
         word2 &= (v[5] << 2)
 
-    return [word1 >>> 0, 0x00000000]
+    return [word1 >>> 0, word2 >>> 0]
   }
 }
 

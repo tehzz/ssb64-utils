@@ -58,4 +58,12 @@ Vertex_Normal.prototype.getCoordsAsFixedS8_7 = function(){
   }
 }
 
+Vertex_Normal.prototype.print = function(){
+  let vn = this
+
+  return `Vertex_Normal(${vn.x}, ${vn.y}, ${vn.z}, ` +
+          `${vn.s}, ${vn.t}, ` +
+          `${vn.nx}, ${vn.ny}, ${vn.nz})`
+}
+
 module.exports = Vertex_Normal

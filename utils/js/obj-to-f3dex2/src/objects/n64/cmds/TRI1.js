@@ -25,7 +25,8 @@ G_TRI1.prototype = {
    * @returns {string}
   **/
   print : function(){
-    let v = this.vertIndices;
+    let v = this.vertIndices,
+        flag = this.flag;
 
     return `gsSP1Triangle(${v[0]}, ${v[1]}, ${v[2]}, ${flag})`
   },
