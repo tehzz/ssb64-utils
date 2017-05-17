@@ -266,3 +266,146 @@ macro gsSPSetOtherMode(half, shift, length, data) {
 
   dw word0, {data}
 }
+
+//===0xE4 G_TEXRECT==============================
+// Emits 0xE1 and 0xF1 opcodes as well
+//   ulx, uly, lrx, and lry are 12-bit numbers in a fixed point 10.2 format,
+// giving a range of 0 ≤ n ≤ 1023.75 for each value (with 0b0.01 / 0d0.25 precision).
+//   uls and ult are in signed fixed point 10.5 format,
+// giving a range -1024 ≤ n ≤ 1023.96875 for each value (with 0b0.00001 / 1/32 precision).
+//   dsdx and dtdy, which are in signed fixed point 5.10 format,
+// giving a range of -32 ≤ n ≤ 31.999023 (with 0b0.0000000001 / 1/1024 precision).
+macro gsSPTextureRectangle(ulx, uly, lrx, lry, tile, uls, ult, dsdx, dtdy) {
+  variable word00(0xE4000000)
+  variable word01(0)
+  variable word10(0xE1000000)
+  variable word11(0)
+  variable word20(0xF1000000)
+  variable word21(0)
+
+  word00 = word00 | ( ({lrx} & 0xFFF) << 12) | ( {lry} & 0xFFF )
+  word01 = word01 | ( ({i} & 0xF) << 24 ) | ( ({ulx} & 0xFFF) << 12) | ( {uly} & 0xFFF )
+
+  word11 = word11 | ( ({uls} & 0xFFFF) << 16) | ( {ult} & 0xFFFF )
+
+  word21 = word21 | ( ({dsdx} & 0xFFFF) << 16) | ( {dtdy} & 0xFFFF )
+
+  dw word00, word01
+  dw word10, word11
+  dw word20, word21
+}
+
+//===0xE5 G_TEXRECTFLIP==========================
+//   This is similar to opcode E4, with the only difference being that
+// the S and T coordinates of a texture are flipped in rendering,
+// so that S coordinates are along the Y axis and T along the X axis.
+// This essentially flips the texture about the diagonal line (ulx,uly),(lrx,lry).
+macro gsSPTextureRectangleFlip(ulx, uly, lrx, lry, tile, uls, ult, dsdx, dtdy) {
+  variable word00(0xE5000000)
+  variable word01(0)
+  variable word10(0xE1000000)
+  variable word11(0)
+  variable word20(0xF1000000)
+  variable word21(0)
+
+  word00 = word00 | ( ({lrx} & 0xFFF) << 12) | ( {lry} & 0xFFF )
+  word01 = word01 | ( ({i} & 0xF) << 24 ) | ( ({ulx} & 0xFFF) << 12) | ( {uly} & 0xFFF )
+
+  word11 = word11 | ( ({uls} & 0xFFFF) << 16) | ( {ult} & 0xFFFF )
+
+  word21 = word21 | ( ({dsdx} & 0xFFFF) << 16) | ( {dtdy} & 0xFFFF )
+
+  dw word00, word01
+  dw word10, word11
+  dw word20, word21
+}
+
+//===0xE6 G_RDPLOADSYNC==========================
+macro gsDPLoadSync() {
+  dw 0xE6000000
+  dw 0x00000000
+}
+
+//===0xE7 G_RDPPIPESYNC==========================
+macro gsDPPipeSync() {
+  dw 0xE7000000
+  dw 0x00000000
+}
+
+//===0xE8 G_RDPTILESYNC==========================
+macro gsDPTileSync() {
+  dw 0xE8000000
+  dw 0x00000000
+}
+
+//===0xE9 G_RDPFULLSYNC==========================
+macro gsDPFullSync() {
+  dw 0xE9000000
+  dw 0x00000000
+}
+
+//===0xEA G_SETKEYGB=============================
+//   widthB and widthG are in an unsigned fixed-point 4.8 format.
+// The other parameters are normal 8-bit unsigned integers.
+macro gsDPSetKeyGB(centerG, scaleG, widthG, centerB, scaleB, widthB) {
+  variable word0(0xEA000000)
+  variable word1(0)
+
+  word0 = word0 | ( ({widthG} & 0xFFF) << 12) | ( {widthB} & 0xFFF)
+  word1 = word1 | ( ({centerG} & 0xFF) << 24) | ( ({scaleG} & 0xFF) << 16)
+  word1 = word1 | ( ({centerB} & 0xFF) << 8) | ({scaleB} & 0xFF)
+
+  dw word0, word1
+}
+
+//===0xEB G_SETKEYR==============================
+//   widthR is an unsigned fixed-point 4.8 number.
+// centerR and sizeR are 8-bit unsigned integers.
+macro gsDPSetKeyR(centerR, widthR, scaleR) {
+  variable word0(0xEB000000)
+  variable word1(0)
+
+  word1 = word1 | ( ({widthR} & 0xFFF) << 16 ) | ( ({centerR} & 0xFF) << 8) | ( {scaleR} & 0xFF )
+
+  dw word0, word1
+}
+
+//===0xEC G_SETCONVERT===========================
+// All of the parameters are signed 9-bit numbers, with range -256 ≤ k ≤ 255.
+macro gsDPSetConvert(k0, k1, k2, k3, k4, k5) {
+  variable word0(0xEC000000)
+  variable word1(0)
+
+  word0 = word0 | ( ({k0} & 0x1FF) << 13) | ( ({k1} & 0x1FF) << 4) | ( ({k2} & 0x1E0) >> 5 )
+  word1 = word1 | ( ({k2} & 0x01F) << 27) | ( ({k3} & 0x1FF) << 18)
+  word1 = word1 | ( ({k4} & 0x1FF) << 9)  | ( {k5} & 0x1FF )
+
+  dw word0, word1
+}
+
+//===0xED G_SETSCISSOR===========================
+macro gsDPSetScissor(mode, ulx, uly, lrx, lry) {
+  variable word0(0xED000000)
+  variable word1(0)
+
+  word0 = word0 | ( ({ulx} & 0xFFF) << 12 ) | ( {uly} & 0xFFF )
+  word1 = word1 | ( {mode} << 28 ) | ( ({lrx} & 0xFFF) << 12 ) | ( {lry} & 0xFFF )
+
+  dw word0, word1
+}
+
+//===0xEE G_SETPRIMDEPTH=========================
+macro gsDPSetPrimDepth(z, dz) {
+  dw 0xEE000000
+  dh {z}, {dz}
+}
+
+//===0xEF G_RDPSETOTHERMODE======================
+// The difference from either E3 or E2 is that
+// this command sets all the bits in both halves of the RDP word
+
+macro gsDPSetOtherMode(omodeH, omodeL) {
+  word0(0xEF000000 | omodeH)
+
+  dw word0, {omodeL}
+}

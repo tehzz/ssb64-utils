@@ -158,3 +158,9 @@ constant G_MDSFT_CYCLETYPE(20)
 constant G_MDSFT_COLORDITHER(22)	       // unsupported in HW 2.0
 constant G_MDSFT_PIPELINE(23)
 // and a lot more for "data" parameter....
+
+//===0xED G_SETSCISSOR===========================
+// for "mode" parameter
+constant G_SC_NON_INTERLACE(0)
+constant G_SC_EVEN_INTERLACE(2)
+constant G_SC_ODD_INTERLACE(3)
