@@ -6,6 +6,8 @@ use std::path::{Path, PathBuf};
 extern crate clap;
 use clap::{App, Arg};
 
+mod nemu_mem;
+
 mod flat;
 use flat::flatten;
 
