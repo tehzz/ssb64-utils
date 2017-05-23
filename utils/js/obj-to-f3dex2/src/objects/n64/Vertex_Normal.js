@@ -50,20 +50,36 @@ Vertex_Normal.prototype.setAlpha = function(a, convert = false){
  * so the 1.0 value cannot be represented exactly.
  * Thus, 0.992 is the maximum positive value."
 **/
-Vertex_Normal.prototype.getCoordsAsFixedS8_7 = function(){
+Vertex_Normal.prototype.getNormalAsFixed = function(){
   return {
-    i : int.toFixedS8_7(this.i),
-    j : int.toFixedS8_7(this.j),
-    k : int.toFixedS8_7(this.k),
+    nx : int.toFixedS8_7(this.nx),
+    ny : int.toFixedS8_7(this.ny),
+    nz : int.toFixedS8_7(this.nz),
   }
 }
 
-Vertex_Normal.prototype.print = function(){
-  let vn = this
+// Fixed Point signed Q10.5 / 1:10:5
+Vertex_Normal.prototype.getTextAsFixed = function() {
+  return {
+    s : int.toFixedS16_5(this.s),
+    t : int.toFixedS16_5(this.t)
+  }
+}
+
+Vertex_Normal.prototype.print = function(bass){
+  let vn = this;
+  let nx, ny, nz, s, t;
+
+  if (bass) {
+    ({nx, ny, nz} = vn.getNormalAsFixed());
+    ({s, t}       = vn.getTextAsFixed());
+  } else {
+    ({nx, ny, nz, s, t} = vn);
+  }
 
   return `Vertex_Normal(${vn.x}, ${vn.y}, ${vn.z}, ` +
-          `${vn.s}, ${vn.t}, ` +
-          `${vn.nx}, ${vn.ny}, ${vn.nz})`
+          `${s? s : 0}, ${t? t : 0}, ` +
+          `${nx? nx : 0}, ${ny? ny : 0}, ${nz? nz : 0})`
 }
 
 module.exports = Vertex_Normal

@@ -1,5 +1,26 @@
 const int = Object.create(null)
 
+/**
+ * Convert an input float into a fixed point int
+ * @param {float} input - number to convert
+ * @param {bool} s - number of sign bits
+ * @param {int} m - number of integer bits
+ * @param {int} f - number of fractional bit
+ * @returns {int}
+**/
+int.toFixedPoint = function(s, m , f, input) {
+  let bits = m + f + (s ? 1 : 0)
+  let f_bits = 1 << f
+  let upper = (1 << m) - (1 / f_bits)
+  let lower = s ? -(1 << m) : 0
+
+  // limit input to range
+  if ( input > upper ) { input = upper }
+  else if ( input < lower) { input = lower}
+
+  return (input * f_bits) & ((1 << bits) - 1 )
+}
+
 int.toS8 = function( a ){
   let out = typeof a === 'number' ? a << 0 : parseInt(a,16)
 

@@ -5,7 +5,8 @@ const Promise = require('promise'),
       parseOBJ = require('./src/parse-obj.js'),
       parseMTL = require('./src/parse-mtl.js'),
       cvrtToFED3X = require('./src/cvrt-f3dex-geo.js'),
-      organizeDL = require('./src/organize-dl.js')
+      organizeDL = require('./src/organize-dl.js'),
+      genDLcmds = require('./src/gen-dl-cmds.js');
 
 // promisify fs calls
 const fs = {
@@ -39,9 +40,6 @@ if ( file.base === 'true' ) {
   return false
 }
 
-//console.log(targets, options)
-//console.log(file)
-
 // read target file
 fs.readFile(path.format(file), 'utf-8')
 .catch(err => {
@@ -62,23 +60,20 @@ fs.readFile(path.format(file), 'utf-8')
 .then( parseMTL )
 .then( cvrtToFED3X )
 .then( organizeDL )
+.then( genDLcmds )
 .then( ([p, dl]) => {
-  console.log(dl.mesh.length)
-  console.log(dl.mesh[0])
-  for (vBank of dl.vBanks) {
-    console.log(`vBank id ${vBank.id} length = ${vBank.length()}`)
-    //console.log(vBank)
-  }
+  const sf = options['scale'] || 1
+  // scale all vertices based on scale arg
+  // then round to whole value
+  dl.vBanks.forEach(vb => {
+    vb.vertices.forEach( v => {
+      v.scalePosition(sf)
+        .roundPosition()
+    })
+  })
 
-  /*for( mesh in dl.mesh) {
-    console.log(dl.mesh[mesh].bankVertices)
-  }*/
-
-  const testfn = require('./src/gen-dl-cmds.js')
-  let test = testfn([p,dl])
-  console.log(test[1])
-  console.log(test[1].printCmds())
-  console.log( [].concat.apply([], dl.vBanks.map( vb => vb.print() )) )
+  console.log(dl.printCmds())
+  console.log( [].concat.apply([], dl.vBanks.map( vb => vb.print(true) )) )
   return [p,dl]
 })
 .catch(err => {
