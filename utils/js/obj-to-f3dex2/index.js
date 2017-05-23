@@ -33,7 +33,8 @@ file = path.parse(options['file'])
 
 // make sure that a file was specified, not just the '-f' flag
 if ( file.base === 'true' ) {
-  console.log("ERROR: Please specify the input '.obj' file; don't just enter the '-f' flag!")
+  console.log("ERROR: Please specify the input '.obj' file." +
+  "Don't enter only the '-f' flag!")
   argv.help();
 
   process.exitCode = 1;

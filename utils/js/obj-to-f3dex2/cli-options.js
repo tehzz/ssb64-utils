@@ -13,6 +13,21 @@ const options = [{
   type: 'float',
   description: `Set a scaling factor for the input vertices`,
   example: `'${SCRIPT_NAME} --scale=2.0' or '${SCRIPT_NAME} -s 3.5'`
+},
+{
+  name: 'ouput',
+  short: 'o',
+  type: 'path',
+  description: 'The name of the output display list file',
+  example: `'${SCRIPT_NAME} --output=mario.c' or '${SCRIPT_NAME} -o luigi.asm'`
+},
+{
+  name: 'type',
+  short: 't',
+  type: 'string',
+  description:  `Set the output file type.
+                There are two options: 'c' and 'bass'`,
+  example: `'${SCRIPT_NAME} --type=c' or '${SCRIPT_NAME} -t bass'`
 }]
 
 module.exports = options
