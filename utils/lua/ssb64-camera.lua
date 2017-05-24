@@ -10,11 +10,32 @@ SSB64 = {
   Mem = { -- Versions: Japan, Australia, Europe, USA [scripthawk]
     ["screen"]              = {nil, nil, nil, 0x0A4AD0},
     ["unlockables"]         = {0x0A28F4, 0x0A5074, 0x0AD194, 0x0A4934},
-    ["vs_match_global"]     = {0x0A30A8, 0x0A5828, 0x0AD948, 0x0A50E8},
+    ["vs_match_global"]     = {nil, nil, nil, 0x0A4D08},
     ["player_list_ptr"]     = {0x12E914, 0x131594, 0x139A74, 0x130D84},
     ["active_camera"]       = {nil, nil, nil, 0x1314B4},
     ["camera_list_ptr"]     = {nil, nil, nil, 0x12EBB4},
-  }
+  },
+  version = 0,
+  detectVersion = function(self, romHash)
+    -- From Isotarge ScriptHawk
+  	if romHash == "4B71F0E01878696733EEFA9C80D11C147ECB4984" then -- Japan
+  		self.version = 1;
+  		return true;
+  	elseif romHash == "A9BF83FE73361E8D042C33ED48B3851D7D46712C" then -- Australia
+  		self.version = 2;
+  		return true;
+  	elseif romHash == "6EE8A41FEF66280CE3E3F0984D00B96079442FB9" then -- Europe
+  		self.version = 3;
+  		return true;
+  	elseif romHash == "E2929E10FCCC0AA84E5776227E798ABC07CEDABF" then -- USA
+  		self.version = 4;
+  		return true;
+  	elseif romHash == "88C8FED5ECD5ED901CB5FC4B5BBEFFA3EA022DF7" then -- 19XXTE 0.11, based on USA ROM
+  		self.version = 4;
+  		return true;
+  	end
+  	return false;
+  end,
 }
 
 ---------------
@@ -22,47 +43,47 @@ SSB64 = {
 ---------------
 chars = {
   [0x00] = "Mario",
-	[0x01] = "Fox",
-	[0x02] = "DK",
-	[0x03] = "Samus",
-	[0x04] = "Luigi",
-	[0x05] = "Link",
-	[0x06] = "Yoshi",
-	[0x07] = "Falcon",
-	[0x08] = "Kirby",
-	[0x09] = "Pikachu",
-	[0x0A] = "Jigglypuff",
-	[0x0B] = "Ness",
-	[0x0C] = "Master Hand",
-	[0x0D] = "Metal Mario",
-	[0x0E] = "Polygon Mario",
-	[0x0F] = "Polygon Fox",
-	[0x10] = "Polygon DK",
-	[0x11] = "Polygon Samus",
-	[0x12] = "Polygon Luigi",
-	[0x13] = "Polygon Link",
-	[0x14] = "Polygon Yoshi",
-	[0x15] = "Polygon Falcon",
-	[0x16] = "Polygon Kirby",
-	[0x17] = "Polygon Pikachu",
-	[0x18] = "Polygon Jigglypuff",
-	[0x19] = "Polygon Ness",
-	[0x1A] = "Giant DK",
-	--[0x1B] = "Empty Slot",
-	[0x1C] = "None", -- No character selected
+  [0x01] = "Fox",
+  [0x02] = "DK",
+  [0x03] = "Samus",
+  [0x04] = "Luigi",
+  [0x05] = "Link",
+  [0x06] = "Yoshi",
+  [0x07] = "Falcon",
+  [0x08] = "Kirby",
+  [0x09] = "Pikachu",
+  [0x0A] = "Jigglypuff",
+  [0x0B] = "Ness",
+  [0x0C] = "Master Hand",
+  [0x0D] = "Metal Mario",
+  [0x0E] = "Polygon Mario",
+  [0x0F] = "Polygon Fox",
+  [0x10] = "Polygon DK",
+  [0x11] = "Polygon Samus",
+  [0x12] = "Polygon Luigi",
+  [0x13] = "Polygon Link",
+  [0x14] = "Polygon Yoshi",
+  [0x15] = "Polygon Falcon",
+  [0x16] = "Polygon Kirby",
+  [0x17] = "Polygon Pikachu",
+  [0x18] = "Polygon Jigglypuff",
+  [0x19] = "Polygon Ness",
+  [0x1A] = "Giant DK",
+  --[0x1B] = "Empty Slot",
+  [0x1C] = "None", -- No character selected
 }
 
 stages = {
   vs_mode = {
     [0x00] = "Peach's Castle", -- 0x00
-		[0x01] = "Sector Z",
-		[0x02] = "Congo Jungle",
-		[0x03] = "Planet Zebes",
-		[0x04] = "Hyrule Castle",
-		[0x05] = "Yoshi's Island",
-		[0x06] = "Dream Land",
-		[0x07] = "Saffron City",
-		[0x08] = "Mushroom Kingdom",
+  [0x01] = "Sector Z",
+  [0x02] = "Congo Jungle",
+  [0x03] = "Planet Zebes",
+  [0x04] = "Hyrule Castle",
+  [0x05] = "Yoshi's Island",
+  [0x06] = "Dream Land",
+  [0x07] = "Saffron City",
+  [0x08] = "Mushroom Kingdom",
   },
   beta = {
     [0x09] = "Dream Land Beta 1",
@@ -112,9 +133,9 @@ cameras = {
   [0x06] = "Unknown Camera 0x6",
 }
 
---------------
--- Structs  --
---------------
+---------------------
+-- Struct Offsets  --
+---------------------
 local vs_global_settings = {
   stage = 0x01, -- u8
   match_type = 0x03, -- u8 bitflag
@@ -143,14 +164,14 @@ local vs_global_settings = {
 }
 
 local player_fields = {
-	["Character"] = 0x0B, -- Byte?
-	["Costume"] = 0x10, -- Byte?
+  ["Character"] = 0x0B, -- Byte?
+  ["Costume"] = 0x10, -- Byte?
   ["PositionDataPointer"] = 0x78, -- Pointer
   ["PositionData"] = {
-		["XPosition"] = 0x00, -- Float
-		["YPosition"] = 0x04, -- Float
-		["ZPosition"] = 0x08, -- Float
-	},
+    ["XPosition"] = 0x00, -- Float
+    ["YPosition"] = 0x04, -- Float
+    ["ZPosition"] = 0x08, -- Float
+  },
 }
 
 local camera_info = {
@@ -160,20 +181,26 @@ local camera_info = {
 }
 
 local camera_routines = {
-  ["Battle Camera"]         = 0x00, -- void (*camera_fn)(void)
-  ["Character Zoom Camera"] = 0x04, -- void (*camera_fn)(void)
-  ["Unknown Camera 0x2"]    = 0x08, -- void (*camera_fn)(void)
-  ["Unknown Camera 0x3"]    = 0x0C, -- void (*camera_fn)(void)
-  ["BtT/BtP Pause Camera"]  = 0x10, -- void (*camera_fn)(void)
-  ["BtT/BtP Camera"]        = 0x14, -- void (*camera_fn)(void)
-  ["Unknown Camera 0x6"]    = 0x18, -- void (*camera_fn)(void)
+  offsets = {
+    ["Battle Camera"]         = 0x00, -- void (*camera_fn)(void)
+    ["Character Zoom Camera"] = 0x04, -- void (*camera_fn)(void)
+    ["Unknown Camera 0x2"]    = 0x08, -- void (*camera_fn)(void)
+    ["Unknown Camera 0x3"]    = 0x0C, -- void (*camera_fn)(void)
+    ["BtT/BtP Pause Camera"]  = 0x10, -- void (*camera_fn)(void)
+    ["BtT/BtP Camera"]        = 0x14, -- void (*camera_fn)(void)
+    ["Unknown Camera 0x6"]    = 0x18, -- void (*camera_fn)(void)
+  }
 }
 
 ---------------
 -- Functions --
 ---------------
+function tohexstr(int)
+  return string.format("0x%08X", int)
+end
+
 function getPlayerGlobal(p)
-  return SSB64.Mem.vs_match_global[3] + vs_global_settings.player_base[p];
+  return SSB64.Mem.vs_match_global[SSB64.version] + vs_global_settings.player_base[p];
 end
 
 function getPlayerControlledBy(player)
@@ -188,11 +215,75 @@ function getPlayerControlledBy(player)
 end
 
 function setPlayerControlledBy(player, state)
-  local globalPlayer = getPlayerGlobal(player);
-  local controlled   = vs_global_settings.player_data.controlled_by;
+  local globalPlayer  = getPlayerGlobal(player);
+  local pdata         = vs_global_settings.player_data;
+  local s;
 
-  if isRDRAM(globalPLayer) then
-    mainmemory.writebyte(globalPlayer + controlled, state);
+  if type(state) == "string" then
+    s = pdata.controlled_by_values[state]
+  else
+    s = state
+  end
+
+  if isRDRAM(globalPlayer) then
+    dprintf("Hiding Player %d at 0x%08x", player, globalPlayer + pdata.controlled_by );
+    mainmemory.writebyte(globalPlayer + pdata.controlled_by, s);
+  end
+end
+
+function getActiveCameraRoutine()
+  local addr = SSB64.Mem.active_camera[SSB64.version] + camera_info.camera_fn;
+
+  if isRDRAM(addr) then
+    printhex(mainmemory.read_u32_be(addr))
+    return mainmemory.read_u32_be(addr)
+  else
+    return false
+  end
+end
+
+function cacheCameraRoutines()
+  --print("called cacheCameraRoutines")
+  local ram_camera_list = SSB64.Mem.camera_list_ptr[SSB64.version]
+  camera_routines["cache"] = {};
+
+  local cache = camera_routines["cache"];
+
+  for name, offset in pairs(camera_routines.offsets) do
+    local test_camera = ram_camera_list + offset;
+
+    if isRDRAM(test_camera) then
+      cache[mainmemory.read_u32_be(test_camera)] = name
+    end
+  end
+
+  return cache
+end
+
+
+function getCameraNameByRoutine(routine)
+  local ram_camera_list = SSB64.Mem.camera_list_ptr[SSB64.version]
+  local cache = camera_routines["cache"] or cacheCameraRoutines()
+  local camera_name;
+
+  for camera_fn, name in pairs(cache) do
+    if routine == camera_fn then
+      camera_name = name
+      break
+    end
+  end
+
+  return camera_name
+end
+
+function getActiveCamera()
+  local fn  = getActiveCameraRoutine()
+  local cam = getCameraNameByRoutine(fn)
+
+  if cam then
+    return cam, fn
+  else
+    return "Camera Find Error..?", fn
   end
 end
 
@@ -200,25 +291,42 @@ end
 -- GUI       --
 ---------------
 cgui = {    -- whole thing is mainly copied from [scripthawk]
-	UI = {
-		form_controls = {}, -- TODO: Detect UI position problems using this array
-		form_padding = 8,
-		label_offset = 5,
-		dropdown_offset = 1,
-		long_label_width = 140,
-    checkbox_width = 115,
-		button_height = 23,
-	},
+  UI = {
+  form_controls = {}, -- TODO: Detect UI position problems using this array
+  form_padding = 8,
+  label_offset = 5,
+  dropdown_offset = 1,
+  long_label_width = 140,
+  checkbox_width = 115,
+  button_height = 23,
+  },
+
+  cellWidth = function(self)
+    return self.UI.checkbox_width
+  end,
+
+  cellHeight = function(self)
+    return self.UI.button_height
+  end,
+
+  setWidth = function(self, w)
+    local ui = self.UI;
+    local width = cgui.col(w);
+
+    ui["width"] = width;
+
+    return width;
+  end,
+
+  setHeight = function(self, h)
+    local ui = self.UI;
+    local height = cgui.row(h);
+
+    ui["height"] = height;
+
+    return height;
+  end,
 };
-
-function cgui.setWidth(w)
-  local ui = cgui.UI;
-  local width = cgui.col(w);
-
-  ui["width"] = width;
-
-  return width
-end
 
 function cgui.row(r)
   local ui = cgui.UI;
@@ -231,29 +339,87 @@ function cgui.col(c)
 end
 
 -- Initialize Gui and save reference
-cgui.UI.options_form = forms.newform(cgui.col(8), cgui.row(24), "SSB64 Camera Control");
+cgui.UI.options_form = forms.newform(cgui:setWidth(4), cgui:setHeight(10), "SSB64 Camera Control");
 
--- Add "Hide Player" Dropdowns?
+-- Hide Player Toggles
 local function guiHidePlayer()
   local ui = cgui.UI.form_controls;
   local controller = cgui.UI.options_form;
   -- Add Header Label
-  ui["hide_player_label"] = forms.label(controller, "---Hide Players---", cgui.col(0), cgui.row(0), cgui.col(8), cgui.row(1), false);
-
+  --ui["hide_player_label"] = forms.label(controller, "---Hide Players---", cgui.col(0), cgui.row(0), cgui.col(8), cgui.row(1), false);
   for i=1, 4 do
-    print(i);
-    print("hide_player"..i);
-    ui["hide_player"..i] = forms.checkbox(controller, "Hide Player "..i, cgui.col(i-1), cgui.row(1));
+    ui["hide_player"..i] = forms.checkbox(controller, "Hide Player "..i, cgui.col(i-1), cgui.row(0));
   end
-  ui["test_long"] = forms.checkbox(controller, "REALLY LONG LABEL?!?!", cgui.col(0), cgui.row(2));
-  ui["test_hidden"] = forms.checkbox(controller, "Can you see me?", cgui.col(1), cgui.row(2));
 end
 
-print(string.format("Player 1 Addr: %08x", getPlayerGlobal(1)));
+-- OSD Controls
+local function guiOSDControls()
+  local ui = cgui.UI.form_controls;
+  local controller = cgui.UI.options_form;
+  ui["osd_label"] = forms.label(controller, "                 Show: ", cgui.col(0), cgui.row(1) + 5, cgui:cellWidth(), cgui:cellHeight() - 5);
+  ui["player_osd"] = forms.checkbox(controller, "Player OSD", cgui.col(1), cgui.row(1));
+  ui["stage_osd"] = forms.checkbox(controller, "Stage OSD", cgui.col(2), cgui.row(1));
+end
 
+-- Display Active Camera
+local function guiNameActiveCamera(camera_id)
+  local ui = cgui.UI.form_controls;
+  local controller = cgui.UI.options_form;
+
+  ui["active_camera_label"] = forms.label(controller, "      Active Camera: ", cgui.col(0), cgui.row(2) + 5, cgui:cellWidth(), cgui:cellHeight() - 5);
+  ui["active_camera"] = forms.label(controller, "Loading...", cgui.col(1), cgui.row(2) + 5, cgui:cellWidth()*2, cgui:cellHeight() - 5);
+
+end
+
+-- Populate GUI
 guiHidePlayer();
-
+guiOSDControls();
+guiNameActiveCamera();
 
 --------------------
 -- Event Handlers --
 --------------------
+-- Check the hide player checkboxes and if yes, set vs global to "NONE"
+local function checkHidePlayer()
+  local elems = cgui.UI.form_controls;
+
+  for i=1, 4 do
+    local hide = forms.ischecked(elems["hide_player"..i]);
+    if hide then
+      setPlayerControlledBy(i, "NONE")
+    end
+  end
+end
+
+local function updateActiveCameraName()
+  local camera_name_label = cgui.UI.form_controls["active_camera"];
+  local name, fn = getActiveCamera()
+  forms.settext(camera_name_label, name.."  ["..tohexstr(fn).."]");
+end
+
+function userAndGuiUpdate()
+  checkHidePlayer();
+  updateActiveCameraName();
+end
+
+-----------------------
+-- BizHawk per Frame --
+-----------------------
+--emu.registerbefore(userAndGuiUpdate);
+
+while true do
+  if SSB64.version == 0 then
+    print("Detecting Version of Smash...")
+    if SSB64:detectVersion(gameinfo.getromhash()) == false then
+      print("This version of Smash is unrecognized");
+      print(gameinfo.getromname())
+      print(gameinfo.getromhash())
+      break
+      -- else make gui?
+    end
+  else
+    userAndGuiUpdate();
+  end
+
+  emu.frameadvance();
+end
