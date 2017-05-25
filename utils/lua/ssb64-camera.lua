@@ -185,10 +185,10 @@ local camera_routines = {
     ["Battle Camera"]         = 0x00, -- void (*camera_fn)(void)
     ["Character Zoom Camera"] = 0x04, -- void (*camera_fn)(void)
     ["Unknown Camera 0x2"]    = 0x08, -- void (*camera_fn)(void)
-    ["Unknown Camera 0x3"]    = 0x0C, -- void (*camera_fn)(void)
+    ["Mushroom Kingdom Camera (?)"] = 0x0C, -- void (*camera_fn)(void)
     ["BtT/BtP Pause Camera"]  = 0x10, -- void (*camera_fn)(void)
     ["BtT/BtP Camera"]        = 0x14, -- void (*camera_fn)(void)
-    ["Planet Zebes Camera? (id: 0x6)"] = 0x18, -- void (*camera_fn)(void)
+    ["Planet Zebes Camera (?)"] = 0x18, -- void (*camera_fn)(void)
   }
 }
 
@@ -199,6 +199,31 @@ function tohexstr(int, pad)
   if pad == nil then pad = 8 end;
 
   return string.format("0x%0"..pad.."X", int);
+end
+
+function unlockEverything()
+  -- taken verbatim from isotarge / scripthawk
+  local base_addr = SSB64.Mem.unlockables[SSB64.version];
+
+	local value = mainmemory.readbyte(base_addr + 3);
+	value = set_bit(value, 0); -- Luigi Unlock Battle Completed
+	value = set_bit(value, 1); -- Ness Unlock Battle Completed
+	value = set_bit(value, 2); -- Captain Falcon Unlock Battle Completed
+	value = set_bit(value, 3); -- Jigglypuff Unlock Battle Completed
+	value = set_bit(value, 4); -- Mushroom Kingdom Available
+	value = set_bit(value, 5); -- Sound Test Unlocked
+	value = set_bit(value, 6); -- Item Switch Unlocked
+	mainmemory.writebyte(base_addr + 3, value);
+
+	value = mainmemory.readbyte(base_addr + 4);
+	value = set_bit(value, 2); -- Jigglypuff Selectable
+	value = set_bit(value, 3); -- Ness Selectable
+	mainmemory.writebyte(base_addr + 4, value);
+
+	value = mainmemory.readbyte(base_addr + 5);
+	value = set_bit(value, 4); -- Luigi Selectable
+	value = set_bit(value, 7); -- Captain Falcon Selectable
+	mainmemory.writebyte(base_addr + 5, value);
 end
 
 function getPlayerGlobal(p)
@@ -374,8 +399,7 @@ end
 local function guiHidePlayer()
   local ui = cgui.UI.form_controls;
   local controller = cgui.UI.options_form;
-  -- Add Header Label
-  --ui["hide_player_label"] = forms.label(controller, "---Hide Players---", cgui.col(0), cgui.row(0), cgui.col(8), cgui.row(1), false);
+
   for i=1, 4 do
     ui["hide_player"..i] = forms.checkbox(controller, "Hide Player "..i, cgui.col(i-1), cgui.row(0));
   end
@@ -395,6 +419,17 @@ local function guiOSDControls()
   ui["player_gui"] = forms.checkbox(controller, "No Player GUI", cgui.col(3), cgui.row(1));
 end
 
+-- Unlock Everything Button
+local function guiUnlockButton()
+  local ui = cgui.UI.form_controls;
+  local controller = cgui.UI.options_form;
+  local const = cgui.UI;
+
+  ui["unlock"] = forms.button(controller, "Unlock Everything", unlockEverything,
+                  cgui.col(0), cgui.row(2),
+                  cgui:cellWidth(), cgui:cellHeight());
+end
+
 -- Display Active Camera
 local function guiCameraInfo()
   local ui = cgui.UI.form_controls;
@@ -403,19 +438,19 @@ local function guiCameraInfo()
 
   -- Active Camera by Routine Label ---
   ui["active_camera_label"] = forms.label(controller, "      Active Camera: ",
-                                cgui.col(0), cgui.row(2) + const.label_offset,
+                                cgui.col(0), cgui.row(3) + const.label_offset,
                                 cgui:cellWidth(), cgui:cellHeight() - const.label_offset);
   ui["active_camera"] = forms.label(controller, "Loading...",
-                          cgui.col(1), cgui.row(2) + const.label_offset,
+                          cgui.col(1), cgui.row(3) + const.label_offset,
                           cgui:cellWidth()*3, cgui:cellHeight() - const.label_offset);
 
   -- Previous Camera by ID Label ---
   ui["prev_cam_label"] = forms.label(controller, "   Previous Camera: ",
-                            cgui.col(0), cgui.row(3) + const.label_offset,
+                            cgui.col(0), cgui.row(4) + const.label_offset,
                             cgui:cellWidth(), cgui:cellHeight() - const.label_offset);
 
   ui["prev_cam"] = forms.label(controller, "Loading...",
-                      cgui.col(1), cgui.row(3) + const.label_offset,
+                      cgui.col(1), cgui.row(4) + const.label_offset,
                       cgui:cellWidth()*3, cgui:cellHeight() - const.label_offset);
   --Initialize a cgui.data entry to save camera fn (to prevent gui writes when no change)
   cgui.data["active_camera_fn"] = -1;
@@ -429,6 +464,7 @@ local function initGUI()
   -- Populate GUI
   guiHidePlayer();
   guiOSDControls();
+  guiUnlockButton();
   guiCameraInfo();
 end
 
