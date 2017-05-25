@@ -188,15 +188,17 @@ local camera_routines = {
     ["Unknown Camera 0x3"]    = 0x0C, -- void (*camera_fn)(void)
     ["BtT/BtP Pause Camera"]  = 0x10, -- void (*camera_fn)(void)
     ["BtT/BtP Camera"]        = 0x14, -- void (*camera_fn)(void)
-    ["Unknown Camera 0x6"]    = 0x18, -- void (*camera_fn)(void)
+    ["Planet Zebes Camera? (id: 0x6)"] = 0x18, -- void (*camera_fn)(void)
   }
 }
 
 ---------------
 -- Functions --
 ---------------
-function tohexstr(int)
-  return string.format("0x%08X", int)
+function tohexstr(int, pad)
+  if pad == nil then pad = 8 end;
+
+  return string.format("0x%0"..pad.."X", int);
 end
 
 function getPlayerGlobal(p)
@@ -226,20 +228,30 @@ function setPlayerControlledBy(player, state)
   end
 
   if isRDRAM(globalPlayer) then
-    dprintf("Hiding Player %d at 0x%08x", player, globalPlayer + pdata.controlled_by );
     mainmemory.writebyte(globalPlayer + pdata.controlled_by, s);
   end
 end
 
-function getActiveCameraRoutine()
-  local addr = SSB64.Mem.active_camera[SSB64.version] + camera_info.camera_fn;
+function getCameraInfo(parameter)
+  local addr = SSB64.Mem.active_camera[SSB64.version] + camera_info[parameter];
 
   if isRDRAM(addr) then
-    printhex(mainmemory.read_u32_be(addr))
     return mainmemory.read_u32_be(addr)
   else
     return false
   end
+end
+
+function getActiveCameraRoutine()
+  return getCameraInfo("camera_fn")
+end
+
+function getActiveCameraID()
+  return getCameraInfo("current")
+end
+
+function getPrevCameraID()
+  return getCameraInfo("previous")
 end
 
 function cacheCameraRoutines()
@@ -260,7 +272,6 @@ function cacheCameraRoutines()
   return cache
 end
 
-
 function getCameraNameByRoutine(routine)
   local ram_camera_list = SSB64.Mem.camera_list_ptr[SSB64.version]
   local cache = camera_routines["cache"] or cacheCameraRoutines()
@@ -276,14 +287,34 @@ function getCameraNameByRoutine(routine)
   return camera_name
 end
 
+function getCameraNameByID(id)
+  if id < 7 then
+    local shift = id * 4; -- why don't the bitwise operators work?
+
+    for name, offset in pairs(camera_routines.offsets) do
+      if offset == shift then
+        return name
+      end
+    end
+
+    print("Camera Not Found..? ID: "..id)
+    return nil
+  else
+    print("Unknown Camera ID: "..id)
+    return nil
+  end
+end
+
 function getActiveCamera()
   local fn  = getActiveCameraRoutine()
   local cam = getCameraNameByRoutine(fn)
 
   if cam then
     return cam, fn
+  elseif fn == 0 then
+    return "Camera Null Pointer", fn
   else
-    return "Camera Find Error..?", fn
+    return "Unknown Camera..?", fn
   end
 end
 
@@ -300,6 +331,7 @@ cgui = {    -- whole thing is mainly copied from [scripthawk]
   checkbox_width = 115,
   button_height = 23,
   },
+  data = {},        -- table to hold state for gui date
 
   cellWidth = function(self)
     return self.UI.checkbox_width
@@ -338,9 +370,6 @@ function cgui.col(c)
   return round(ui.form_padding + ui.checkbox_width * c, 0);
 end
 
--- Initialize Gui and save reference
-cgui.UI.options_form = forms.newform(cgui:setWidth(4), cgui:setHeight(10), "SSB64 Camera Control");
-
 -- Hide Player Toggles
 local function guiHidePlayer()
   local ui = cgui.UI.form_controls;
@@ -356,25 +385,52 @@ end
 local function guiOSDControls()
   local ui = cgui.UI.form_controls;
   local controller = cgui.UI.options_form;
-  ui["osd_label"] = forms.label(controller, "                 Show: ", cgui.col(0), cgui.row(1) + 5, cgui:cellWidth(), cgui:cellHeight() - 5);
+  local const = cgui.UI;
+
+  ui["osd_label"] = forms.label(controller, "                 Show: ",
+                      cgui.col(0), cgui.row(1) + const.label_offset,
+                      cgui:cellWidth(), cgui:cellHeight() - 5);
   ui["player_osd"] = forms.checkbox(controller, "Player OSD", cgui.col(1), cgui.row(1));
   ui["stage_osd"] = forms.checkbox(controller, "Stage OSD", cgui.col(2), cgui.row(1));
+  ui["player_gui"] = forms.checkbox(controller, "No Player GUI", cgui.col(3), cgui.row(1));
 end
 
 -- Display Active Camera
-local function guiNameActiveCamera(camera_id)
+local function guiCameraInfo()
   local ui = cgui.UI.form_controls;
   local controller = cgui.UI.options_form;
+  local const = cgui.UI;
 
-  ui["active_camera_label"] = forms.label(controller, "      Active Camera: ", cgui.col(0), cgui.row(2) + 5, cgui:cellWidth(), cgui:cellHeight() - 5);
-  ui["active_camera"] = forms.label(controller, "Loading...", cgui.col(1), cgui.row(2) + 5, cgui:cellWidth()*2, cgui:cellHeight() - 5);
+  -- Active Camera by Routine Label ---
+  ui["active_camera_label"] = forms.label(controller, "      Active Camera: ",
+                                cgui.col(0), cgui.row(2) + const.label_offset,
+                                cgui:cellWidth(), cgui:cellHeight() - const.label_offset);
+  ui["active_camera"] = forms.label(controller, "Loading...",
+                          cgui.col(1), cgui.row(2) + const.label_offset,
+                          cgui:cellWidth()*3, cgui:cellHeight() - const.label_offset);
 
+  -- Previous Camera by ID Label ---
+  ui["prev_cam_label"] = forms.label(controller, "   Previous Camera: ",
+                            cgui.col(0), cgui.row(3) + const.label_offset,
+                            cgui:cellWidth(), cgui:cellHeight() - const.label_offset);
+
+  ui["prev_cam"] = forms.label(controller, "Loading...",
+                      cgui.col(1), cgui.row(3) + const.label_offset,
+                      cgui:cellWidth()*3, cgui:cellHeight() - const.label_offset);
+  --Initialize a cgui.data entry to save camera fn (to prevent gui writes when no change)
+  cgui.data["active_camera_fn"] = -1;
 end
 
--- Populate GUI
-guiHidePlayer();
-guiOSDControls();
-guiNameActiveCamera();
+-- init GUI
+local function initGUI()
+  -- Initialize Gui and save reference
+  cgui.UI.options_form = forms.newform(cgui:setWidth(4), cgui:setHeight(10), "SSB64 Camera Control");
+
+  -- Populate GUI
+  guiHidePlayer();
+  guiOSDControls();
+  guiCameraInfo();
+end
 
 --------------------
 -- Event Handlers --
@@ -391,15 +447,25 @@ local function checkHidePlayer()
   end
 end
 
-local function updateActiveCameraName()
-  local camera_name_label = cgui.UI.form_controls["active_camera"];
-  local name, fn = getActiveCamera()
-  forms.settext(camera_name_label, name.."  ["..tohexstr(fn).."]");
+local function updateCameraInfo()
+  local elems = cgui.UI.form_controls;
+  local name, fn = getActiveCamera();
+  -- check for a change
+  if fn ~= cgui.data["active_camera_fn"] then
+    cgui.data["active_camera_fn"] = fn;
+
+    local id = getActiveCameraID();
+    local prev_id = getPrevCameraID();
+    local prev_name = getCameraNameByID(prev_id)
+    --print("Changed UI active camera label to "..name)
+    forms.settext(elems["active_camera"], name.."  ["..tohexstr(fn).."]  (ID: "..tohexstr(id, 2)..")");
+    forms.settext(elems["prev_cam"], prev_name.."  (ID: "..tohexstr(prev_id, 2)..")");
+  end
 end
 
 function userAndGuiUpdate()
   checkHidePlayer();
-  updateActiveCameraName();
+  updateCameraInfo();
 end
 
 -----------------------
@@ -409,15 +475,18 @@ end
 
 while true do
   if SSB64.version == 0 then
-    print("Detecting Version of Smash...")
+    print("Detecting version of Smash...")
     if SSB64:detectVersion(gameinfo.getromhash()) == false then
       print("This version of Smash is unrecognized");
-      print(gameinfo.getromname())
-      print(gameinfo.getromhash())
+      print("Rom Name: "..gameinfo.getromname())
+      print("Rom Hash: "..gameinfo.getromhash())
       break
-      -- else make gui?
+    else
+      print("Supported version of Smash detected. Loading...")
+      initGUI();
     end
   else
+    -- Per-frame with a supported SSB64 rom
     userAndGuiUpdate();
   end
 
