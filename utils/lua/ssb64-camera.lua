@@ -10,7 +10,7 @@ SSB64 = {
   Mem = { -- Versions: Japan, Australia, Europe, USA [scripthawk]
     ["screen"]              = {nil, nil, nil, 0x0A4AD0},
     ["unlockables"]         = {0x0A28F4, 0x0A5074, 0x0AD194, 0x0A4934},
-    ["vs_match_global"]     = {nil, nil, nil, 0x0A4D08},
+    ["match_settings_ptr"]  = {0x0A30A8, 0x0A5828, 0x0AD948, 0x0A50E8},
     ["player_list_ptr"]     = {0x12E914, 0x131594, 0x139A74, 0x130D84},
     ["active_camera"]       = {nil, nil, nil, 0x1314B4},
     ["camera_list_ptr"]     = {nil, nil, nil, 0x12EBB4},
@@ -74,23 +74,18 @@ chars = {
 }
 
 stages = {
-  vs_mode = {
     [0x00] = "Peach's Castle", -- 0x00
-  [0x01] = "Sector Z",
-  [0x02] = "Congo Jungle",
-  [0x03] = "Planet Zebes",
-  [0x04] = "Hyrule Castle",
-  [0x05] = "Yoshi's Island",
-  [0x06] = "Dream Land",
-  [0x07] = "Saffron City",
-  [0x08] = "Mushroom Kingdom",
-  },
-  beta = {
+    [0x01] = "Sector Z",
+    [0x02] = "Congo Jungle",
+    [0x03] = "Planet Zebes",
+    [0x04] = "Hyrule Castle",
+    [0x05] = "Yoshi's Island",
+    [0x06] = "Dream Land",
+    [0x07] = "Saffron City",
+    [0x08] = "Mushroom Kingdom",
     [0x09] = "Dream Land Beta 1",
     [0x0A] = "Dream Land Beta 2",
     [0x0B] = "Demo Stage",
-  },
-  single_player = {
     [0x0C] = "Yoshi's Island no clouds",
     [0x0D] = "Metal Mario",
     [0x0E] = "Polygon Team",
@@ -120,7 +115,6 @@ stages = {
     [0x26] = "Platforms - Pikachu",
     [0x27] = "Platforms - Jigglypuff",
     [0x28] = "Platforms - Ness", -- 0x28
-  }
 }
 
 cameras = {
@@ -136,7 +130,7 @@ cameras = {
 ---------------------
 -- Struct Offsets  --
 ---------------------
-local vs_global_settings = {
+local global_match_settings = {
   stage = 0x01, -- u8
   match_type = 0x03, -- u8 bitflag
   match_type_flag = {
@@ -226,13 +220,29 @@ function unlockEverything()
 	mainmemory.writebyte(base_addr + 5, value);
 end
 
+function setStage(index)
+	local matchSettings = dereferencePointer(SSB64.Mem.match_settings_ptr[SSB64.version]);
+
+	if isRDRAM(matchSettings) then
+		mainmemory.writebyte(matchSettings + global_match_settings.stage, index);
+
+    -- Add switch to check for FD 0x10 or other stages....? based on screen...?
+	end
+end
+
 function getPlayerGlobal(p)
-  return SSB64.Mem.vs_match_global[SSB64.version] + vs_global_settings.player_base[p];
+  local matchSettings = dereferencePointer(SSB64.Mem.match_settings_ptr[SSB64.version]);
+
+	if isRDRAM(matchSettings) then
+    return matchSettings + global_match_settings.player_base[p];
+  else
+    return nil
+  end
 end
 
 function getPlayerControlledBy(player)
   local globalPlayer = getPlayerGlobal(player);
-  local controlled   = vs_global_settings.player_data.controlled_by;
+  local controlled   = global_match_settings.player_data.controlled_by;
 
   if isRDRAM(globalPLayer) then
     return mainmemory.readbyte(globalPlayer + controlled)
@@ -243,7 +253,7 @@ end
 
 function setPlayerControlledBy(player, state)
   local globalPlayer  = getPlayerGlobal(player);
-  local pdata         = vs_global_settings.player_data;
+  local pdata         = global_match_settings.player_data;
   local s;
 
   if type(state) == "string" then
@@ -348,13 +358,14 @@ end
 ---------------
 cgui = {    -- whole thing is mainly copied from [scripthawk]
   UI = {
-  form_controls = {}, -- TODO: Detect UI position problems using this array
-  form_padding = 8,
-  label_offset = 5,
-  dropdown_offset = 1,
-  long_label_width = 140,
-  checkbox_width = 115,
-  button_height = 23,
+    form_controls = {}, -- TODO: Detect UI position problems using this array
+    form_padding = 8,
+    label_offset = 5,
+    dropdown_offset = 1,
+    long_label_width = 140,
+    checkbox_width = 115,
+    button_height = 23,
+    hpad = 5,
   },
   data = {},        -- table to hold state for gui date
 
@@ -430,6 +441,25 @@ local function guiUnlockButton()
                   cgui:cellWidth(), cgui:cellHeight());
 end
 
+-- Stage Select Dropdown and Force Checkbox
+local function guiStageSelect()
+  local ui = cgui.UI.form_controls;
+  local controller = cgui.UI.options_form;
+  local const = cgui.UI;
+
+  local stage_list = {};
+  for id, stage in pairs(stages) do
+     table.insert(stage_list, "["..tohexstr(id, 2).."]  "..stage)
+   end
+
+  ui["stage_list"] = forms.dropdown(controller, stage_list,
+                      cgui.col(1) + const.hpad, cgui.row(2) + const.dropdown_offset,
+                      cgui:cellWidth()*2 - const.hpad*2, cgui:cellHeight());
+
+  ui["force_stage"] = forms.checkbox(controller, "Force Stage", cgui.col(3), cgui.row(2));
+  --
+end
+
 -- Display Active Camera
 local function guiCameraInfo()
   local ui = cgui.UI.form_controls;
@@ -465,6 +495,7 @@ local function initGUI()
   guiHidePlayer();
   guiOSDControls();
   guiUnlockButton();
+  guiStageSelect();
   guiCameraInfo();
 end
 
@@ -499,8 +530,19 @@ local function updateCameraInfo()
   end
 end
 
+local function forceStage()
+  local elems = cgui.UI.form_controls;
+
+  if forms.ischecked(elems["force_stage"]) then
+    local stageID = bizstring.substring(forms.gettext(elems["stage_list"]), 3, 2);
+
+    setStage(tonumber(stageID, 16));
+  end
+end
+
 function userAndGuiUpdate()
   checkHidePlayer();
+  forceStage();
   updateCameraInfo();
 end
 
