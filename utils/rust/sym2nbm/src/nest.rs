@@ -6,7 +6,7 @@ use nemu_mem::{MemType, SymbolInfo};
 
 #[derive(Debug)]
 struct Container {
-    mut symbols: Vec<MemType>,
+    mut symbols: Vec<SymbolInfo>,
     mut branches: HashMap<String, Container>
 }
 
@@ -69,12 +69,13 @@ pub fn nest(br: Box<BufRead>, nest: usize, scope: usize, data_str: &str) -> Stri
                 //.inspect( | val | println!("inspect: {:?}", val))
                 // fold into a final vector
                 .fold(Vec::new(), | mut acc, (i, name) | {
-                    if i <= nest && i != 0 {
-                        let ref mut nested_str: String = acc[0];
+                    if i <= nest {
+                        acc.push(name.to_string());
+                    } else {
+                        let l: usize = acc.len();
+                        let ref mut nested_str: String = acc[l-1];
                         nested_str.push('.');
                         nested_str.push_str(name)
-                    } else {
-                        acc.push(name.to_string());
                     }
 
                     acc
