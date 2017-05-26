@@ -13,7 +13,7 @@ SSB64 = {
     ["match_settings_ptr"]  = {0x0A30A8, 0x0A5828, 0x0AD948, 0x0A50E8},
     ["player_list_ptr"]     = {0x12E914, 0x131594, 0x139A74, 0x130D84},
     ["active_camera"]       = {nil, nil, nil, 0x1314B4},
-    ["camera_list_ptr"]     = {nil, nil, nil, 0x12EBB4},
+    ["camera_list"]     = {nil, nil, nil, 0x12EBB4},
   },
   version = 0,
   detectVersion = function(self, romHash)
@@ -35,6 +35,18 @@ SSB64 = {
   		return true;
   	end
   	return false;
+  end,
+  derefPtr = function(self, ptrName)
+    local val = dereferencePointer(self.Mem[ptrName][self.version])
+
+    if isRDRAM(val) then
+      return val
+    else
+      return nil
+    end
+  end,
+  getMem = function(self, memName)
+    return self.Mem[memName][self.version]
   end,
 }
 
@@ -127,6 +139,11 @@ cameras = {
   [0x06] = "Unknown Camera 0x6",
 }
 
+screens = {
+  [0x16] = "Versus Stage Select",
+  [0x36] = "Training Stage Select",
+}
+
 ---------------------
 -- Struct Offsets  --
 ---------------------
@@ -197,7 +214,7 @@ end
 
 function unlockEverything()
   -- taken verbatim from isotarge / scripthawk
-  local base_addr = SSB64.Mem.unlockables[SSB64.version];
+  local base_addr = SSB64:getMem("unlockables");
 
 	local value = mainmemory.readbyte(base_addr + 3);
 	value = set_bit(value, 0); -- Luigi Unlock Battle Completed
@@ -221,9 +238,13 @@ function unlockEverything()
 end
 
 function setStage(index)
-	local matchSettings = dereferencePointer(SSB64.Mem.match_settings_ptr[SSB64.version]);
+	local matchSettings = SSB64:derefPtr("match_settings_ptr");
 
 	if isRDRAM(matchSettings) then
+    -- if index > 0x10 then
+    -- get screen
+    -- if VS mode SS, nop instruction to load FD or other stages
+
 		mainmemory.writebyte(matchSettings + global_match_settings.stage, index);
 
     -- Add switch to check for FD 0x10 or other stages....? based on screen...?
@@ -231,7 +252,7 @@ function setStage(index)
 end
 
 function getPlayerGlobal(p)
-  local matchSettings = dereferencePointer(SSB64.Mem.match_settings_ptr[SSB64.version]);
+  local matchSettings = SSB64:derefPtr("match_settings_ptr");
 
 	if isRDRAM(matchSettings) then
     return matchSettings + global_match_settings.player_base[p];
@@ -268,7 +289,7 @@ function setPlayerControlledBy(player, state)
 end
 
 function getCameraInfo(parameter)
-  local addr = SSB64.Mem.active_camera[SSB64.version] + camera_info[parameter];
+  local addr = SSB64:getMem("active_camera") + camera_info[parameter];
 
   if isRDRAM(addr) then
     return mainmemory.read_u32_be(addr)
@@ -291,7 +312,7 @@ end
 
 function cacheCameraRoutines()
   --print("called cacheCameraRoutines")
-  local ram_camera_list = SSB64.Mem.camera_list_ptr[SSB64.version]
+  local ram_camera_list = SSB64:getMem("camera_list");
   camera_routines["cache"] = {};
 
   local cache = camera_routines["cache"];
@@ -308,7 +329,7 @@ function cacheCameraRoutines()
 end
 
 function getCameraNameByRoutine(routine)
-  local ram_camera_list = SSB64.Mem.camera_list_ptr[SSB64.version]
+  local ram_camera_list = SSB64:getMem("camera_list")
   local cache = camera_routines["cache"] or cacheCameraRoutines()
   local camera_name;
 
