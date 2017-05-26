@@ -1,4 +1,4 @@
----------------
+"1P Stage NOPs"---------------
 -- Libraries --
 ---------------
 require "lib.LibScriptHawk";
@@ -13,7 +13,11 @@ SSB64 = {
     ["match_settings_ptr"]  = {0x0A30A8, 0x0A5828, 0x0AD948, 0x0A50E8},
     ["player_list_ptr"]     = {0x12E914, 0x131594, 0x139A74, 0x130D84},
     ["active_camera"]       = {nil, nil, nil, 0x1314B4},
-    ["camera_list"]     = {nil, nil, nil, 0x12EBB4},
+    ["camera_list"]         = {nil, nil, nil, 0x12EBB4},
+    ["fd_bg_jal"]           = {nil, nil, nil, 0x104C84}   -- instruction in stage load routine
+  },
+  data = {
+    ["1P Stage NOPs"] = false,
   },
   version = 0,
   detectVersion = function(self, romHash)
@@ -140,8 +144,14 @@ cameras = {
 }
 
 screens = {
-  [0x16] = "Versus Stage Select",
-  [0x36] = "Training Stage Select",
+  [0x07] = "Main Menu",
+  [0x08] = "Menu 1P Mode",
+  [0x09] = "Menu VS Mode",
+  [0x10] = "VS Character Select",
+  [0x12] = "Training Character Select",
+  [0x15] = "Stage Select Screen",
+  [0x16] = "Versus Battle",
+  [0x36] = "Training Mode Battle",
 }
 
 ---------------------
@@ -241,10 +251,27 @@ function setStage(index)
 	local matchSettings = SSB64:derefPtr("match_settings_ptr");
 
 	if isRDRAM(matchSettings) then
-    -- if index > 0x10 then
-    -- get screen
-    -- if VS mode SS, nop instruction to load FD or other stages
+    if index >= 0x10 then
+      -- get screen
+      local screen = mainmemory.readbyte(SSB64:getMem("screen"))
 
+
+      -- check if we need to write over any crashing code
+      local override = SSB64.data["1P Stage NOPs"];
+      --print(override)
+      -- if screen is training mode battle or vs battle
+      if (screen == 0x16 or screen == 0x36) and override ~= true then
+        -- nop the jal instruction that crashes when FD loads
+        SSB64.data["1P Stage NOPs"] = true;
+
+        mainmemory.write_u32_be(SSB64:getMem("fd_bg_jal"), 0x00000000);
+        print("Nop-ed jal; disabling further writes")
+      elseif screen == 0x15 and override then
+        -- We've made it back to the SSS, re-enable the ability to override instructions
+        print("Enable ability to nop 1P Stage crashing instructions in VS Mode")
+        SSB64.data["1P Stage NOPs"] = false;
+      end
+    end
 		mainmemory.writebyte(matchSettings + global_match_settings.stage, index);
 
     -- Add switch to check for FD 0x10 or other stages....? based on screen...?
@@ -558,6 +585,9 @@ local function forceStage()
     local stageID = bizstring.substring(forms.gettext(elems["stage_list"]), 3, 2);
 
     setStage(tonumber(stageID, 16));
+
+  elseif SSB64.data["1P Stage NOPs"] then
+    SSB64.data["1P Stage NOPs"] = false
   end
 end
 
