@@ -622,7 +622,7 @@
             </CheatEntry>
             <CheatEntry>
               <ID>442</ID>
-              <Description>"Camera 0x2 [Unknown]"</Description>
+              <Description>"Camera 0x2 [Master Hand Cinematic]"</Description>
               <LastState Value="??" Activated="0" RealAddress="1014EBBC"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
@@ -631,7 +631,7 @@
             </CheatEntry>
             <CheatEntry>
               <ID>443</ID>
-              <Description>"Camera 0x3 [Unknown]"</Description>
+              <Description>"Camera 0x3 [Mushroom Kingdom]"</Description>
               <LastState Value="??" Activated="0" RealAddress="1014EBC0"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>
@@ -658,7 +658,7 @@
             </CheatEntry>
             <CheatEntry>
               <ID>446</ID>
-              <Description>"Camera 0x6 [Unknown]"</Description>
+              <Description>"Camera 0x6 [Planet Zebes]"</Description>
               <LastState Value="??" Activated="0" RealAddress="1014EBCC"/>
               <ShowAsHex>1</ShowAsHex>
               <Color>80000008</Color>

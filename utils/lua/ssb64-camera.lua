@@ -90,57 +90,110 @@ chars = {
 }
 
 stages = {
-    [0x00] = "Peach's Castle", -- 0x00
-    [0x01] = "Sector Z",
-    [0x02] = "Congo Jungle",
-    [0x03] = "Planet Zebes",
-    [0x04] = "Hyrule Castle",
-    [0x05] = "Yoshi's Island",
-    [0x06] = "Dream Land",
-    [0x07] = "Saffron City",
-    [0x08] = "Mushroom Kingdom",
-    [0x09] = "Dream Land Beta 1",
-    [0x0A] = "Dream Land Beta 2",
-    [0x0B] = "Demo Stage",
-    [0x0C] = "Yoshi's Island no clouds",
-    [0x0D] = "Metal Mario",
-    [0x0E] = "Polygon Team",
-    [0x0F] = "Race to the Finish!",
-    [0x10] = "Final Destination", -- 0x10
-    [0x11] = "Targets - Mario",
-    [0x12] = "Targets - Fox",
-    [0x13] = "Targets - DK",
-    [0x14] = "Targets - Samus",
-    [0x15] = "Targets - Luigi",
-    [0x16] = "Targets - Link",
-    [0x17] = "Targets - Yoshi",
-    [0x18] = "Targets - Falcon",
-    [0x19] = "Targets - Kirby",
-    [0x1A] = "Targets - Pikachu",
-    [0x1B] = "Targets - Jigglypuff",
-    [0x1C] = "Targets - Ness",
-    [0x1D] = "Platforms - Mario",
-    [0x1E] = "Platforms - Fox",
-    [0x1F] = "Platforms - DK",
-    [0x20] = "Platforms - Samus", -- 0x20
-    [0x21] = "Platforms - Luigi",
-    [0x22] = "Platforms - Link",
-    [0x23] = "Platforms - Yoshi",
-    [0x24] = "Platforms - Falcon",
-    [0x25] = "Platforms - Kirby",
-    [0x26] = "Platforms - Pikachu",
-    [0x27] = "Platforms - Jigglypuff",
-    [0x28] = "Platforms - Ness", -- 0x28
+  [0x00] = "Peach's Castle", -- 0x00
+  [0x01] = "Sector Z",
+  [0x02] = "Congo Jungle",
+  [0x03] = "Planet Zebes",
+  [0x04] = "Hyrule Castle",
+  [0x05] = "Yoshi's Island",
+  [0x06] = "Dream Land",
+  [0x07] = "Saffron City",
+  [0x08] = "Mushroom Kingdom",
+  [0x09] = "Dream Land Beta 1",
+  [0x0A] = "Dream Land Beta 2",
+  [0x0B] = "Demo Stage",
+  [0x0C] = "Yoshi's Island no clouds",
+  [0x0D] = "Metal Mario",
+  [0x0E] = "Polygon Team",
+  [0x0F] = "Race to the Finish!",
+  [0x10] = "Final Destination", -- 0x10
+  [0x11] = "Targets - Mario",
+  [0x12] = "Targets - Fox",
+  [0x13] = "Targets - DK",
+  [0x14] = "Targets - Samus",
+  [0x15] = "Targets - Luigi",
+  [0x16] = "Targets - Link",
+  [0x17] = "Targets - Yoshi",
+  [0x18] = "Targets - Falcon",
+  [0x19] = "Targets - Kirby",
+  [0x1A] = "Targets - Pikachu",
+  [0x1B] = "Targets - Jigglypuff",
+  [0x1C] = "Targets - Ness",
+  [0x1D] = "Platforms - Mario",
+  [0x1E] = "Platforms - Fox",
+  [0x1F] = "Platforms - DK",
+  [0x20] = "Platforms - Samus", -- 0x20
+  [0x21] = "Platforms - Luigi",
+  [0x22] = "Platforms - Link",
+  [0x23] = "Platforms - Yoshi",
+  [0x24] = "Platforms - Falcon",
+  [0x25] = "Platforms - Kirby",
+  [0x26] = "Platforms - Pikachu",
+  [0x27] = "Platforms - Jigglypuff",
+  [0x28] = "Platforms - Ness", -- 0x28
 }
 
 cameras = {
-  [0x00] = "Battle Camera",
-  [0x01] = "Character Zoom Camera",
-  [0x02] = "Unknown Camera 0x2",
-  [0x03] = "Unknown Camera 0x3",
-  [0x04] = "BtT/BtP Pause Camera",
-  [0x05] = "BtT/BtP Camera",
-  [0x06] = "Unknown Camera 0x6",
+  [0x00] = {
+    ["name"] = "Battle Camera",
+    ["settings"] = {
+
+    },
+  },
+  [0x01] = {
+    ["name"] ="Character Zoom Camera",
+    ["offset_from_active"] = 0x40,
+    ["settings"] = { --offsets from active camera info (0x801314B4)
+      ["Player Followed"] = 0x00, -- pointer from match settings player struct
+      ["Horizontal Rotation Offset"] = 0x04, -- f32 radians
+      ["Vertical Rotation Offset"] = 0x08,   -- f32 radians
+      ["Zoom"] = 0x0C, -- f32
+      ["Zoom Speed"] = 0x10, -- f32 this might only matter on load...?
+      ["FOV"]  = 0x14 -- f32
+    },
+  },
+  [0x02] = {
+    ["name"] = "Master Hand Cinematic",
+    ["settings"] = {
+
+    }
+  },
+  [0x03] = {
+    ["name"] = "Mushroom Kingdom Camera",
+    ["settings"] = {
+
+    }
+  },
+  [0x04] = {
+    ["name"] = "BtT/BtP Pause Camera",
+    ["offset_from_active"] = 0x58,
+    ["settings"] = {
+      ["X Pan 1"] = 0x00, -- f32
+      ["Y Pan 1"] = 0x04, -- f32
+      -- 0x08 is unknown...
+      ["X Pan 2"] = 0x0C, -- f32
+      ["Y Pan 2"] = 0x10, -- f32
+      ["Zoom"]    = 0x14, -- f32
+    }
+  },
+  [0x05] = {
+    ["name"] = "BtT/BtP Normal Camera",
+    ["offset_from_active"] = 0x70,
+    ["settings"] = {
+      ["Player Followed"] = 0x00, -- pointer from match settings player struct
+      ["X Rotation"]   = 0x04, -- f32 (radians)
+      ["Y Rotation"]   = 0x08, -- f32 (radians)
+      ["Zoom"]         = 0x0C, -- f32
+      ["Follow Speed"] = 0x10, -- f32
+      ["FOV?"]         = 0x14, -- f32
+    }
+  },
+  [0x06] = {
+    ["name"] = "Planet Zebes Camera",
+    ["settings"] = {
+
+    }
+  },
 }
 
 screens = {
@@ -204,13 +257,13 @@ local camera_info = {
 
 local camera_routines = {
   offsets = {
-    ["Battle Camera"]         = 0x00, -- void (*camera_fn)(void)
-    ["Character Zoom Camera"] = 0x04, -- void (*camera_fn)(void)
-    ["Unknown Camera 0x2"]    = 0x08, -- void (*camera_fn)(void)
-    ["Mushroom Kingdom Camera (?)"] = 0x0C, -- void (*camera_fn)(void)
-    ["BtT/BtP Pause Camera"]  = 0x10, -- void (*camera_fn)(void)
-    ["BtT/BtP Camera"]        = 0x14, -- void (*camera_fn)(void)
-    ["Planet Zebes Camera (?)"] = 0x18, -- void (*camera_fn)(void)
+    ["Battle Camera"]           = 0x00, -- void (*camera_fn)(void)
+    ["Character Zoom Camera"]   = 0x04, -- void (*camera_fn)(void)
+    ["Master Hand Cinematic"]   = 0x08, -- void (*camera_fn)(void)
+    ["Mushroom Kingdom Camera"] = 0x0C, -- void (*camera_fn)(void)
+    ["BtT/BtP Pause Camera"]    = 0x10, -- void (*camera_fn)(void)
+    ["BtT/BtP Camera"]          = 0x14, -- void (*camera_fn)(void)
+    ["Planet Zebes Camera"]     = 0x18, -- void (*camera_fn)(void)
   }
 }
 
