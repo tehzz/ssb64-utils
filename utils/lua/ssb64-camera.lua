@@ -1,4 +1,4 @@
-"1P Stage NOPs"---------------
+---------------
 -- Libraries --
 ---------------
 require "lib.LibScriptHawk";
