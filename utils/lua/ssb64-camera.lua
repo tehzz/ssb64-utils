@@ -14,7 +14,7 @@ SSB64 = {
     ["player_list_ptr"]     = {0x12E914, 0x131594, 0x139A74, 0x130D84},
     ["active_camera"]       = {nil, nil, nil, 0x1314B4},
     ["camera_list"]         = {nil, nil, nil, 0x12EBB4},
-    ["fd_bg_jal"]           = {nil, nil, nil, 0x104C84}   -- instruction in stage load routine
+    ["fd_bg_jal"]           = {nil, nil, nil, 0x104C84},   -- instruction in stage load routine
   },
   data = {
     ["1P Stage NOPs"] = false,
@@ -90,47 +90,47 @@ chars = {
 }
 
 stages = {
-    [0x00] = "Peach's Castle", -- 0x00
-    [0x01] = "Sector Z",
-    [0x02] = "Congo Jungle",
-    [0x03] = "Planet Zebes",
-    [0x04] = "Hyrule Castle",
-    [0x05] = "Yoshi's Island",
-    [0x06] = "Dream Land",
-    [0x07] = "Saffron City",
-    [0x08] = "Mushroom Kingdom",
-    [0x09] = "Dream Land Beta 1",
-    [0x0A] = "Dream Land Beta 2",
-    [0x0B] = "Demo Stage",
-    [0x0C] = "Yoshi's Island no clouds",
-    [0x0D] = "Metal Mario",
-    [0x0E] = "Polygon Team",
-    [0x0F] = "Race to the Finish!",
-    [0x10] = "Final Destination", -- 0x10
-    [0x11] = "Targets - Mario",
-    [0x12] = "Targets - Fox",
-    [0x13] = "Targets - DK",
-    [0x14] = "Targets - Samus",
-    [0x15] = "Targets - Luigi",
-    [0x16] = "Targets - Link",
-    [0x17] = "Targets - Yoshi",
-    [0x18] = "Targets - Falcon",
-    [0x19] = "Targets - Kirby",
-    [0x1A] = "Targets - Pikachu",
-    [0x1B] = "Targets - Jigglypuff",
-    [0x1C] = "Targets - Ness",
-    [0x1D] = "Platforms - Mario",
-    [0x1E] = "Platforms - Fox",
-    [0x1F] = "Platforms - DK",
-    [0x20] = "Platforms - Samus", -- 0x20
-    [0x21] = "Platforms - Luigi",
-    [0x22] = "Platforms - Link",
-    [0x23] = "Platforms - Yoshi",
-    [0x24] = "Platforms - Falcon",
-    [0x25] = "Platforms - Kirby",
-    [0x26] = "Platforms - Pikachu",
-    [0x27] = "Platforms - Jigglypuff",
-    [0x28] = "Platforms - Ness", -- 0x28
+  [0x00] = "Peach's Castle", -- 0x00
+  [0x01] = "Sector Z",
+  [0x02] = "Congo Jungle",
+  [0x03] = "Planet Zebes",
+  [0x04] = "Hyrule Castle",
+  [0x05] = "Yoshi's Island",
+  [0x06] = "Dream Land",
+  [0x07] = "Saffron City",
+  [0x08] = "Mushroom Kingdom",
+  [0x09] = "Dream Land Beta 1",
+  [0x0A] = "Dream Land Beta 2",
+  [0x0B] = "Demo Stage",
+  [0x0C] = "Yoshi's Island no clouds",
+  [0x0D] = "Metal Mario",
+  [0x0E] = "Polygon Team",
+  [0x0F] = "Race to the Finish!",
+  [0x10] = "Final Destination", -- 0x10
+  [0x11] = "Targets - Mario",
+  [0x12] = "Targets - Fox",
+  [0x13] = "Targets - DK",
+  [0x14] = "Targets - Samus",
+  [0x15] = "Targets - Luigi",
+  [0x16] = "Targets - Link",
+  [0x17] = "Targets - Yoshi",
+  [0x18] = "Targets - Falcon",
+  [0x19] = "Targets - Kirby",
+  [0x1A] = "Targets - Pikachu",
+  [0x1B] = "Targets - Jigglypuff",
+  [0x1C] = "Targets - Ness",
+  [0x1D] = "Platforms - Mario",
+  [0x1E] = "Platforms - Fox",
+  [0x1F] = "Platforms - DK",
+  [0x20] = "Platforms - Samus", -- 0x20
+  [0x21] = "Platforms - Luigi",
+  [0x22] = "Platforms - Link",
+  [0x23] = "Platforms - Yoshi",
+  [0x24] = "Platforms - Falcon",
+  [0x25] = "Platforms - Kirby",
+  [0x26] = "Platforms - Pikachu",
+  [0x27] = "Platforms - Jigglypuff",
+  [0x28] = "Platforms - Ness", -- 0x28
 }
 
 cameras = {
@@ -181,6 +181,7 @@ local global_match_settings = {
     },
     character = 0x03, -- Byte
     damage = 0x4C, -- u32_be, Only applies to the UI, real damage is stored in the player object
+    --camera_ptr = 0x58, -- u32_be
   },
 }
 
@@ -388,6 +389,12 @@ function getCameraNameByID(id)
   end
 end
 
+--function getCameraRoutineByID(id)
+--  local camera_name = getCameraNameByID(id);
+--
+--  return getCameraNameByRoutine(camera_name);
+--end
+
 function getActiveCamera()
   local fn  = getActiveCameraRoutine()
   local cam = getCameraNameByRoutine(fn)
@@ -400,6 +407,23 @@ function getActiveCamera()
     return "Unknown Camera..?", fn
   end
 end
+
+--function setActiveCamera(id)
+--  local base = SSB64:getMem("active_camera");
+--
+--  local id_ptr = base + camera_info["current"];
+--  local fn_ptr = base + camera_info["camera_fn"];
+--
+--  local fn = getCameraRoutineByID(id);
+--
+--  if isRDRAM(base) then
+--    mainmemory.write_u32_be(id_ptr, id);
+--    mainmemory.write_u32_be(fn_ptr, fn);
+--    return true
+--  else
+--    return false
+--  end
+--end
 
 ---------------
 -- GUI       --
@@ -534,6 +558,31 @@ local function guiCameraInfo()
   cgui.data["active_camera_fn"] = -1;
 end
 
+-- Change Active Camera Dropdown and Button
+--local function guiSetCamera()
+--  local ui = cgui.UI.form_controls;
+--  local controller = cgui.UI.options_form;
+--  local const = cgui.UI;
+--
+--  local camera_list = {};
+--
+--  for name, offset in pairs(camera_routines["offsets"]) do
+--    table.insert(camera_list, "["..tohexstr(offset / 4, 2).."] "..name)
+--  end
+--
+--  ui["camera_list"] = forms.dropdown(controller, camera_list,
+--                        cgui.col(0) + const.hpad, cgui.row(3) + const.dropdown_offset,
+--                        cgui:cellWidth()*2 - const.hpad*2, cgui:cellHeight());
+--
+--  ui["set_camera"] = forms.button(controller, "Change Camera", changeCamera,
+--                        cgui.col(2), cgui.row(3),
+--                        cgui:cellWidth(), cgui:cellHeight());
+--end
+
+-- GUI for info on Camera 0x00
+
+-- GUI for Info on Camera 0x1
+
 -- init GUI
 local function initGUI()
   -- Initialize Gui and save reference
@@ -545,6 +594,7 @@ local function initGUI()
   guiUnlockButton();
   guiStageSelect();
   guiCameraInfo();
+  --guiSetCamera();
 end
 
 --------------------
@@ -590,6 +640,14 @@ local function forceStage()
     SSB64.data["1P Stage NOPs"] = false
   end
 end
+
+-- onClick handler for change camera button
+--local function changeCamera()
+--  local elems = cgui.UI.form_controls;
+--  local camera_id = bizstring.substring(forms.gettext(elems["camera_list"]), 3, 2);
+--
+--  setActiveCamera(tonumber(camera_id, 16));
+--end
 
 function userAndGuiUpdate()
   checkHidePlayer();
