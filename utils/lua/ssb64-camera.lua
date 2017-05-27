@@ -181,6 +181,7 @@ local global_match_settings = {
     },
     character = 0x03, -- Byte
     damage = 0x4C, -- u32_be, Only applies to the UI, real damage is stored in the player object
+    camera_ptr = 0x58, -- u32_be
   },
 }
 
@@ -356,7 +357,6 @@ function cacheCameraRoutines()
 end
 
 function getCameraNameByRoutine(routine)
-  local ram_camera_list = SSB64:getMem("camera_list")
   local cache = camera_routines["cache"] or cacheCameraRoutines()
   local camera_name;
 
@@ -388,6 +388,33 @@ function getCameraNameByID(id)
   end
 end
 
+function getCameraRoutineByName(name)
+  local cache = camera_routines["cache"] or cacheCameraRoutines()
+  local output_fn;
+
+  for cam_fn, cam_name in pairs(cache) do
+    if name == cam_name then
+      output_fn = cam_fn
+      break
+    end
+  end
+
+  if output_fn then
+    return output_fn
+  else
+    print("Error finding camera routine by name");
+    return nil
+  end
+end
+
+function getCameraRoutineByID(id)
+  local camera_name = getCameraNameByID(id);
+
+  return getCameraRoutineByName(camera_name);
+end
+
+
+
 function getActiveCamera()
   local fn  = getActiveCameraRoutine()
   local cam = getCameraNameByRoutine(fn)
@@ -398,6 +425,26 @@ function getActiveCamera()
     return "Camera Null Pointer", fn
   else
     return "Unknown Camera..?", fn
+  end
+end
+
+function setActiveCamera(id)
+  local base = SSB64:getMem("active_camera");
+
+  local id_ptr = base + camera_info["current"];
+  local fn_ptr = base + camera_info["camera_fn"];
+
+  local fn = getCameraRoutineByID(id);
+  print(tohexstr(id_ptr).."<= "..id)
+  print(tohexstr(fn_ptr).."<= "..tohexstr(fn))
+
+  if isRDRAM(base) then
+    -- check is need to initialize state of camera (no null pointers) before setting
+    mainmemory.write_u32_be(id_ptr, id);
+    mainmemory.write_u32_be(fn_ptr, fn);
+    return true
+  else
+    return false
   end
 end
 
@@ -534,6 +581,27 @@ local function guiCameraInfo()
   cgui.data["active_camera_fn"] = -1;
 end
 
+-- Change Active Camera Dropdown and Button
+local function guiSetCamera()
+  local ui = cgui.UI.form_controls;
+  local controller = cgui.UI.options_form;
+  local const = cgui.UI;
+
+  local camera_list = {};
+
+  for name, offset in pairs(camera_routines["offsets"]) do
+    table.insert(camera_list, "["..tohexstr(offset / 4, 2).."] "..name)
+  end
+
+  ui["camera_list"] = forms.dropdown(controller, camera_list,
+                        cgui.col(0) + const.hpad, cgui.row(5) + const.dropdown_offset,
+                        cgui:cellWidth()*2 - const.hpad*2, cgui:cellHeight());
+
+  ui["set_camera"] = forms.button(controller, "Change Camera", changeCamera,
+                        cgui.col(2), cgui.row(5),
+                        cgui:cellWidth(), cgui:cellHeight());
+end
+
 -- init GUI
 local function initGUI()
   -- Initialize Gui and save reference
@@ -545,6 +613,7 @@ local function initGUI()
   guiUnlockButton();
   guiStageSelect();
   guiCameraInfo();
+  guiSetCamera();
 end
 
 --------------------
@@ -589,6 +658,14 @@ local function forceStage()
   elseif SSB64.data["1P Stage NOPs"] then
     SSB64.data["1P Stage NOPs"] = false
   end
+end
+
+-- onClick handler for change camera button
+function changeCamera()
+  local elems = cgui.UI.form_controls;
+  local camera_id = bizstring.substring(forms.gettext(elems["camera_list"]), 3, 2);
+
+  setActiveCamera(tonumber(camera_id, 16));
 end
 
 function userAndGuiUpdate()
