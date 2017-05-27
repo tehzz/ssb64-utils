@@ -7,6 +7,7 @@ extern crate clap;
 use clap::{App, Arg};
 
 mod nemu_mem;
+mod nest;
 
 mod flat;
 use flat::flatten;
