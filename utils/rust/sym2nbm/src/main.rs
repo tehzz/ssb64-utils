@@ -39,20 +39,21 @@ fn main() {
     };
 
     // Debug printing
-    println!("Scope: {} || Nest: {:?}", scope, nest);
+    println!("Debug cli arguments:");
+    println!("Scope: {} \nNest: {:?}", scope, nest);
     println!("Data Mask: {}", data_mask);
 
     // Get BufReader of file from INPUT from clap
     let path = Path::new(matches.value_of("INPUT").unwrap());
     let f    = File::open(path).expect("Unable to read input file\n\n");
-    let br   = BufReader::new(f);
+    let br   = Box::new(BufReader::new(f));
 
     // re-format the file!
     let output =
         if matches.is_present("flatten") {
-            flatten(Box::new(br))
+            flatten(br, &data_mask)
         } else {
-            let test = nester(Box::new(br), scope, nest, &data_mask);
+            let test = nester(br, scope, nest, &data_mask);
             println!("Scope Test: {}", test);
             panic!("Only \"flatten\" is implemented so far :(");
         };

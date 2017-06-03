@@ -50,10 +50,7 @@ impl Container {
                                 into the final name string for a memory address
 */
 
-pub fn nester(br: Box<BufRead>, scope: usize, nest: Option<usize>, data_str: &str) -> String {
-    // TODO: fix for first or last value... check in iterator?
-    let data_filter = String::from(".") + data_str + ".";
-
+pub fn nester(br: Box<BufRead>, scope: usize, nest: Option<usize>, data_filter: &str) -> String {
     // Parse each line into it's components
     let parsed_lines: Vec<(MemType, u32, Vec<String>)> = br.lines()
         .filter_map( | line | line.ok() )
@@ -88,7 +85,7 @@ fn scope_and_nest_line(pair: Vec<String>, scope: usize, nest: Option<usize>, dat
     let addr = iter.next().unwrap();
     let name = iter.next().unwrap();
 
-    let mem = if name.contains(data_filter)
+    let mem = if name.split('.').any( |substr| substr == data_filter )
             { MemType::RAM } else { MemType::CPU };
 
     let hex_addr = u32::from_str_radix(&addr, 16);

@@ -2,7 +2,7 @@ use std::io::{BufRead};
 
 use nemu_mem::{MemType, SymbolInfo};
 
-pub fn flatten(br: Box<BufRead>) -> String {
+pub fn flatten(br: Box<BufRead>, data_filter: &str) -> String {
     /* read each line
     / check if each line conforms to "{addr} {name}"
     / -> Toss bad lines?
@@ -23,7 +23,7 @@ pub fn flatten(br: Box<BufRead>) -> String {
             }
         })
         .filter_map( |substrs| {
-            let mem = if substrs[1].contains(".data.")
+            let mem = if substrs[1].split('.').any(|substr| substr == data_filter)
                     { MemType::RAM } else { MemType::CPU };
 
             match u32::from_str_radix(&substrs[0],16) {
