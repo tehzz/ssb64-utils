@@ -17,7 +17,28 @@ impl Container {
             branches: HashMap::new()
         }
     }
-    fn print() -> String {
+
+    fn add_symbol(&mut self, sym: SymbolInfo) {
+        self.symbols.push(sym);
+    }
+
+    fn get_branch(&self, branch: &str) -> Option<&Container> {
+        self.branches.get(branch)
+    }
+
+    fn get_branch_mut(&mut self, branch: &str) -> Option<&mut Container> {
+        self.branches.get_mut(branch)
+    }
+
+    fn add_branch(&mut self, branch: &str) {
+        self.branches.insert(branch.to_string(), Container::new());
+    }
+
+    fn has_branch(&self, branch: &str) -> bool {
+        self.branches.contains_key(branch)
+    }
+
+    fn print(&self) -> String {
         String::from("unimplemented! :(")
     }
 }
@@ -103,9 +124,60 @@ fn scope_and_nest_line(pair: Vec<String>, scope: usize, nest:usize, data_filter:
     }
 }
 
-/*fn to_Container( substrs: Vec<String> ) -> Container {
+fn to_container ( addrs: Vec<(MemType, u32, Vec<String>)> ) -> Container {
+    let mut output = Container::new();
+    // step through every line in vector and fold into the base container
+    for &(mem_type, addr, ref split_name) in addrs.iter() {
+        let (name, scopes) = split_name.split_last().unwrap(); // TODO: remove unwrap
+        let sym = SymbolInfo::new(addr, &name, mem_type);
 
-}*/
+        // Now, step through the remaining parts of the split name string to
+        // find the nested container that should hold the symbol info
+        let mut home: &mut Container = scopes.iter()
+            .fold( &mut output, | nest_ref, substr | {
+
+                if nest_ref.has_branch(substr) {
+                    nest_ref.get_branch_mut(substr).unwrap()
+                } else {
+                    nest_ref.add_branch(substr);
+                    nest_ref.get_branch_mut(substr).unwrap()
+                }
+        });
+
+        // Add the SymbolInfo to the found Contianer
+        home.add_symbol(sym);
+    }
+
+    /*
+    addrs.iter()
+        .fold( &mut output,
+        | mut base_container, &(mem_type, addr, ref split_name) | {
+            let (name, scopes) = split_name.split_last().unwrap(); // TODO: remove unwrap
+            let sym = SymbolInfo::new(addr, &name, mem_type);
+
+            // Now, step through the remaining parts of the split name string to
+            // find the nested container that should hold the symbol info
+            let mut home: &mut Container = scopes.iter()
+                .fold( &mut base_container, | nest_ref, substr | {
+
+                    if nest_ref.has_branch(substr) {
+                        nest_ref.get_branch_mut(substr).unwrap()
+                    } else {
+                        nest_ref.add_branch(substr);
+                        nest_ref.get_branch_mut(substr).unwrap()
+                    }
+            });
+
+            // Add the SymbolInfo to the found Contianer
+            home.addSymbol(sym);
+
+            // Return the base container
+            base_container
+    });*/
+
+    // return filled container
+    output
+}
 
 
 //---Test Input and Output-------------------------------------------------------------------------
@@ -115,16 +187,19 @@ mod tests {
     use super::*;
     use std::io::{BufReader};
 
+/*
     const INPUT: &'static str = "80400000 boot.data.hitboxFlags
 80400004 boot.render
 80400004 boot.render.model
 80171f4c boot.draw.Bobomb.prologue";
+*/
 
+/*
     fn str_to_buf<'a>(input: &'static str) -> Box<BufRead> {
         Box::new(BufReader::new(input.as_bytes()))
     }
 
-    /*
+
     #[test]
     fn single_nest_input(){
         assert_eq!(nest(str_to_buf("80400000 boot.data.hitboxFlags"), 0, 0, "data"),
@@ -137,8 +212,9 @@ mod tests {
                     "boot
 \tdata
 \t\tMEM 0x80400000: hitboxFlags");
-    }
-    */
+    } */
+
+
     #[test]
     fn substrs_tests(){
         let strs = vec!["80400000".to_string(), "boot.data.1.2.3.4.hitboxFlag".to_string()];
@@ -151,4 +227,21 @@ mod tests {
         assert_eq!(output.1, expected.1);
         assert_eq!(output.2, expected.2)
     }
+
+    /*
+    #[test]
+    fn to_container_test(){
+        let tups = (MemType::RAM, 0x80400000, vec!["boot", "data", "hitboxFlag"]);
+        let sym = SymbolInfo::new(tups.1, tups.2[2], tups.0);
+        let mut expect = Container::new();
+
+        expect.add_branch(tups.2[0]);
+        expect.get_branch_mut(tups.2[0]).unwrap().add_branch(tups.2[1]);
+
+        let mut home = expect.get_branch(tups.2[0]).unwrap().get_branch_mut(tups.2[1]).unwrap();
+
+        home.add_symbol(sym);
+
+        assert_eq!(to_container(vec![tups]), expect);
+    }*/
 }
