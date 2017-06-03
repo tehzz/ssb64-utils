@@ -8,6 +8,7 @@ use clap::{App, Arg};
 
 mod nemu_mem;
 mod nest;
+use nest::nester;
 
 mod flat;
 use flat::flatten;
@@ -15,15 +16,31 @@ use flat::flatten;
 fn main() {
     let matches = cli().get_matches();
 
-    //--Start debugging stuff... remove eventually...
-    if let Some(input) = matches.value_of("INPUT") {
-        println!("Value for INPUT: {}", input);
-    }
+    //-- Get CLI settings
+    let scope = match matches.value_of("scope") {
+        Some(s) => match s.parse::<usize>() {
+            Ok(val) => val,
+            Err(_)  => 0
+        },
+        None => 0
+    };
 
-    if let Some(indent) = matches.value_of("indent"){
-        println!("Value for indent: {}", indent);
-    }
-    //--End Debugging BS
+    let nest: Option<usize> = match matches.value_of("nests") {
+        Some(s) => match s.parse::<usize>() {
+            Ok(val) => Some(val),
+            Err(_)  => None,
+        },
+        None => None
+    };
+
+    let data_mask = match matches.value_of("data mask") {
+        Some(mask) => mask,
+        None       => "data"
+    };
+
+    // Debug printing
+    println!("Scope: {} || Nest: {:?}", scope, nest);
+    println!("Data Mask: {}", data_mask);
 
     // Get BufReader of file from INPUT from clap
     let path = Path::new(matches.value_of("INPUT").unwrap());
@@ -35,11 +52,10 @@ fn main() {
         if matches.is_present("flatten") {
             flatten(Box::new(br))
         } else {
-            println!("Only \"flatten\" is implemented so far :(");
-            flatten(Box::new(br))
+            let test = nester(Box::new(br), scope, nest, &data_mask);
+            println!("Scope Test: {}", test);
+            panic!("Only \"flatten\" is implemented so far :(");
         };
-
-    println!("Test of FP:\n{}", output);
 
     // write the reformated string out to a file!
     let output_path =
@@ -64,18 +80,7 @@ fn main() {
             .expect("Unable to create output file :(\n\n");
 
     let mut bw = BufWriter::new(o);
-    bw.write_all(output.as_bytes()).expect("Unable to write output file");
-    /*
-    let test_addr = SymbolInfo {
-        addr: 0xA1234,
-        name: "Test Function".to_string(),
-        mem_type: MemType::CPU
-    };
-
-    println!("Test of SymbolInfo Print: {}", test_addr.print());
-    */
-
-
+    bw.write_all(output.as_bytes()).expect("Unable to write to output file");
 }
 
 fn cli<'a,'b>() -> App<'a,'b> {
@@ -87,19 +92,60 @@ fn cli<'a,'b>() -> App<'a,'b> {
             .help("Sets the input bass symbol file to convert")
             .required(true)
             .index(1))
-        .arg(Arg::with_name("indent")
-            .short("i")
-            .long("indent")
+        .arg(Arg::with_name("scope")
+            .short("s")
+            .long("scope")
             .takes_value(true)
-            .help("Set the indentation level.
-Any symbols with more than 'i' leves of scope have the higher levels put into folders
-and removed the bookmark's name")
+            .help("Set the \"scope\" level of the output nemu bookmark file.
+Any symbols whose name contains less than or equal to 's' scopes in bass will have those scopes added to the name of the symbol.
+The default value is 0.
+
+Example:
+    \"fn.main_menu.init.loadAssets\"
+
+    '-s 1': fn -> main_menu -> init.loadAssets
+    '-s 3': fn.main_menu.init.loadAssets
+
+")
+        )
+        .arg(Arg::with_name("nests")
+            .short("n")
+            .long("nest")
+            .takes_value(true)
+            .help("Set the \"nest\" level of the output nemu bookmark file.
+This option is similar to scope, but it works from the top of the scope tree.
+Setting a nest value limits how many nemu folders can be created from a symbol.
+The default value is \"none\", which is unlimited nesting. A '0' value is the same as setting the 'flatten' flag
+
+Example:
+    \"fn.main_menu.init.loadAssets\"
+
+    '    ': fn -> main_menu -> init -> loadAssets
+    '-n 0': fn.main_menu.init.loadAssets
+    '-n 1': fn -> main_menu.init.loadAssets
+    '-n 3': fn -> main_menu -> init -> loadAssets
+
+")
+        )
+        .arg(Arg::with_name("data mask")
+            .short("d")
+            .long("data-mask")
+            .takes_value(true)
+            .help("A string that can switch the memory type of a symbol from its default of 'CPU' to 'RAM'
+This string needs to be its own scope within bass.
+
+Default value is \"data\".
+
+")
         )
         .arg(Arg::with_name("flatten")
             .short("f")
             .long("flatten")
             .multiple(false)
-            .help("Make a quick one-to-one mapping between bass' output symbol file and Nemu's bookmarks")
+            .help("Make a quick one-to-one mapping between bass' output symbol file and Nemu's bookmarks.
+Every bass symbol is converted 1-to-1 into a nemu bookmark entry.
+
+")
         )
         .arg(Arg::with_name("output")
             .short("o")
@@ -107,6 +153,8 @@ and removed the bookmark's name")
             .takes_value(true)
             .multiple(false)
             .help("Explicitly set the name of the output file. Will automatically add \".nbm\" if no extension is specified
-By default, the output file is \"<INPUT>.nbm\"")
+By default, the output file is \"<INPUT>.nbm\"
+
+")
         )
 }

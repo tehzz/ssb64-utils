@@ -50,8 +50,8 @@ impl Container {
                                 into the final name string for a memory address
 */
 
-pub fn nest(br: Box<BufRead>, scope: usize, nest: usize, data_str: &str) -> String {
-    // First, get only the lines that are legal bass symbol file lines (addr + ' ' + constant_name)
+pub fn nester(br: Box<BufRead>, scope: usize, nest: Option<usize>, data_str: &str) -> String {
+    // TODO: fix for first or last value... check in iterator?
     let data_filter = String::from(".") + data_str + ".";
 
     // Parse each line into it's components
@@ -70,14 +70,20 @@ pub fn nest(br: Box<BufRead>, scope: usize, nest: usize, data_str: &str) -> Stri
             scope_and_nest_line(substrs, scope, nest, &data_filter)
         }).collect::<Vec<_>>();
 
-    // Combine the component lines into the Container Struct
+    println!("parsed_lines: \n{:?}\n\n", &parsed_lines);
 
-    // Return string from Container.print() fr
+    // Combine the component lines into the Container Struct
+    let output_container = to_container(parsed_lines);
+
+    println!("output_container: \n{:?}\n\n", output_container);
+
+    // Return string from Container.print() fn
+    // output_container.print()
     String::from("Not finished!")
 }
 
 
-fn scope_and_nest_line(pair: Vec<String>, scope: usize, nest:usize, data_filter: &str ) -> Option<(MemType, u32, Vec<String>)> {
+fn scope_and_nest_line(pair: Vec<String>, scope: usize, nest: Option<usize>, data_filter: &str ) -> Option<(MemType, u32, Vec<String>)> {
     let mut iter = pair.iter();
     let addr = iter.next().unwrap();
     let name = iter.next().unwrap();
@@ -103,17 +109,22 @@ fn scope_and_nest_line(pair: Vec<String>, scope: usize, nest:usize, data_filter:
         })
         // iterator over scope vector to limit for nesting
         .iter().rev().enumerate()
-        .inspect( | val | println!("inspect: {:?}", val))
+        //.inspect( | val | println!("inspect: {:?}", val))
         // fold into a final vector
         .fold(Vec::new(), | mut acc, (i, name) | {
-            if i <= nest {
-                acc.push(name.to_string());
-            } else {
-                let l: usize = acc.len();
-                let ref mut nested_str: String = acc[l-1];
-                nested_str.push('.');
-                nested_str.push_str(name);
-            }
+            match nest {
+                Some(n) => {
+                    if i <= n {
+                        acc.push(name.to_string());
+                    } else {
+                        let l: usize = acc.len();
+                        let ref mut nested_str: String = acc[l-1];
+                        nested_str.push('.');
+                        nested_str.push_str(name);
+                    }
+                },
+                None => {acc.push(name.to_string());}
+            };
 
             acc
         });
