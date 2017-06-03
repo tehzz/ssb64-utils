@@ -466,8 +466,6 @@ function getCameraRoutineByID(id)
   return getCameraRoutineByName(camera_name);
 end
 
-
-
 function getActiveCamera()
   local fn  = getActiveCameraRoutine()
   local cam = getCameraNameByRoutine(fn)
@@ -506,7 +504,8 @@ end
 ---------------
 cgui = {    -- whole thing is mainly copied from [scripthawk]
   UI = {
-    form_controls = {}, -- TODO: Detect UI position problems using this array
+    form_controls = {}, -- Most gui elements
+    camera_settings = {}, -- per-camera GUI forms to display/change settings
     form_padding = 8,
     label_offset = 5,
     dropdown_offset = 1,
@@ -654,6 +653,19 @@ local function guiSetCamera()
                         cgui.col(2), cgui.row(5),
                         cgui:cellWidth(), cgui:cellHeight());
 end
+
+local function guiDestroyCameraSettings()
+  local cam_gui = cgui.UI.camera_settings;
+
+  for _, handle in pairs(cam_gui) do
+    forms.destroy(handle)
+  end
+
+  cam_gui = {}
+
+  return true
+end
+
 
 -- init GUI
 local function initGUI()
