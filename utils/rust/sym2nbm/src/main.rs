@@ -54,8 +54,9 @@ fn main() {
             flatten(br, &data_mask)
         } else {
             let test = nester(br, scope, nest, &data_mask);
-            println!("Scope Test: {}", test);
-            panic!("Only \"flatten\" is implemented so far :(");
+            //println!("Scope Test:\n{}\n\n", test);
+            test
+            //panic!("Only \"flatten\" is implemented so far :(");
         };
 
     // write the reformated string out to a file!
@@ -81,7 +82,7 @@ fn main() {
             .expect("Unable to create output file :(\n\n");
 
     let mut bw = BufWriter::new(o);
-    bw.write_all(output.as_bytes()).expect("Unable to write to output file");
+    bw.write_all(output.trim().as_bytes()).expect("Unable to write to output file");
 }
 
 fn cli<'a,'b>() -> App<'a,'b> {

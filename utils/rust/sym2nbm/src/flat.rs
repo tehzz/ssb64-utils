@@ -88,10 +88,10 @@ CPU 0x80032604: loader.bootDMA";
 
     #[test]
     fn correct_flatten() {
-        assert_eq!(flatten(str_to_buf(VALIDINPUT)), VALIDOUTPUT);
+        assert_eq!(flatten(str_to_buf(VALIDINPUT), "data"), VALIDOUTPUT);
 
-        assert_eq!(flatten(str_to_buf(DATATEST)), CORRECT_DATATEST);
+        assert_eq!(flatten(str_to_buf(DATATEST), "data"), CORRECT_DATATEST);
 
-        assert_eq!(flatten(str_to_buf(NOTDATATEST)), CORRECT_NOTDATATEST);
+        assert_eq!(flatten(str_to_buf(NOTDATATEST), "data"), CORRECT_NOTDATATEST);
     }
 }
