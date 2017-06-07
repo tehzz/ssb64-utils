@@ -201,7 +201,7 @@ mod tests {
     use super::*;
     use std::io::{BufReader};
 
-
+//-------------------------------------------------------------------------------------------------
     const INPUT: &'static str = "80400000 boot.data.hitboxFlags
 80400004 boot.render
 80400004 boot.render.model
@@ -227,23 +227,21 @@ CPU 0x80400004: boot.render";
 CPU 0x80400004: boot.render
 CPU 0x80400004: boot.render.model
 MEM 0x80400000: boot.data.hitboxFlags";
-const THREE_SCOPE_NONE_NEST: &'static str = "CPU 0x80171F4C: boot.draw.Bobomb.prologue
+    const THREE_SCOPE_NONE_NEST: &'static str = "CPU 0x80171F4C: boot.draw.Bobomb.prologue
 CPU 0x80400004: boot.render
 CPU 0x80400004: boot.render.model
 MEM 0x80400000: boot.data.hitboxFlags";
 
-const ZERO_SCOPE_ZERO_NEST: &'static str = "CPU 0x80171F4C: boot.draw.Bobomb.prologue
+    const ZERO_SCOPE_ZERO_NEST: &'static str = "CPU 0x80171F4C: boot.draw.Bobomb.prologue
 CPU 0x80400004: boot.render
 CPU 0x80400004: boot.render.model
 MEM 0x80400000: boot.data.hitboxFlags";
-
-const ZERO_SCOPE_ONE_NEST: &'static str = "boot
+    const ZERO_SCOPE_ONE_NEST: &'static str = "boot
 \tCPU 0x80171F4C: draw.Bobomb.prologue
 \tCPU 0x80400004: render
 \tCPU 0x80400004: render.model
 \tMEM 0x80400000: data.hitboxFlags";
-
-const ZERO_SCOPE_TWO_NEST: &'static str = "boot
+    const ZERO_SCOPE_TWO_NEST: &'static str = "boot
 \tdata
 \t\tMEM 0x80400000: hitboxFlags
 \tdraw
@@ -251,8 +249,7 @@ const ZERO_SCOPE_TWO_NEST: &'static str = "boot
 \trender
 \t\tCPU 0x80400004: model
 \tCPU 0x80400004: render";
-
-
+//-------------------------------------------------------------------------------------------------
 
     fn str_to_buf<'a>(input: &'static str) -> Box<BufRead> {
         Box::new(BufReader::new(input.as_bytes()))

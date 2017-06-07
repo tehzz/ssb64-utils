@@ -38,11 +38,6 @@ fn main() {
         None       => "data"
     };
 
-    // Debug printing
-    println!("Debug cli arguments:");
-    println!("Scope: {} \nNest: {:?}", scope, nest);
-    println!("Data Mask: {}", data_mask);
-
     // Get BufReader of file from INPUT from clap
     let path = Path::new(matches.value_of("INPUT").unwrap());
     let f    = File::open(path).expect("Unable to read input file\n\n");
@@ -53,10 +48,7 @@ fn main() {
         if matches.is_present("flatten") {
             flatten(br, &data_mask)
         } else {
-            let test = nester(br, scope, nest, &data_mask);
-            //println!("Scope Test:\n{}\n\n", test);
-            test
-            //panic!("Only \"flatten\" is implemented so far :(");
+            nester(br, scope, nest, &data_mask)
         };
 
     // write the reformated string out to a file!
