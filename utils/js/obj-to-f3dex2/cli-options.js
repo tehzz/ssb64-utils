@@ -15,7 +15,7 @@ const options = [{
   example: `'${SCRIPT_NAME} --scale=2.0' or '${SCRIPT_NAME} -s 3.5'`
 },
 {
-  name: 'ouput',
+  name: 'output',
   short: 'o',
   type: 'path',
   description: 'The name of the output display list file',

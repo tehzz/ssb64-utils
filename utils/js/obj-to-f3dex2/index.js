@@ -73,9 +73,33 @@ fs.readFile(path.format(file), 'utf-8')
     })
   })
 
-  console.log(dl.printCmds())
-  console.log( [].concat.apply([], dl.vBanks.map( vb => vb.print(true) )) )
   return [p,dl]
+})
+.then( ([p, dl]) => {
+  // Get path to output file
+  let o_file_path
+  if ( options['output'] ) {
+    o_file_path = path.parse(options['output'])
+  } else {
+    let temp = Object.assign({}, file, {ext: ".bass" })
+    delete temp['base']
+
+    o_file_path = temp
+  }
+  o_file_path = path.format(o_file_path)
+
+  // Generate contents of output file
+  let output = [].concat.apply([], dl.vBanks.map( vb => vb.print(true) )).join("\n")
+
+  output += "\n\ndisplaylist:\n"
+  output += dl.printCmds().join("\n")
+
+  // write to output file
+  return [ fs.writeFile(o_file_path, output, 'utf-8'),
+           o_file_path ]
+})
+.then( ([_,outputPath]) => {
+  console.log(`Displaylist file written to ${outputPath}!`)
 })
 .catch(err => {
   switch (err.message) {
