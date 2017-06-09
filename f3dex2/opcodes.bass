@@ -19,13 +19,10 @@ macro gsDPNoOpTag(tag) {
 
 //===01 G_VTX====================================
 macro gsSPVertex(vaddr, numv, vbidx) {
-  variable word1(0x010000000)
-  if {numv} {
-    word0 = word0 | ({numv} << 5)
-  }
-  if {vbidx} {
-    word0 = word0 | ((({vbidx + numv}) & 0x7F) << 1)
-  }
+  variable word0(0x01000000)
+
+  word0 = word0 | ({numv} << 12)
+  word0 = word0 | ((({vbidx} + {numv}) & 0x7F) << 1)
 
   dw word0
   dw {vaddr}
@@ -70,7 +67,7 @@ macro gsSPBranchLessZraw(newdl, vbidx, zval) {
 
 //===05 G_TRI1===================================
 macro gsSP1Triangle(variable ver0, variable ver1, variable ver2, flag) {
-  variable word1(0x05000000)
+  variable word0(0x05000000)
   ver0 = ver0 << 1; ver1 = ver1 << 1; ver2 = ver2 << 1;
 
   if {flag} == 1 {
@@ -150,7 +147,7 @@ macro gsSPTexture(scaleS, scaleT, level, tile, on) {
   variable word0(0xD7000000)
   variable word1(0x00000000)
 
-  word0 = word0 | ( ({level} & 0x7) << 11 ) | ( ({title} & 0x7) < 8 ) | ({on} & 0x7)
+  word0 = word0 | ( ({level} & 0x7) << 11 ) | ( ({tile} & 0x7) << 8 ) | ({on} & 0x7)
   word1 = word1 | ( ({scaleS} & 0xFFFF) << 16 ) | ({scaleT} & 0xFFFF)
 
   dw word0, word1
@@ -218,12 +215,12 @@ macro gsSPLoadUcodeEx(tstart, dstart, dsize) {
 }
 
 //===0xDE G_DL===================================
-macro gsSPDisplayList(dl){
+macro gsSPDisplayList(dl) {
   variable word0(0xDE000000)
 
   dw word0, {dl}
 }
-macro gsSPBranchList(dl){
+macro gsSPBranchList(dl) {
   variable word0(0xDE010000)
 
   dw word0, {dl}
