@@ -33,7 +33,7 @@ G_TRI2.prototype = {
     let v = this.vertIndices,
         flag = this.flag
 
-    return `gsSP2Triangle(${v[0]}, ${v[1]}, ${v[2]}, ${flag}, ${v[3]}, ${v[4]}, ${v[5]}, ${flag})`
+    return `gsSP2Triangles(${v[0]}, ${v[1]}, ${v[2]}, ${flag}, ${v[3]}, ${v[4]}, ${v[5]}, ${flag})`
   },
   /**
    * emit the compiled microcode
