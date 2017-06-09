@@ -79,7 +79,8 @@ Vertex_Normal.prototype.print = function(bass){
 
   return `Vertex_Normal(${vn.x}, ${vn.y}, ${vn.z}, ` +
           `${s? s : 0}, ${t? t : 0}, ` +
-          `${nx? nx : 0}, ${ny? ny : 0}, ${nz? nz : 0})`
+          `${nx? nx : 0}, ${ny? ny : 0}, ${nz? nz : 0}, ` +
+          `${vn.alpha? vn.alpha : 0})`
 }
 
 module.exports = Vertex_Normal
