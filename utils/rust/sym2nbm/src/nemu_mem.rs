@@ -35,6 +35,12 @@ impl SymbolInfo {
     pub fn print(&self) -> String {
         format!("{}", self)
     }
+
+    pub fn get_values(&self) -> (u32, &str, MemType) {
+        (self.addr,
+         &self.name,
+         self.mem_type)
+    }
 }
 
 impl fmt::Display for SymbolInfo {

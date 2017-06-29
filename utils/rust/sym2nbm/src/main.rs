@@ -48,7 +48,7 @@ fn main() {
     // re-format the file!
     let output =
         if matches.is_present("flatten") {
-            flatten(br, &data_mask)
+            flatten(br, &data_mask, allow_duplicate_syms)
         } else {
             nester(br, scope, nest, &data_mask, allow_duplicate_syms)
         };
