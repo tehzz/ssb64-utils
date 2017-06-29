@@ -38,6 +38,8 @@ fn main() {
         None       => "data"
     };
 
+    let allow_duplicate_syms = matches.is_present("duplicates");
+
     // Get BufReader of file from INPUT from clap
     let path = Path::new(matches.value_of("INPUT").unwrap());
     let f    = File::open(path).expect("Unable to read input file\n\n");
@@ -48,7 +50,7 @@ fn main() {
         if matches.is_present("flatten") {
             flatten(br, &data_mask)
         } else {
-            nester(br, scope, nest, &data_mask)
+            nester(br, scope, nest, &data_mask, allow_duplicate_syms)
         };
 
     // write the reformated string out to a file!
@@ -86,6 +88,13 @@ fn cli<'a,'b>() -> App<'a,'b> {
             .help("Sets the input bass symbol file to convert")
             .required(true)
             .index(1))
+        .arg(Arg::with_name("duplicates")
+            .long("duplicates")
+            .help("Keep duplicate CPU symbols.
+By default, the \"shortest\" named CPU symbol will be kept")
+            .takes_value(false)
+            .multiple(false)
+        )
         .arg(Arg::with_name("scope")
             .short("s")
             .long("scope")

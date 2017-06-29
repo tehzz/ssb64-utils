@@ -1,5 +1,6 @@
 use std::io::{BufRead};
 use std::collections::BTreeMap;
+use std::cmp::Ordering;
 
 use nemu_mem::{MemType, SymbolInfo};
 
@@ -89,9 +90,10 @@ impl Container {
     2. "Scope" : Option<usize>  - Scope Values into Name String. Put {M} scopes (input.split('.'))
                                 into the final name string for a memory address
 */
-pub fn nester(br: Box<BufRead>, scope: usize, nest: Option<usize>, data_filter: &str) -> String {
+pub fn nester(br: Box<BufRead>, scope: usize, nest: Option<usize>, data_filter: &str, duplicates: bool)
+    -> String {
     // Parse each line into it's components
-    let parsed_lines: Vec<(MemType, u32, Vec<String>)> = br.lines()
+    let mut parsed_lines: Vec<(MemType, u32, Vec<String>)> = br.lines()
         .filter_map( | line | line.ok() )
         .filter_map( | line | {
             let pair = line.split_whitespace()
@@ -104,7 +106,30 @@ pub fn nester(br: Box<BufRead>, scope: usize, nest: Option<usize>, data_filter: 
             }
         }).filter_map( | substrs | {
             scope_and_nest_line(substrs, scope, nest, &data_filter)
-        }).collect::<Vec<_>>();
+        }).collect();
+    // sort parsed lines by the address and the number of scopes
+    parsed_lines.sort_by(|a, b| {
+        let &(.., addr_a, ref scope_a) = a;
+        let &(.., addr_b, ref scope_b) = b;
+        let len_a = scope_a.len();
+        let len_b = scope_b.len();
+
+        match addr_a.cmp(&addr_b) {
+            l@Ordering::Less    => l,
+            g@Ordering::Greater => g,
+            Ordering::Equal => len_a.cmp(&len_b)
+        }
+    });
+
+    // remove duplicates symbols for CPU addresses unless disallowed
+    if !duplicates {
+        parsed_lines.dedup_by(|a, b| {
+            let &mut (mem_type_a, addr_a, ..) = a;
+            let &mut (mem_type_b, addr_b, ..) = b;
+
+            mem_type_a == MemType::CPU && mem_type_b == MemType::CPU && addr_a == addr_b
+        })
+    }
 
     // Combine the component lines into the Container Struct
     let output_container = to_container(parsed_lines);
@@ -113,7 +138,9 @@ pub fn nester(br: Box<BufRead>, scope: usize, nest: Option<usize>, data_filter: 
     output_container.print(0)
 }
 
-fn scope_and_nest_line(pair: Vec<String>, scope: usize, nest: Option<usize>, data_filter: &str ) -> Option<(MemType, u32, Vec<String>)> {
+fn scope_and_nest_line(pair: Vec<String>, scope: usize, nest: Option<usize>, data_filter: &str)
+    -> Option<(MemType, u32, Vec<String>)> {
+
     let mut iter = pair.iter();
     let addr = iter.next().unwrap();
     let name = iter.next().unwrap();
@@ -215,6 +242,13 @@ mod tests {
 \trender
 \t\tCPU 0x80400004: model
 \tCPU 0x80400004: render";
+    const DEDUP_ZERO_SCOPE_NONE_NEST: &'static str = "boot
+\tdata
+\t\tMEM 0x80400000: hitboxFlags
+\tdraw
+\t\tBobomb
+\t\t\tCPU 0x80171F4C: prologue
+\tCPU 0x80400004: render";
 
     const ONE_SCOPE_NONE_NEST: &'static str = "boot
 \tdraw
@@ -249,6 +283,18 @@ MEM 0x80400000: boot.data.hitboxFlags";
 \trender
 \t\tCPU 0x80400004: model
 \tCPU 0x80400004: render";
+
+    const DUPLICATES: &'static str = "80400000 data.same1
+80400000 data.same2
+80012345 cpu.same2.prologue
+80012345 cpu.same1
+80012345 cpu.same2";
+
+    const DUPS_DEDUPPED: &'static str = "cpu
+\tCPU 0x80012345: same1
+data
+\tMEM 0x80400000: same1
+\tMEM 0x80400000: same2";
 //-------------------------------------------------------------------------------------------------
 
     fn str_to_buf<'a>(input: &'static str) -> Box<BufRead> {
@@ -269,17 +315,17 @@ MEM 0x80400000: boot.data.hitboxFlags";
 
     #[test]
     fn single_nest_input(){
-        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, Some(0), "data").trim(),
+        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, Some(0), "data", false).trim(),
                     "MEM 0x80400000: boot.data.hitboxFlags");
 
-        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, Some(1), "data").trim(),
+        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, Some(1), "data", false).trim(),
                     "boot
 \tMEM 0x80400000: data.hitboxFlags");
-        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, Some(2), "data").trim(),
+        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, Some(2), "data", false).trim(),
                     "boot
 \tdata
 \t\tMEM 0x80400000: hitboxFlags");
-        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, None, "data").trim(),
+        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, None, "data", false).trim(),
                     "boot
 \tdata
 \t\tMEM 0x80400000: hitboxFlags");
@@ -287,37 +333,43 @@ MEM 0x80400000: boot.data.hitboxFlags";
 
     #[test]
     fn data_filter_strings() {
-        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, Some(0), "data").trim(),
+        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, Some(0), "data", false).trim(),
                     "MEM 0x80400000: boot.data.hitboxFlags");
-        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, Some(0), "").trim(),
+        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, Some(0), "", false).trim(),
                     "CPU 0x80400000: boot.data.hitboxFlags");
-        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, Some(0), "boot").trim(),
+        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, Some(0), "boot", false).trim(),
                     "MEM 0x80400000: boot.data.hitboxFlags");
-        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, Some(0), "hitbox").trim(),
+        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, Some(0), "hitbox", false).trim(),
                     "CPU 0x80400000: boot.data.hitboxFlags");
-        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, Some(0), "hitboxFlags").trim(),
+        assert_eq!(nester(str_to_buf("80400000 boot.data.hitboxFlags"), 0, Some(0), "hitboxFlags", false).trim(),
                     "MEM 0x80400000: boot.data.hitboxFlags");
-        assert_eq!(nester(str_to_buf("80123456 1.2.3.4.symbol"), 0, Some(0), "1").trim(),
+        assert_eq!(nester(str_to_buf("80123456 1.2.3.4.symbol"), 0, Some(0), "1",false).trim(),
                     "MEM 0x80123456: 1.2.3.4.symbol");
     }
 
     #[test]
     fn full_nesting_scopes() {
-        assert_eq!(nester(str_to_buf(INPUT), 0, None, "data").trim(), ZERO_SCOPE_NONE_NEST);
-        assert_eq!(nester(str_to_buf(INPUT), 1, None, "data").trim(), ONE_SCOPE_NONE_NEST);
-        assert_eq!(nester(str_to_buf(INPUT), 2, None, "data").trim(), TWO_SCOPE_NONE_NEST);
-        assert_eq!(nester(str_to_buf(INPUT), 3, None, "data").trim(), THREE_SCOPE_NONE_NEST);
-        assert_eq!(nester(str_to_buf(INPUT), 10, None, "data").trim(), THREE_SCOPE_NONE_NEST);
+        assert_eq!(nester(str_to_buf(INPUT), 0, None, "data", true).trim(), ZERO_SCOPE_NONE_NEST,
+            "Failed Zero Scope + None Nest");
+        assert_eq!(nester(str_to_buf(INPUT), 1, None, "data", true).trim(), ONE_SCOPE_NONE_NEST);
+        assert_eq!(nester(str_to_buf(INPUT), 2, None, "data", true).trim(), TWO_SCOPE_NONE_NEST);
+        assert_eq!(nester(str_to_buf(INPUT), 3, None, "data", true).trim(), THREE_SCOPE_NONE_NEST);
+        assert_eq!(nester(str_to_buf(INPUT), 10, None, "data", true).trim(), THREE_SCOPE_NONE_NEST);
     }
 
     #[test]
     fn full_nesting_nests() {
-        assert_eq!(nester(str_to_buf(INPUT), 0, None, "data").trim(), ZERO_SCOPE_NONE_NEST);
-        assert_eq!(nester(str_to_buf(INPUT), 0, Some(0), "data").trim(), ZERO_SCOPE_ZERO_NEST);
-        assert_eq!(nester(str_to_buf(INPUT), 0, Some(1), "data").trim(), ZERO_SCOPE_ONE_NEST);
-        assert_eq!(nester(str_to_buf(INPUT), 0, Some(2), "data").trim(), ZERO_SCOPE_TWO_NEST);
-        assert_eq!(nester(str_to_buf(INPUT), 0, Some(3), "data").trim(), ZERO_SCOPE_NONE_NEST);
-        assert_eq!(nester(str_to_buf(INPUT), 0, Some(10), "data").trim(), ZERO_SCOPE_NONE_NEST);
+        assert_eq!(nester(str_to_buf(INPUT), 0, None, "data", true).trim(), ZERO_SCOPE_NONE_NEST);
+        assert_eq!(nester(str_to_buf(INPUT), 0, Some(0), "data", true).trim(), ZERO_SCOPE_ZERO_NEST);
+        assert_eq!(nester(str_to_buf(INPUT), 0, Some(1), "data", true).trim(), ZERO_SCOPE_ONE_NEST);
+        assert_eq!(nester(str_to_buf(INPUT), 0, Some(2), "data", true).trim(), ZERO_SCOPE_TWO_NEST);
+        assert_eq!(nester(str_to_buf(INPUT), 0, Some(3), "data", true).trim(), ZERO_SCOPE_NONE_NEST);
+        assert_eq!(nester(str_to_buf(INPUT), 0, Some(10), "data", true).trim(), ZERO_SCOPE_NONE_NEST);
     }
 
+    #[test]
+    fn dedup_test() {
+        assert_eq!(nester(str_to_buf(DUPLICATES), 0, None, "data", false).trim(), DUPS_DEDUPPED);
+        assert_eq!(nester(str_to_buf(INPUT), 0, None, "data", false).trim(),DEDUP_ZERO_SCOPE_NONE_NEST);
+    }
 }
