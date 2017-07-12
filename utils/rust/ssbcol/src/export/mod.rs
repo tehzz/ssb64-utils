@@ -44,7 +44,7 @@ struct ColPtrs {
     points: u32,
     connections: u32,
     planes: u32,
-    surface: u32,
+    col_direct: u32,
     spawn_count: u16,
     spawns: u32
 }
@@ -58,10 +58,10 @@ impl fmt::Display for ColPtrs {
     points:      {:#010X},
     connections: {:#010X},
     planes:      {:#010X},
-    surface:     {:#010X},
+    col_direct:  {:#010X},
     spawn_count: {:#06X},
     spawns:      {:#010X}
-}}", s.unk1, s.points, s.connections, s.planes, s.surface, s.spawn_count, s.spawns)
+}}", s.unk1, s.points, s.connections, s.planes, s.col_direct, s.spawn_count, s.spawns)
     }
 }
 
@@ -72,21 +72,16 @@ fn get_collisions_ptrs(arr: &[u8]) -> IoResult<ColPtrs> {
     //skip two byte pad
     c.seek(SeekFrom::Current(2))?;
     // read some pointer
-    let points_ptr = c.read_u32::<BE>().and_then(check_res_ptr)?;
-    let connect_ptr = c.read_u32::<BE>().and_then(check_res_ptr)?;
-    let planes_ptr = c.read_u32::<BE>().and_then(check_res_ptr)?;
-    let surface_ptr = c.read_u32::<BE>().and_then(check_res_ptr)?;
+    let points = c.read_u32::<BE>().and_then(check_res_ptr)?;
+    let connections = c.read_u32::<BE>().and_then(check_res_ptr)?;
+    let planes = c.read_u32::<BE>().and_then(check_res_ptr)?;
+    let col_direct = c.read_u32::<BE>().and_then(check_res_ptr)?;
     let spawn_count = c.read_u16::<BE>()?;
     c.seek(SeekFrom::Current(2))?;
-    let spawns_ptr = c.read_u32::<BE>().and_then(check_res_ptr)?;
+    let spawns = c.read_u32::<BE>().and_then(check_res_ptr)?;
 
     Ok(ColPtrs {
-        unk1,
-        points: points_ptr,
-        connections: connect_ptr,
-        planes: planes_ptr,
-        surface: surface_ptr,
-        spawn_count,
-        spawns: spawns_ptr
+        unk1, points, connections, planes,
+        col_direct, spawn_count, spawns
     })
 }
