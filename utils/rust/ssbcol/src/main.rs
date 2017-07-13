@@ -1,7 +1,20 @@
 #![recursion_limit = "1024"]
-
 #[macro_use]
 extern crate error_chain;
+extern crate byteorder;
+#[macro_use]
+extern crate bitflags;
+extern crate clap;
+use clap::{App, Arg, SubCommand};
+
+use std::fs::File;
+use std::path::{Path};
+
+mod configs;
+use configs::{ExportConfig};
+mod export;
+use export::export_collision;
+
 mod errors {
     error_chain!{
         types {}
@@ -12,18 +25,6 @@ mod errors {
     }
 }
 use errors::*;
-extern crate byteorder;
-extern crate clap;
-use clap::{App, Arg, SubCommand};
-
-use std::fs::File;
-//use std::io::{BufReader};
-use std::path::{Path};
-
-mod configs;
-use configs::{ExportConfig};
-mod export;
-use export::export_collision;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum Mode {
