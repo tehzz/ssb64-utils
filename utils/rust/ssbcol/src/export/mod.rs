@@ -73,6 +73,12 @@ pub fn export_collision(config: ExportConfig) -> Result<String> {
         .chain_err(|| "reading BE collision pointers into array")?;
     println!("Debug points raw:\n{:?}", points_raw);
 
+    let points: Result<Vec<_>> = points_raw.chunks(3).map(|parts|
+            CollisionPoint::from_raw(parts)
+        ).collect();
+
+    let test = points.chain_err(||"testing ? operator")?;
+    println!("Debug processed points:\n{:#?}", test);
 
     Ok(format!("Not Implemented, but\n col-ptr: {:08X}", config.col_ptr))
 }
@@ -142,7 +148,7 @@ impl ColDetection {
 //   (max() + 1) * 6 -> length in bytes of points array
 // Read Points array
 
-/*
+
 #[derive(Debug)]
 struct CollisionPoint {
     x: i16,
@@ -150,18 +156,61 @@ struct CollisionPoint {
     prop_flag: ColProperty,
     floor_type: Floor
 }
+
+impl CollisionPoint {
+    fn from_raw(i: &[u16]) -> Result<Self> {
+        if i.len() < 3 {
+            return Err("input slice to CollisionPoint::from_raw too small".into())
+        }
+
+        let x = i[0] as i16;
+        let y = i[1] as i16;
+        let flag = (i[2] & 0xFF00 >> 8) as u8;
+        let floor = (i[2] & 0xFF) as u8;
+
+        let prop_flag = ColProperty::from_bits(flag)
+            .ok_or(format!("Unknown collision property {:#X}", flag))?;
+        let floor_type = Floor::from_bits(floor)
+            .ok_or(
+                format!("Unable to convert \"{:#X}\" to a floor type. Values should range 0 to 0xF", floor)
+            )?;
+
+        Ok(CollisionPoint{x, y, prop_flag, floor_type})
+    }
+}
+
 #[derive(Debug)]
+#[allow(dead_code, non_camel_case_types)]
 enum Floor {
     Normal       = 0x00,
+    Fric1        = 0x01,
+    Fric2        = 0x02,
+    Fric3        = 0x03,
+    Fric4        = 0x04,
+    Fric5        = 0x05,
+    Fric6        = 0x06,
     LavaSideways = 0x07,
     Acid         = 0x08,
     LavaUp10     = 0x09,
     Spikes       = 0x0A,
-    LavaUp1      = 0x0B,
+    LavaUp1_B    = 0x0B,
     Unk1         = 0x0C,
     Unk2         = 0x0D,
     BtPPlatform  = 0x0E,
-    LavaUp1_Dup  = 0x0F
+    LavaUp1_F    = 0x0F
+}
+
+
+use std::mem;
+impl Floor {
+    fn from_bits(bits: u8) -> Option<Floor> {
+        match bits {
+            b @ 0...0x0F => unsafe {
+                Some(mem::transmute::<u8, Floor>(b))
+            },
+            _ => None
+        }
+    }
 }
 
 bitflags! {
@@ -169,8 +218,9 @@ bitflags! {
     struct ColProperty: u8 {
         const FALL_THRU  = 0b10000000;
         const LEDGE_GRAB = 0b01000000;
+        const NORMAL     = 0b00000000;
     }
-} */
+}
 
 fn check_res_ptr(input: u32) -> IoResult<u32> {
     // two MSB == 0x80, probably pointer from a RAM dump
