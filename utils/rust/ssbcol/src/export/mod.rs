@@ -71,17 +71,52 @@ pub fn export_collision(config: ExportConfig) -> Result<String> {
 
     f.read_u16_into::<BE>(&mut points_raw)
         .chain_err(|| "reading BE collision pointers into array")?;
-    println!("Debug points raw:\n{:?}", points_raw);
+    //println!("Debug points raw:\n{:?}", points_raw);
 
     let points: Result<Vec<_>> = points_raw.chunks(3).map(|parts|
             CollisionPoint::from_raw(parts)
         ).collect();
 
-    let test = points.chain_err(||"testing ? operator")?;
+    let test = points.chain_err(||"converting raw u16 slice into CollisionPoint vec")?;
     println!("Debug processed points:\n{:#?}", test);
 
-    Ok(format!("Not Implemented, but\n col-ptr: {:08X}", config.col_ptr))
+    //----Read Spawn length and spawn points-------
+    f.seek(SeekFrom::Start(main_ptrs.spawns as u64))
+        .chain_err(||format!("seeking to spawn array at {:#010X}", main_ptrs.spawns))?;
+    let total_spawns = main_ptrs.spawn_count;   // number of 6 byte (u16, i16, i16) spawn structures
+    let mut spawns_raw = vec![0u16; (total_spawns * 3) as usize];
+    f.read_u16_into::<BE>(&mut spawns_raw)
+        .chain_err(||"reading spawn points area as u16 BE")?;
+    println!("Debug spawn points:\n{:?}", spawns_raw);
+
+    let spawn_res: Result<Vec<_>> = spawns_raw.chunks(3).map(Spawn::from_raw).collect();
+    let spawns = spawn_res.chain_err(||"converting raw u16 slice into Spawn vec")?;
+    println!("Spawn points:\n{:#?}", spawns);
+
+
+    Ok(format!("Not Fully Implemented"))
 }
+
+#[derive(Debug)]
+struct Spawn {
+    id: u16,
+    x: i16,
+    y: i16
+}
+
+impl Spawn {
+    fn from_raw(points: &[u16]) -> Result<Self> {
+        if points.len() < 3 {
+            return Err(format!("input slice {:?} to small for Spawn::from_raw",points).into())
+        }
+        Ok(Spawn{
+            id: points[0],
+            x: points[1] as i16,
+            y: points[2] as i16
+        })
+    }
+}
+
 #[derive(Debug)]
 struct PlaneInfo {
     start: u16,
@@ -165,7 +200,7 @@ impl CollisionPoint {
 
         let x = i[0] as i16;
         let y = i[1] as i16;
-        let flag = (i[2] & 0xFF00 >> 8) as u8;
+        let flag = ((i[2] & 0xFF00) >> 8) as u8;
         let floor = (i[2] & 0xFF) as u8;
 
         let prop_flag = ColProperty::from_bits(flag)
@@ -174,6 +209,7 @@ impl CollisionPoint {
             .ok_or(
                 format!("Unable to convert \"{:#X}\" to a floor type. Values should range 0 to 0xF", floor)
             )?;
+        println!("Debug flag: {:X} == {:X} == {:?}", i[2], flag, prop_flag);
 
         Ok(CollisionPoint{x, y, prop_flag, floor_type})
     }

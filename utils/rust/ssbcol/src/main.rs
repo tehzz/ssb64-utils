@@ -88,14 +88,12 @@ fn run() -> Result<()> {
     Ok(())
 }
 
-fn parse_str_to_u32(input: &str) -> Result<u32> {
-    let test = if input.starts_with("0x") || input.starts_with("0X") {
+fn parse_str_to_u32(input: &str) -> ::std::result::Result<u32, ::std::num::ParseIntError> {
+    if input.starts_with("0x") || input.starts_with("0X") {
         u32::from_str_radix(&input[2..], 16)
     } else {
         input.parse::<u32>()
-    };
-    // thanks error_chain
-    Ok(try!(test))
+    }
 }
 
 fn cli<'a,'b>() -> App<'a,'b> {
