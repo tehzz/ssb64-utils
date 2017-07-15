@@ -4,7 +4,7 @@
     {
       "x": -100,
       "y": 0,
-      "properties": "NORMAL",
+      "properties": "LEDGE_GRAB",
       "floor": "Normal"
     },
     {
@@ -15,21 +15,30 @@
     },
 
   ],
-  "top" : [
+  "collision" : {
+    "top" : {
+      "planes" : [
+        [0, 1],
+        [2, 3],
+        [4, 5]
+      ]
+    },
+    "bottom" : [
+
+    ],
+    "right" : [
+
+    ],
+    "left" : [
+
+    ]
+  },
+  "spawns" : [
     {
-      "plane": [0, 1],
-      "plane": [2, 3],
-      "plane": [4, 5]
+      "type": 0,
+      "x" : -10,
+      "y" : 100
     }
-  ],
-  "bottom" : [
-
-  ],
-  "right" : [
-
-  ],
-  "left" : [
-
   ]
 }
 ```
