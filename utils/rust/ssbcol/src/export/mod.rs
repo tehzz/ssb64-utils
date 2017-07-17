@@ -3,6 +3,7 @@ use errors::*;
 use byteorder::{BE, ReadBytesExt};
 use std::io::{Cursor, Read, Seek, SeekFrom, Result as IoResult};
 use std::fmt;
+use collision::{Spawn, PlaneInfo, CollisionPoint};
 
 pub fn export_collision(config: ExportConfig) -> Result<String> {
     let mut f = config.input;
@@ -87,46 +88,18 @@ pub fn export_collision(config: ExportConfig) -> Result<String> {
     let mut spawns_raw = vec![0u16; (total_spawns * 3) as usize];
     f.read_u16_into::<BE>(&mut spawns_raw)
         .chain_err(||"reading spawn points area as u16 BE")?;
-    println!("Debug spawn points:\n{:?}", spawns_raw);
+    //println!("Debug spawn points:\n{:?}", spawns_raw);
 
     let spawn_res: Result<Vec<_>> = spawns_raw.chunks(3).map(Spawn::from_raw).collect();
     let spawns = spawn_res.chain_err(||"converting raw u16 slice into Spawn vec")?;
-    println!("Spawn points:\n{:#?}", spawns);
+    for s in spawns.iter() {
+        println!("{}", s);
+    };
 
 
     Ok(format!("Not Fully Implemented"))
 }
 
-#[derive(Debug)]
-struct Spawn {
-    id: u16,
-    x: i16,
-    y: i16
-}
-
-impl Spawn {
-    fn from_raw(points: &[u16]) -> Result<Self> {
-        if points.len() < 3 {
-            return Err(format!("input slice {:?} to small for Spawn::from_raw",points).into())
-        }
-        Ok(Spawn{
-            id: points[0],
-            x: points[1] as i16,
-            y: points[2] as i16
-        })
-    }
-}
-
-#[derive(Debug)]
-struct PlaneInfo {
-    start: u16,
-    length: u16
-}
-impl PlaneInfo {
-    fn new(s: u16, l: u16) -> Self {
-        PlaneInfo{ start: s, length: l}
-    }
-}
 fn to_plane_info(i: &u32) -> PlaneInfo {
     let s = ((*i & 0xFFFF0000) >> 16) as u16;
     let l = (*i & 0x0000FFFF) as u16;
@@ -136,7 +109,7 @@ fn to_plane_info(i: &u32) -> PlaneInfo {
 
 #[derive(Debug)]
 struct ColDetection {
-    unk1 : u16,
+    id : u16,
     top_start: u16,
     top_size: u16,
     bottom_start: u16,
@@ -150,7 +123,7 @@ struct ColDetection {
 impl ColDetection {
     fn new(raw: &[u16; 9]) -> Self {
         ColDetection {
-            unk1: raw[0],
+            id: raw[0],
             top_start: raw[1],
             top_size: raw[2],
             bottom_start: raw[3],
@@ -183,80 +156,6 @@ impl ColDetection {
 //   (max() + 1) * 6 -> length in bytes of points array
 // Read Points array
 
-
-#[derive(Debug)]
-struct CollisionPoint {
-    x: i16,
-    y: i16,
-    prop_flag: ColProperty,
-    floor_type: Floor
-}
-
-impl CollisionPoint {
-    fn from_raw(i: &[u16]) -> Result<Self> {
-        if i.len() < 3 {
-            return Err("input slice to CollisionPoint::from_raw too small".into())
-        }
-
-        let x = i[0] as i16;
-        let y = i[1] as i16;
-        let flag = ((i[2] & 0xFF00) >> 8) as u8;
-        let floor = (i[2] & 0xFF) as u8;
-
-        let prop_flag = ColProperty::from_bits(flag)
-            .ok_or(format!("Unknown collision property {:#X}", flag))?;
-        let floor_type = Floor::from_bits(floor)
-            .ok_or(
-                format!("Unable to convert \"{:#X}\" to a floor type. Values should range 0 to 0xF", floor)
-            )?;
-        println!("Debug flag: {:X} == {:X} == {:?}", i[2], flag, prop_flag);
-
-        Ok(CollisionPoint{x, y, prop_flag, floor_type})
-    }
-}
-
-#[derive(Debug)]
-#[allow(dead_code, non_camel_case_types)]
-enum Floor {
-    Normal       = 0x00,
-    Fric1        = 0x01,
-    Fric2        = 0x02,
-    Fric3        = 0x03,
-    Fric4        = 0x04,
-    Fric5        = 0x05,
-    Fric6        = 0x06,
-    LavaSideways = 0x07,
-    Acid         = 0x08,
-    LavaUp10     = 0x09,
-    Spikes       = 0x0A,
-    LavaUp1_B    = 0x0B,
-    Unk1         = 0x0C,
-    Unk2         = 0x0D,
-    BtPPlatform  = 0x0E,
-    LavaUp1_F    = 0x0F
-}
-
-
-use std::mem;
-impl Floor {
-    fn from_bits(bits: u8) -> Option<Floor> {
-        match bits {
-            b @ 0...0x0F => unsafe {
-                Some(mem::transmute::<u8, Floor>(b))
-            },
-            _ => None
-        }
-    }
-}
-
-bitflags! {
-    #[derive(Default)]
-    struct ColProperty: u8 {
-        const FALL_THRU  = 0b10000000;
-        const LEDGE_GRAB = 0b01000000;
-        const NORMAL     = 0b00000000;
-    }
-}
 
 fn check_res_ptr(input: u32) -> IoResult<u32> {
     // two MSB == 0x80, probably pointer from a RAM dump

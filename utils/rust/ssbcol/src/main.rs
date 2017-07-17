@@ -14,6 +14,7 @@ mod configs;
 use configs::{ExportConfig};
 mod export;
 use export::export_collision;
+mod collision;      // structs to represent collision data
 
 mod errors {
     error_chain!{
