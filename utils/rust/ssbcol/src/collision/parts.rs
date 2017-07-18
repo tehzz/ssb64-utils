@@ -2,10 +2,51 @@ use std::fmt;
 use std::mem;
 use errors::*;
 
+/// This structure represents which planes have collision from which direction
+/// There can be any number (?) of sets to define different collisions
+#[derive(Debug)]
+pub struct ColDetection {
+    id : u16,
+    top_start: u16,
+    top_size: u16,
+    bottom_start: u16,
+    bottom_size: u16,
+    right_start: u16,
+    right_size: u16,
+    left_start: u16,
+    left_size: u16
+}
+
+impl ColDetection {
+    pub fn from_raw(raw: &[u16; 9]) -> Self {
+        ColDetection {
+            id: raw[0],
+            top_start: raw[1],
+            top_size: raw[2],
+            bottom_start: raw[3],
+            bottom_size: raw[4],
+            right_start: raw[5],
+            right_size: raw[6],
+            left_start: raw[7],
+            left_size: raw[8]
+        }
+    }
+    pub fn calc_total_planes(&self) -> u16 {
+        let s = self;
+
+        *[s.top_start + s.top_size,
+         s.bottom_start + s.bottom_size,
+         s.right_start + s.right_size,
+         s.left_start + s.left_size
+        ].iter().max().unwrap()
+    }
+
+}
+
 /// This struct represents a spawn point in ssb64
 #[derive(Debug)]
 pub struct Spawn {
-    id: u16,
+    stype: u16,
     x: i16,
     y: i16
 }
@@ -15,9 +56,9 @@ impl fmt::Display for Spawn {
         let s = self;
 
         write!(f, "Spawn {{
-    id: {:#06X},
-    x:  {},
-    y:  {},\n}}", s.id, s.x, s.y)
+    stype: {:#06X},
+    x:     {},
+    y:     {},\n}}", s.stype, s.x, s.y)
     }
 }
 
@@ -27,7 +68,7 @@ impl Spawn {
             return Err(format!("input slice {:?} to small for Spawn::from_raw",points).into())
         }
         Ok(Spawn{
-            id: points[0],
+            stype: points[0],
             x: points[1] as i16,
             y: points[2] as i16
         })
@@ -69,6 +110,7 @@ impl CollisionPoint {
 
         let prop_flag = ColProperty::from_bits(flag)
             .ok_or(format!("Unknown collision property {:#X}", flag))?;
+        println!("Debug flag: {:#X} == {:#?}",flag, prop_flag );
         let floor_type = Floor::from_bits(floor)
             .ok_or(
                 format!("Unable to convert \"{:#X}\" to a floor type. Values should range 0 to 0xF", floor)
@@ -113,8 +155,8 @@ impl Floor {
 bitflags! {
     #[derive(Default)]
     struct ColProperty: u8 {
-        const FALL_THRU  = 0b10000000;
-        const LEDGE_GRAB = 0b01000000;
+        const LEDGE_GRAB = 0b10000000;
+        const FALL_THRU  = 0b01000000;
         const NORMAL     = 0b00000000;
     }
 }

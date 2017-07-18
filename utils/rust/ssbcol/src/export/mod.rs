@@ -1,41 +1,45 @@
 use configs::{ExportConfig};
 use errors::*;
 use byteorder::{BE, ReadBytesExt};
-use std::io::{Cursor, Read, Seek, SeekFrom, Result as IoResult};
+use std::io::{Seek, SeekFrom};
 use std::fmt;
-use collision::{Spawn, PlaneInfo, CollisionPoint};
+use collision::{Spawn, PlaneInfo, CollisionPoint, ColDetection};
 
 pub fn export_collision(config: ExportConfig) -> Result<String> {
     let mut f = config.input;
     let ptr = config.col_ptr;
     // array for collision pointers data : [u8; 0x1C]
-    let mut col_ptrs_raw = [0u8; 0x1C];
+    let mut col_ptrs_raw = [0u32; 7];
 
     f.seek(SeekFrom::Start(ptr as u64))
         .chain_err(||
             format!("seeking to collision pointers at 0x{:08X}", ptr)
         )?;
-    f.read_exact(&mut col_ptrs_raw)
+    f.read_u32_into::<BE>(&mut col_ptrs_raw)
         .chain_err(||"reading 0x1C bytes for collision pointers")?;
 
-    let main_ptrs = get_collisions_ptrs(&col_ptrs_raw)
+    let main_ptrs = ColPtrs::from_raw(&col_ptrs_raw)
         .chain_err(|| "formatting collision pointers")?;
 
     println!("Testing reading of pointer struct:\n{}", main_ptrs);
 
-    // get collision detection struct
+    // get all collision detection structs
     f.seek(SeekFrom::Start(main_ptrs.col_direct as u64))
         .chain_err(||
             format!("seeking to collision detection struct at {:#010X}", main_ptrs.col_direct)
         )?;
-    let mut col_detect_raw = [0u16; 0x9];
-    f.read_u16_into::<BE>(&mut col_detect_raw)
+    let mut col_detect: Vec<ColDetection> = Vec::with_capacity(main_ptrs.col_count as usize);
+
+    for _ in 0..main_ptrs.col_count {
+        let mut col_detect_raw = [0u16; 0x9];
+        f.read_u16_into::<BE>(&mut col_detect_raw)
         .chain_err(|| "reading 0x12 bytes for collision detection struct")?;
 
-    let col_detect = ColDetection::new(&col_detect_raw);
+        col_detect.push(ColDetection::from_raw(&col_detect_raw));
+    }
 
     println!("Debug collision detections struct: \n{:#?}", &col_detect);
-    let total_planes = col_detect.calc_total_planes() as usize;
+    let total_planes = col_detect.iter().map(|dect| dect.calc_total_planes()).max().unwrap() as usize;
     println!("Testing size of planes array: {:#X}", total_planes);
 
     // get plane descriptions (start + len into connections)
@@ -100,51 +104,6 @@ pub fn export_collision(config: ExportConfig) -> Result<String> {
     Ok(format!("Not Fully Implemented"))
 }
 
-fn to_plane_info(i: &u32) -> PlaneInfo {
-    let s = ((*i & 0xFFFF0000) >> 16) as u16;
-    let l = (*i & 0x0000FFFF) as u16;
-
-    PlaneInfo::new(s, l)
-}
-
-#[derive(Debug)]
-struct ColDetection {
-    id : u16,
-    top_start: u16,
-    top_size: u16,
-    bottom_start: u16,
-    bottom_size: u16,
-    right_start: u16,
-    right_size: u16,
-    left_start: u16,
-    left_size: u16
-}
-
-impl ColDetection {
-    fn new(raw: &[u16; 9]) -> Self {
-        ColDetection {
-            id: raw[0],
-            top_start: raw[1],
-            top_size: raw[2],
-            bottom_start: raw[3],
-            bottom_size: raw[4],
-            right_start: raw[5],
-            right_size: raw[6],
-            left_start: raw[7],
-            left_size: raw[8]
-        }
-    }
-    fn calc_total_planes(&self) -> u16 {
-        let s = self;
-
-        *[s.top_start + s.top_size,
-         s.bottom_start + s.bottom_size,
-         s.right_start + s.right_size,
-         s.left_start + s.left_size
-        ].iter().max().unwrap()
-    }
-
-}
 
 // Possible safe strat:
 // Read collision direction struct since it's a fixed size of 0x14 bytes
@@ -156,19 +115,26 @@ impl ColDetection {
 //   (max() + 1) * 6 -> length in bytes of points array
 // Read Points array
 
+fn to_plane_info(i: &u32) -> PlaneInfo {
+    let s = ((*i & 0xFFFF0000) >> 16) as u16;
+    let l = (*i & 0x0000FFFF) as u16;
 
-fn check_res_ptr(input: u32) -> IoResult<u32> {
+    PlaneInfo::new(s, l)
+}
+
+fn cnvrt_res_ptr(input: u32) -> u32 {
     // two MSB == 0x80, probably pointer from a RAM dump
     if (input >> 24) == 0x80 {
-        Ok(input)
+        input
     } else {
         // assume resource file; take lower half and convert from words to bytes
-        Ok((input & 0xFFFF) << 2)
+        (input & 0xFFFF) << 2
     }
 }
+
 #[derive(Debug)]
 struct ColPtrs {
-    unk1: u16,
+    col_count: u16,
     points: u32,
     connections: u32,
     planes: u32,
@@ -176,40 +142,38 @@ struct ColPtrs {
     spawn_count: u16,
     spawns: u32
 }
+impl ColPtrs {
+    fn from_raw(i: &[u32; 7]) -> Result<Self> {
+        let col_count = ((i[0] & 0xFFFF0000)>> 16) as u16;
+        if col_count == 0 {
+            return Err("Read initial collision count u16 as 0; \
+            Pointer to collision pointer struct maybe incorrect".into())
+        }
 
+        let points      = cnvrt_res_ptr(i[1]);
+        let connections = cnvrt_res_ptr(i[2]);
+        let planes      = cnvrt_res_ptr(i[3]);
+        let col_direct  = cnvrt_res_ptr(i[4]);
+        let spawn_count = ((i[5] & 0xFFFF0000)>> 16) as u16;
+        let spawns      = cnvrt_res_ptr(i[6]);
+
+        Ok(ColPtrs{col_count, points, connections, planes,
+                    col_direct, spawn_count, spawns})
+    }
+}
 impl fmt::Display for ColPtrs {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let s = self;
 
         write!(f, "ColPtrs {{
-    unk1:        {:#06X},
+    col_count:   {:#06X},
     points:      {:#010X},
     connections: {:#010X},
     planes:      {:#010X},
     col_direct:  {:#010X},
     spawn_count: {:#06X},
-    spawns:      {:#010X}
-}}", s.unk1, s.points, s.connections, s.planes, s.col_direct, s.spawn_count, s.spawns)
+    spawns:      {:#010X}\n}}",
+        s.col_count, s.points, s.connections, s.planes,
+        s.col_direct, s.spawn_count, s.spawns)
     }
-}
-
-fn get_collisions_ptrs(arr: &[u8]) -> IoResult<ColPtrs> {
-    let mut c = Cursor::new(arr);
-    // read some values
-    let unk1 = c.read_u16::<BE>()?;
-    //skip two byte pad
-    c.seek(SeekFrom::Current(2))?;
-    // read some pointer
-    let points = c.read_u32::<BE>().and_then(check_res_ptr)?;
-    let connections = c.read_u32::<BE>().and_then(check_res_ptr)?;
-    let planes = c.read_u32::<BE>().and_then(check_res_ptr)?;
-    let col_direct = c.read_u32::<BE>().and_then(check_res_ptr)?;
-    let spawn_count = c.read_u16::<BE>()?;
-    c.seek(SeekFrom::Current(2))?;
-    let spawns = c.read_u32::<BE>().and_then(check_res_ptr)?;
-
-    Ok(ColPtrs {
-        unk1, points, connections, planes,
-        col_direct, spawn_count, spawns
-    })
 }
