@@ -67,6 +67,7 @@ enum Side {
 /// This struct represents a spawn point in ssb64
 #[derive(Debug, Serialize)]
 pub struct Spawn {
+    #[serde(rename = "type")]
     stype: u16,
     x: i16,
     y: i16
@@ -114,7 +115,9 @@ impl PlaneInfo {
 pub struct CollisionPoint {
     x: i16,
     y: i16,
+    #[serde(rename = "properties")]
     prop_flag: ColProperty,
+    #[serde(rename = "floor")]
     floor_type: Floor
 }
 

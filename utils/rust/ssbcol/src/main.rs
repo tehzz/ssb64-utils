@@ -14,7 +14,7 @@ extern crate clap;
 use clap::{App, Arg, SubCommand};
 
 use std::fs::File;
-use std::path::{Path};
+use std::path::{Path, PathBuf};
 
 mod configs;
 use configs::{ExportConfig};
@@ -79,21 +79,30 @@ fn run() -> Result<()> {
         Mode::Import => println!("Import not implemented yet T-T"),
         Mode::Export => {
             let submatch = matches.subcommand_matches("export").unwrap();
-            let path = Path::new(submatch.value_of("input").unwrap());
-            let f    = File::open(path)
-                        .chain_err(|| "Unable to open input file for export")?;
-            //let br   = Box::new(BufReader::new(f));
+            let path  = Path::new(submatch.value_of("input").unwrap());
+            let f     = File::open(path)
+                         .chain_err(|| "Unable to open input file for export")?;
             let in_ptr =  submatch.value_of("col-ptr").unwrap();
             let ptr  = parse_str_to_u32(in_ptr)
-                .chain_err(|| format!("\"--collision\" flag called with \"{}\". Call with \"0x\" for hex", in_ptr))?;
+                .chain_err(|| format!("\"--collision\" flag called with \"{}\". Call with an integer (\"0x\" for hex)", in_ptr))?;
 
             let config = ExportConfig::new(f, ptr, verbose);
 
-            let output = export_collision(config)?;
+            let parsed_col = export_collision(config)
+                .chain_err(|| format!("couldn't parse collision from input file <{:?}>", path))?;
+            // get the output file
+            let o_path = if let Some(named) = submatch.value_of("output") {
+                PathBuf::from(named)
+            } else {
+                let mut p = path.to_path_buf();
+                p.set_extension("json");
+                p
+            };
+            let o = File::create(&o_path)
+                .chain_err(|| format!("creating or reading output file <{:?}>", &o_path))?;
 
-            let json_test = serde_json::to_string_pretty(&output)?;
-
-            println!("{}", json_test);
+            serde_json::to_writer_pretty(o, &parsed_col)
+                .chain_err(|| "write serialized json to output")?;
         }
     }
 

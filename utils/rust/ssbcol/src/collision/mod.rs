@@ -58,12 +58,12 @@ impl FormattedCollision {
 }
 
 fn condense_to_planes(pi: &[PlaneInfo], con: &[u16]) -> Vec<Planes> {
+    // start and length map into the connections array
+    // the connections array is an ordered list of indices into collision point array
+    // those indices map to points that define the plane
+    // create a stand-alone vec of usize indices by slicing off part of the connections array
     pi.iter().map(|&PlaneInfo{start, length}| {
         let end = (start + length) as usize;
-        // start and length map into the connections array
-        // the connections array is an ordered list of indices into collision point array
-        // those indices map to points that define the plane
-        // create a stand-alone vec of usize indices by slicing off part of the connections array
         Planes(con[start as usize..end].to_vec())
     }).collect()
 }

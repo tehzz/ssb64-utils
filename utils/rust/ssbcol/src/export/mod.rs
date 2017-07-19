@@ -24,7 +24,10 @@ pub fn export_collision(config: ExportConfig) -> Result<FormattedCollision> {
         .chain_err(|| "formatting collision pointers")?;
 
     /**
-     *  Generate a vec containing all collision direction detection structs
+     * Parse the array of "collision direction detection" structs. These structs are a
+     * fixed size (0x12 bytes), and they describe which planes should have collision from
+     * the top, bottom, right, and left. The array's length is in the first halfword in
+     * the collision pointers struct
     **/
     f.seek(SeekFrom::Start(main_ptrs.col_direct as u64))
         .chain_err(||
@@ -40,7 +43,8 @@ pub fn export_collision(config: ExportConfig) -> Result<FormattedCollision> {
     }
 
     /**
-     * Calculate the total number of plane structs (32 bit) and parse from input
+     * Find the length of the "planes info" array by finding the highest plane referenced in
+     * the collision direction detection array. Read and parse the array into PLaneInfo structs
     **/
     let total_planes = col_detect.iter()
         .map(|dect| dect.calc_total_planes()).max().unwrap() as usize;
