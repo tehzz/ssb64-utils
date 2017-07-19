@@ -40,11 +40,32 @@ impl ColDetection {
          s.left_start + s.left_size
         ].iter().max().unwrap()
     }
+    fn get_directon(&self, direction:Side) -> (u16, u16) {
+        let s = self;
 
+        match direction {
+            Side::Top => (s.top_start, s.top_size),
+            Side::Bottom => (s.bottom_start, s.bottom_size),
+            Side::Right => (s.right_start, s.right_size),
+            Side::Left => (s.left_start, s.left_size),
+        }
+    }
+    pub fn get_top(&self) -> (u16, u16){ self.get_directon(Side::Top)}
+    pub fn get_bottom(&self) -> (u16, u16){ self.get_directon(Side::Bottom)}
+    pub fn get_right(&self) -> (u16, u16){ self.get_directon(Side::Right)}
+    pub fn get_left(&self) -> (u16, u16){ self.get_directon(Side::Left)}
+    pub fn get_id(&self) -> u16 { self.id }
+}
+
+enum Side {
+    Top,
+    Bottom,
+    Right,
+    Left
 }
 
 /// This struct represents a spawn point in ssb64
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Spawn {
     stype: u16,
     x: i16,
@@ -89,7 +110,7 @@ impl PlaneInfo {
 }
 
 /// An (x,y) point for a collision plane
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct CollisionPoint {
     x: i16,
     y: i16,
@@ -110,7 +131,7 @@ impl CollisionPoint {
 
         let prop_flag = ColProperty::from_bits(flag)
             .ok_or(format!("Unknown collision property {:#X}", flag))?;
-        println!("Debug flag: {:#X} == {:#?}",flag, prop_flag );
+
         let floor_type = Floor::from_bits(floor)
             .ok_or(
                 format!("Unable to convert \"{:#X}\" to a floor type. Values should range 0 to 0xF", floor)
@@ -120,7 +141,7 @@ impl CollisionPoint {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 #[allow(dead_code, non_camel_case_types)]
 enum Floor {
     Normal       = 0x00,
@@ -135,8 +156,8 @@ enum Floor {
     LavaUp10     = 0x09,
     Spikes       = 0x0A,
     LavaUp1_B    = 0x0B,
-    Unk1         = 0x0C,
-    Unk2         = 0x0D,
+    Unk0xC       = 0x0C,
+    Unk0xD       = 0x0D,
     BtPPlatform  = 0x0E,
     LavaUp1_F    = 0x0F
 }
@@ -153,7 +174,7 @@ impl Floor {
 }
 
 bitflags! {
-    #[derive(Default)]
+    #[derive(Default, Serialize)]
     struct ColProperty: u8 {
         const LEDGE_GRAB = 0b10000000;
         const FALL_THRU  = 0b01000000;

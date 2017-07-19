@@ -4,6 +4,12 @@ extern crate error_chain;
 extern crate byteorder;
 #[macro_use]
 extern crate bitflags;
+
+#[macro_use]
+extern crate serde_derive;
+extern crate serde;
+extern crate serde_json;
+
 extern crate clap;
 use clap::{App, Arg, SubCommand};
 
@@ -22,6 +28,7 @@ mod errors {
         foreign_links {
             ParseInt(::std::num::ParseIntError);
             Io(::std::io::Error);
+            SerdeJSON(::serde_json::Error);
         }
     }
 }
@@ -57,6 +64,8 @@ fn main() {
 
 fn run() -> Result<()> {
     let matches = cli().get_matches();
+    // check if verbose
+    let verbose = matches.is_present("verbose");
 
     // get the proper mode
     let mode = match matches.subcommand_name() {
@@ -78,11 +87,13 @@ fn run() -> Result<()> {
             let ptr  = parse_str_to_u32(in_ptr)
                 .chain_err(|| format!("\"--collision\" flag called with \"{}\". Call with \"0x\" for hex", in_ptr))?;
 
-            let config = ExportConfig::new(f, ptr);
+            let config = ExportConfig::new(f, ptr, verbose);
 
-            let output = export_collision(config);
+            let output = export_collision(config)?;
 
-            println!("{}", output?);
+            let json_test = serde_json::to_string_pretty(&output)?;
+
+            println!("{}", json_test);
         }
     }
 
@@ -104,6 +115,7 @@ fn cli<'a,'b>() -> App<'a,'b> {
         .version(env!("CARGO_PKG_VERSION"))
         .author(env!("CARGO_PKG_AUTHORS"))
         .about("Import or export collision data from a stage main geometry resource file")
+        .arg_from_usage("--verbose 'Enable verbose mode'")
     .subcommand(SubCommand::with_name("export")
         .about("Export collision information into a JSON file")
         .arg(Arg::with_name("input")
@@ -112,14 +124,14 @@ fn cli<'a,'b>() -> App<'a,'b> {
             .index(1)
         )
         .arg(Arg::with_name("output")
-            .help("An optional name for the output JSON file.
-By default, the output file name is \"<input>.json\"")
+            .help("An optional name for the output JSON file.\n \
+            By default, the output file name is \"<input>.json\"")
             .required(false)
             .index(2)
         )
         .arg(Arg::with_name("col-ptr")
-            .help("Offset to the collision pointer area of the file.
-This is the same offset from 0x5C in base stage file.")
+            .help("Offset to the collision pointer area of the file.\n \
+            This is the same offset from 0x5C in base stage file.")
             .takes_value(true)
             .short("c")
             .long("collision")

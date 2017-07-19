@@ -19,6 +19,7 @@
   ],
   "collision" : [
     {
+      "id" : 1,
       "top" : {
         "planes" : [
           [0, 1],
