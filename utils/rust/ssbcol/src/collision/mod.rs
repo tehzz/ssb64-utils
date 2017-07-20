@@ -1,9 +1,15 @@
 mod parts;
+mod point;
+mod spawn;
 pub use self::parts::*;
+pub use self::point::CollisionPoint;
+pub use self::spawn::Spawn;
+
+use std::collections::BTreeMap;
 
 #[derive(Debug, Serialize)]
 pub struct FormattedCollision {
-    points: Vec<CollisionPoint>,
+    points: BTreeMap<usize, CollisionPoint>,
     collision: Vec<CollisionSet>,
     spawns: Vec<Spawn>
 }
@@ -49,8 +55,10 @@ impl FormattedCollision {
             CollisionSet{id, top, bottom, right, left}
         }).collect::<Vec<CollisionSet>>();
 
+        let points: BTreeMap<usize, CollisionPoint> = p.into_iter().enumerate().map(|(i, val)| (i, val)).collect();
+
         FormattedCollision{
-            points: p,
+            points,
             spawns: s,
             collision: col_sets
         }
