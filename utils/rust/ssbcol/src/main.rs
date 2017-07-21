@@ -16,6 +16,8 @@ use clap::{App, Arg, SubCommand};
 use std::fs::File;
 use std::path::{Path, PathBuf};
 
+#[macro_use]
+mod macros;
 mod configs;
 use configs::{ExportConfig};
 mod export;
