@@ -36,7 +36,7 @@ mod errors {
 }
 use errors::*;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq)]
 enum Mode {
     Import,
     Export
@@ -104,7 +104,7 @@ fn run() -> Result<()> {
                 .chain_err(|| format!("creating or reading output file <{:?}>", &o_path))?;
 
             serde_json::to_writer_pretty(o, &parsed_col)
-                .chain_err(|| "write serialized json to output")?;
+                .chain_err(|| "writing serialized json to output")?;
         }
     }
 
@@ -142,7 +142,7 @@ fn cli<'a,'b>() -> App<'a,'b> {
         )
         .arg(Arg::with_name("col-ptr")
             .help("Offset to the collision pointer area of the file.\n \
-            This is the same offset from 0x5C in base stage file.")
+            This is the same offset from 0x40/0x5C in base stage file.")
             .takes_value(true)
             .short("c")
             .long("collision")
