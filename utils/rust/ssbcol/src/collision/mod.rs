@@ -7,13 +7,13 @@ pub use self::spawn::Spawn;
 
 use std::collections::BTreeMap;
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct FormattedCollision {
     points: BTreeMap<usize, CollisionPoint>,
     collision: Vec<CollisionSet>,
     spawns: Vec<Spawn>
 }
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct CollisionSet {
     id: u16,
     top: Vec<Planes>,
@@ -21,7 +21,7 @@ struct CollisionSet {
     right: Vec<Planes>,
     left: Vec<Planes>
 }
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct Planes(Vec<u16>);
 
 impl FormattedCollision {

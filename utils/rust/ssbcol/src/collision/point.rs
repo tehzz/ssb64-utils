@@ -3,7 +3,7 @@ use errors::*;
 use serde::ser::{Serialize, Serializer};
 
 /// An (x,y) point for a collision plane
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct CollisionPoint {
     x: i16,
     y: i16,
@@ -38,17 +38,17 @@ impl CollisionPoint {
 
 
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[allow(dead_code, non_camel_case_types)]
 #[serde(rename_all = "camelCase")]
 enum Floor {
     Normal       = 0x00,
-    Fric1        = 0x01,
-    Fric2        = 0x02,
-    Fric3        = 0x03,
-    Fric4        = 0x04,
-    Fric5        = 0x05,
-    Fric6        = 0x06,
+    Friction0x1  = 0x01,
+    Friction0x2  = 0x02,
+    Friction0x3  = 0x03,
+    Friction0x4  = 0x04,
+    Friction0x5  = 0x05,
+    Friction0x6  = 0x06,
     LavaSideways = 0x07,
     Acid         = 0x08,
     LavaUp10     = 0x09,
@@ -89,5 +89,49 @@ impl Serialize for ColProp {
             0x40 | 0x80 | 0xC0 => serializer.serialize_str(&name),
             _    => serializer.serialize_str("normal"),
         }
+    }
+}
+
+// Serde manual deserialization
+use std::fmt;
+
+use serde::de::{self, Visitor, Deserialize, Deserializer};
+
+struct ColPropVisitor;
+
+impl<'de> Visitor<'de> for ColPropVisitor {
+    type Value = ColProp;
+
+    fn expecting(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str("a string with the values \"ledge_grab\", \"fall_thru\", or \"normal\". \
+        Can be combined with \" | \"")
+    }
+
+    fn visit_str<E>(self, v: &str) -> ::std::result::Result<Self::Value, E>
+        where E: de::Error
+    {
+        let ledge = v.contains("ledge_grab");
+        let fall  = v.contains("fall_thru");
+        let norm  = v.contains("normal");
+
+        if ledge && fall {
+            Ok(LEDGE_GRAB | FALL_THRU)
+        } else if ledge && !fall {
+            Ok(LEDGE_GRAB)
+        } else if fall && !ledge {
+            Ok(FALL_THRU)
+        } else if norm {
+            Ok(Default::default())
+        } else {
+            Err(E::custom(format!("Improper ColProp flag <{}>", v)))
+        }
+    }
+}
+
+impl<'de> Deserialize<'de> for ColProp {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<ColProp, D::Error>
+        where D: Deserializer<'de>
+    {
+        deserializer.deserialize_str(ColPropVisitor)
     }
 }

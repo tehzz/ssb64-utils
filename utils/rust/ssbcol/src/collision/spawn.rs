@@ -2,7 +2,7 @@ use std::fmt;
 use errors::*;
 
 /// This struct represents a spawn point in ssb64
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Spawn {
     #[serde(rename = "type")]
     stype: SpawnType,
@@ -38,7 +38,7 @@ impl Spawn {
 
 enum_bits! {
     //#[allow(non_camel_case_types)]
-    #[derive(Serialize)]
+    #[derive(Serialize, Deserialize)]
     #[serde(rename_all = "kebab-case")]
     enum SpawnType: u16 {
         P1SpawnVs = 0x00,

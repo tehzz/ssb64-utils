@@ -19,10 +19,11 @@ use std::path::{Path, PathBuf};
 #[macro_use]
 mod macros;
 mod configs;
-use configs::{ExportConfig};
+use configs::{ExportConfig, ImportConfig};
 mod export;
 use export::export_collision;
 mod collision;      // structs to represent collision data
+use collision::FormattedCollision;
 
 mod errors {
     error_chain!{
@@ -78,7 +79,22 @@ fn run() -> Result<()> {
 
     // get proper output?
     match mode {
-        Mode::Import => println!("Import not implemented yet T-T"),
+        Mode::Import => {
+            let submatch = matches.subcommand_matches("import").unwrap();
+            let i_path   = Path::new(submatch.value_of("input").unwrap());
+            let i_f      = File::open(i_path)
+                .chain_err(|| format!("Unable to open JSON file <{:?}>for import", i_path))?;
+            let collision: FormattedCollision = serde_json::from_reader(&i_f)
+                .chain_err(|| format!("Unable to parse JSON file <{:?}>", i_path))?;
+
+            if verbose {
+                println!("JSON read:\n {:#?}", collision);
+            } else {
+                println!("JSON read:\n {:?}", collision);
+            }
+
+            println!("Import not implemented yet T-T")
+        },
         Mode::Export => {
             let submatch = matches.subcommand_matches("export").unwrap();
             let path  = Path::new(submatch.value_of("input").unwrap());
@@ -120,14 +136,34 @@ fn parse_str_to_u32(input: &str) -> ::std::result::Result<u32, ::std::num::Parse
 }
 
 fn cli<'a,'b>() -> App<'a,'b> {
-    // make subcommands slice?
+    let import = SubCommand::with_name("import")
+        .about("Import collision information from a JSON file into a stage resource file")
+        .arg(Arg::with_name("input")
+            .help("Input JSON file containing collision information")
+            .required(true)
+            .index(1)
+        )
+        .arg(Arg::with_name("output")
+            .help("Output file to write collision binary to")
+            .required(true)
+            .index(2)
+        )
+        .arg(Arg::with_name("res-ptr")
+            .help("Optional pointer to the start of the node resource pointer chain.\n\
+            If provided, the output collision binary will have proper pointers.")
+            .takes_value(true)
+            .short("r")
+            .long("resource")
+        )
+        .arg(Arg::with_name("req-start")
+            .help("Beginning of required file list. Assumed to go from value to end of file")
+            .takes_value(true)
+            .short("q")
+            .long("reqstart")
+        )
+        .arg_from_usage("--copy 'Make a copy of the output file'");
 
-    App::new("SSB64 Collision Data Utility")
-        .version(env!("CARGO_PKG_VERSION"))
-        .author(env!("CARGO_PKG_AUTHORS"))
-        .about("Import or export collision data from a stage main geometry resource file")
-        .arg_from_usage("--verbose 'Enable verbose mode'")
-    .subcommand(SubCommand::with_name("export")
+    let export = SubCommand::with_name("export")
         .about("Export collision information into a JSON file")
         .arg(Arg::with_name("input")
             .help("Input resource file to extract collision data from")
@@ -148,6 +184,13 @@ fn cli<'a,'b>() -> App<'a,'b> {
             .long("collision")
             .required(true)
             .multiple(false)
-        )
-    )
+        );
+
+    App::new("SSB64 Collision Data Utility")
+        .version(env!("CARGO_PKG_VERSION"))
+        .author(env!("CARGO_PKG_AUTHORS"))
+        .about("Import or export collision data from a stage main geometry resource file")
+        .arg_from_usage("--verbose 'Enable verbose mode'")
+    .subcommand(export)
+    .subcommand(import)
 }
