@@ -2,6 +2,7 @@ use std::fs::File;
 use std::io::{Read, Write, Seek};
 use collision::FormattedCollision;
 
+#[derive(Debug)]
 pub struct ExportConfig {
     pub input: File,
     pub col_ptr: u32,
@@ -18,6 +19,7 @@ impl ExportConfig {
     }
 }
 
+#[derive(Debug)]
 pub struct ImportConfig<F> {
     pub input: FormattedCollision,
     pub output: F,

@@ -37,7 +37,6 @@ impl Spawn {
 }
 
 enum_bits! {
-    //#[allow(non_camel_case_types)]
     #[derive(Serialize, Deserialize)]
     #[serde(rename_all = "kebab-case")]
     enum SpawnType: u16 {
