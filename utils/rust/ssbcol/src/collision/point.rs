@@ -1,6 +1,7 @@
-use std::mem;
-use errors::*;
+use std::fmt;
 use serde::ser::{Serialize, Serializer};
+use serde::de::{self, Visitor, Deserialize, Deserializer};
+use errors::*;
 
 /// An (x,y) point for a collision plane
 #[derive(Debug, Serialize, Deserialize)]
@@ -27,50 +28,35 @@ impl CollisionPoint {
         let prop_flag = ColProp::from_bits(flag)
             .ok_or(format!("Unknown collision property {:#X}", flag))?;
 
-        let floor_type = Floor::from_bits(floor)
-            .ok_or(
-                format!("Unable to convert \"{:#X}\" to a floor type. Values should range 0 to 0xF", floor)
-            )?;
+        let floor_type = Floor::from_bits(floor)?;
 
         Ok(CollisionPoint{x, y, prop_flag, floor_type})
     }
 }
 
-
-
-#[derive(Debug, Serialize, Deserialize)]
-#[allow(dead_code, non_camel_case_types)]
-#[serde(rename_all = "camelCase")]
-enum Floor {
-    Normal       = 0x00,
-    Friction0x1  = 0x01,
-    Friction0x2  = 0x02,
-    Friction0x3  = 0x03,
-    Friction0x4  = 0x04,
-    Friction0x5  = 0x05,
-    Friction0x6  = 0x06,
-    LavaSideways = 0x07,
-    Acid         = 0x08,
-    LavaUp10     = 0x09,
-    Spikes       = 0x0A,
-    LavaUp1_B    = 0x0B,
-    Unk0xC       = 0x0C,
-    Unk0xD       = 0x0D,
-    BtPPlatform  = 0x0E,
-    LavaUp1_F    = 0x0F
-}
-
-impl Floor {
-    fn from_bits(bits: u8) -> Option<Floor> {
-        match bits {
-            b @ 0...0x0F => unsafe {
-                Some(mem::transmute::<u8, Floor>(b))
-            },
-            _ => None
-        }
+enum_bits! {
+    #[derive(Serialize, Deserialize)]
+    #[allow(non_camel_case_types)]
+    #[serde(rename_all = "kebab-case")]
+    enum Floor: u8 {
+        Normal       = 0x00,
+        Friction0x1  = 0x01,
+        Friction0x2  = 0x02,
+        Friction0x3  = 0x03,
+        Friction0x4  = 0x04,
+        Friction0x5  = 0x05,
+        Friction0x6  = 0x06,
+        LavaSideways = 0x07,
+        Acid         = 0x08,
+        LavaUp10     = 0x09,
+        Spikes       = 0x0A,
+        LavaUp1_0xb  = 0x0B,
+        Unk0x0c      = 0x0C,
+        Unk0x0d      = 0x0D,
+        BtPPlatform  = 0x0E,
+        LavaUp1_0xf  = 0x0F,
     }
 }
-
 
 bitflags! {
     #[derive(Default)]
@@ -93,10 +79,6 @@ impl Serialize for ColProp {
 }
 
 // Serde manual deserialization
-use std::fmt;
-
-use serde::de::{self, Visitor, Deserialize, Deserializer};
-
 struct ColPropVisitor;
 
 impl<'de> Visitor<'de> for ColPropVisitor {
