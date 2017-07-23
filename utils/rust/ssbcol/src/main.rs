@@ -4,12 +4,10 @@ extern crate error_chain;
 extern crate byteorder;
 #[macro_use]
 extern crate bitflags;
-
 #[macro_use]
 extern crate serde_derive;
 extern crate serde;
 extern crate serde_json;
-
 extern crate clap;
 use clap::{App, Arg, SubCommand};
 
@@ -22,6 +20,8 @@ mod configs;
 use configs::{ExportConfig, ImportConfig};
 mod export;
 use export::export_collision;
+mod import;
+use import::import_collision;
 mod collision;      // structs to represent collision data
 use collision::FormattedCollision;
 
@@ -36,12 +36,6 @@ mod errors {
     }
 }
 use errors::*;
-
-#[derive(Debug, PartialEq, Eq)]
-enum Mode {
-    Import,
-    Export
-}
 
 fn main() {
     if let Err(ref e) = run() {
@@ -63,6 +57,12 @@ fn main() {
 
         ::std::process::exit(1);
     }
+}
+
+#[derive(Debug, PartialEq, Eq)]
+enum Mode {
+    Import,
+    Export
 }
 
 fn run() -> Result<()> {
@@ -87,13 +87,37 @@ fn run() -> Result<()> {
             let collision: FormattedCollision = serde_json::from_reader(&i_f)
                 .chain_err(|| format!("Unable to parse JSON file <{:?}>", i_path))?;
 
-            if verbose {
-                println!("JSON read:\n {:#?}", collision);
+            let o_name = submatch.value_of("output").unwrap();
+            let o_path = if matches.is_present("copy") {
+                // change to return tuple of path and file?
+                get_unique_file_name(&o_name)
             } else {
-                println!("JSON read:\n {:?}", collision);
-            }
+                PathBuf::from(&o_name)
+            };
 
-            println!("Import not implemented yet T-T")
+            let o_f = File::create(&o_path)
+                .chain_err(||format!("reading output file <{:?}>", &o_path))?;
+
+            let resource_pointer = if let Some(val) = submatch.value_of("res-ptr"){
+                let ok = parse_str_to_u32(val)
+                    .chain_err(||format!("parsing resource node pointer at <{:?}>", val))?;
+
+                Some(ok)
+            } else { None };
+
+            let req_list_start = if let Some(val) = submatch.value_of("req-start"){
+                let ok = parse_str_to_u32(val)
+                    .chain_err(||format!("parsing address of the start of the required file list at <{:?}>", val))?;
+
+                Some(ok)
+            } else { None };
+
+
+            let config = ImportConfig::new(collision, o_f, verbose, resource_pointer, req_list_start);
+
+            let output = import_collision(config).chain_err(||"importing collision")?;
+            println!("Import Output:\n {:?}", output);
+            println!("Import not implemented yet T-T");
         },
         Mode::Export => {
             let submatch = matches.subcommand_matches("export").unwrap();
@@ -133,6 +157,11 @@ fn parse_str_to_u32(input: &str) -> ::std::result::Result<u32, ::std::num::Parse
     } else {
         input.parse::<u32>()
     }
+}
+
+fn get_unique_file_name(name: &str) -> PathBuf {
+    // for now, just return the input as a PathBuf
+    PathBuf::from(name)
 }
 
 fn cli<'a,'b>() -> App<'a,'b> {
