@@ -16,13 +16,13 @@ pub struct FormattedCollision {
 #[derive(Debug, Serialize, Deserialize)]
 struct CollisionSet {
     id: u16,
-    top: Vec<Planes>,
-    bottom: Vec<Planes>,
-    right: Vec<Planes>,
-    left: Vec<Planes>
+    top: Vec<Plane>,
+    bottom: Vec<Plane>,
+    right: Vec<Plane>,
+    left: Vec<Plane>
 }
 #[derive(Debug, Serialize, Deserialize)]
-struct Planes(Vec<u16>);
+struct Plane(Vec<u16>);
 
 impl FormattedCollision {
     pub fn from_parts(p: Vec<CollisionPoint>, s: Vec<Spawn>,
@@ -133,13 +133,13 @@ impl FormattedCollision {
     }
 }
 
-fn condense_to_planes(pi: &[PlaneInfo], con: &[u16]) -> Vec<Planes> {
+fn condense_to_planes(pi: &[PlaneInfo], con: &[u16]) -> Vec<Plane> {
     // start and length map into the connections array
     // the connections array is an ordered list of indices into collision point array
     // those indices map to points that define the plane
     // create a stand-alone vec of usize indices by slicing off part of the connections array
     pi.iter().map(|&PlaneInfo{start, length}| {
         let end = (start + length) as usize;
-        Planes(con[start as usize..end].to_vec())
+        Plane(con[start as usize..end].to_vec())
     }).collect()
 }
