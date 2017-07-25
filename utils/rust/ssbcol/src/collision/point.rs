@@ -4,7 +4,7 @@ use serde::de::{self, Visitor, Deserialize, Deserializer};
 use errors::*;
 
 /// An (x,y) point for a collision plane
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct CollisionPoint {
     x: i16,
     y: i16,

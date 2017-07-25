@@ -2,7 +2,7 @@ use std::fmt;
 use errors::*;
 
 /// This struct represents a spawn point in ssb64
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy,Serialize, Deserialize)]
 pub struct Spawn {
     #[serde(rename = "type")]
     stype: SpawnType,

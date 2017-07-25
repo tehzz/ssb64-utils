@@ -1,9 +1,11 @@
 mod parts;
 mod point;
 mod spawn;
+mod planeinfo;
 pub use self::parts::*;
 pub use self::point::CollisionPoint;
 pub use self::spawn::Spawn;
+pub use self::planeinfo::PlaneInfo;
 
 use std::collections::BTreeMap;
 
