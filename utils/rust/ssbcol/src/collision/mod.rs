@@ -63,6 +63,74 @@ impl FormattedCollision {
             collision: col_sets
         }
     }
+    pub fn to_parts(&self) -> (Vec<&CollisionPoint>, &[Spawn], Vec<PlaneInfo>, Vec<u16>, Vec<ColDetection>) {
+        // return (Vec<&CollisionPoint>, &[Spawn], Vec<PlaneInfo>, Vec<u16>, Vec<ColDetection>)
+        let col_points:Vec<&CollisionPoint> = self.points.values().collect();
+        let spawn_points = &self.spawns;
+
+        let mut col_dects: Vec<ColDetection> = Vec::with_capacity(self.collision.len());
+        let mut point_connections: Vec<u16>  = Vec::new();
+        let mut plane_info: Vec<PlaneInfo>   = Vec::new();
+
+        // TODO: make this way less ugly...
+        for set in self.collision.iter() {
+            let mut detect = [0u16; 9];
+            detect[0] = set.id;
+
+            // process top collision planes
+            detect[1] = plane_info.len() as u16;
+            for plane in set.top.iter() {
+                let plane_vec = &plane.0;
+                let start = point_connections.len() as u16;
+                let len = plane_vec.len() as u16;
+
+                plane_info.push(PlaneInfo::new(start, len));
+                for point in plane_vec.iter() { point_connections.push(*point) };
+            }
+            detect[2] = plane_info.len() as u16 - detect[1];
+
+            // process bottom collision planes
+            detect[3] = plane_info.len() as u16;
+            for plane in set.bottom.iter() {
+                let plane_vec = &plane.0;
+                let start = point_connections.len() as u16;
+                let len = plane_vec.len() as u16;
+
+                plane_info.push(PlaneInfo::new(start, len));
+                for point in plane_vec.iter() { point_connections.push(*point) };
+            }
+            detect[4] = plane_info.len() as u16 - detect[3];
+
+            // process right collision planes
+            detect[5] = plane_info.len() as u16;
+            for plane in set.right.iter() {
+                let plane_vec = &plane.0;
+                let start = point_connections.len() as u16;
+                let len = plane_vec.len() as u16;
+
+                plane_info.push(PlaneInfo::new(start, len));
+                for point in plane_vec.iter() { point_connections.push(*point) };
+            }
+            detect[6] = plane_info.len() as u16 - detect[5];
+
+            // process left collision planes
+            detect[7] = plane_info.len() as u16;
+            for plane in set.left.iter() {
+                let plane_vec = &plane.0;
+                let start = point_connections.len() as u16;
+                let len = plane_vec.len() as u16;
+
+                plane_info.push(PlaneInfo::new(start, len));
+                for point in plane_vec.iter() { point_connections.push(*point) };
+            }
+            detect[8] = plane_info.len() as u16 - detect[7];
+
+            let output = ColDetection::from_raw(&detect);
+            col_dects.push(output);
+        }
+
+        (col_points, spawn_points, plane_info, point_connections, col_dects)
+    }
 }
 
 fn condense_to_planes(pi: &[PlaneInfo], con: &[u16]) -> Vec<Planes> {
