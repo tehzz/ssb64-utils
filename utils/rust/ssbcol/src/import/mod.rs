@@ -1,6 +1,6 @@
 use configs::{ImportConfig};
 use errors::*;
-use collision::{CollisionPoint, Spawn, PlaneInfo};
+use collision::{CollisionPoint, Spawn, PlaneInfo, ColDetection};
 
 use std::io::{Read, Write, Seek};
 use std::fmt::Debug;
@@ -22,6 +22,7 @@ pub fn import_collision<O>(config: ImportConfig<O>) -> Result<String>
     println!("{:#?}", col_directions);
     println!("{:?}", point_connections);
 
+    // Make these generic with a trait.... fn size; fn to_bytes; fn bytes_iter
     //transform CollisionPoint vec into u8 byte vec
     let points_size = col_points.len() * CollisionPoint::sizeof_struct();
     let points_bytes = col_points
@@ -48,6 +49,15 @@ pub fn import_collision<O>(config: ImportConfig<O>) -> Result<String>
         .fold(Vec::with_capacity(pi_size),
         |a, v| fold_bytes(a, v.as_ref()));
     println!("{:?}", pi_bytes);
+
+    //transform ColDetection vec into u8 byte vec
+    let detect_size  = col_directions.len() * ColDetection::sizeof_struct();
+    let detect_bytes = col_directions
+        .iter()
+        .map(|s| s.to_bytes())
+        .fold(Vec::with_capacity(detect_size),
+        |a, v| fold_bytes(a, v.as_ref()));
+    println!("{:?}", detect_bytes);
 
     Ok(format!("Import not fully implemented yet"))
 }
