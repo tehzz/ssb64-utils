@@ -1,5 +1,6 @@
 use configs::{ImportConfig};
 use errors::*;
+use collision::{CollisionPoint, Spawn, PlaneInfo};
 
 use std::io::{Read, Write, Seek};
 use std::fmt::Debug;
@@ -16,10 +17,43 @@ pub fn import_collision<O>(config: ImportConfig<O>) -> Result<String>
     if verbose {
         println!("{:?}", col_points);
         println!("{:?}", spawn_points);
+        println!("{:#?}", plane_info);
     }
     println!("{:#?}", col_directions);
-    println!("{:#?}", plane_info);
     println!("{:?}", point_connections);
 
+    //transform CollisionPoint vec into u8 byte vec
+    let points_size = col_points.len() * CollisionPoint::sizeof_struct();
+    let points_bytes = col_points
+        .iter()
+        .map(|p| p.to_bytes())
+        .fold(Vec::with_capacity(points_size),
+        |a, v| fold_bytes(a, v.as_ref()));
+    println!("{:?}", &points_bytes);
+
+    //transform Spawn vec into u8 byte vec
+    let spawn_size = spawn_points.len() * Spawn::sizeof_struct();
+    let spawn_bytes = spawn_points
+        .iter()
+        .map(|s| s.to_bytes())
+        .fold(Vec::with_capacity(spawn_size),
+        |a, v| fold_bytes(a, v.as_ref()));
+    println!("{:?}", spawn_bytes);
+
+    //transform PlaneInfo vec into u8 byte vec
+    let pi_size  = plane_info.len() * PlaneInfo::sizeof_struct();
+    let pi_bytes = plane_info
+        .iter()
+        .map(|s| s.to_bytes())
+        .fold(Vec::with_capacity(pi_size),
+        |a, v| fold_bytes(a, v.as_ref()));
+    println!("{:?}", pi_bytes);
+
     Ok(format!("Import not fully implemented yet"))
+}
+
+fn fold_bytes(mut acc: Vec<u8>, bytes: &[u8]) -> Vec<u8> {
+    acc.extend(bytes.iter());
+
+    acc
 }

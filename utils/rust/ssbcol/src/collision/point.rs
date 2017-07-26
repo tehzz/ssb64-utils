@@ -2,6 +2,8 @@ use std::fmt;
 use serde::ser::{Serialize, Serializer};
 use serde::de::{self, Visitor, Deserialize, Deserializer};
 use errors::*;
+use byteorder::{BE, WriteBytesExt};
+use std::io::Cursor;
 
 /// An (x,y) point for a collision plane
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -15,6 +17,8 @@ pub struct CollisionPoint {
 }
 
 impl CollisionPoint {
+    pub fn sizeof_struct() -> usize {6}
+
     pub fn from_raw(i: &[u16]) -> Result<Self> {
         if i.len() < 3 {
             return Err("input slice to CollisionPoint::from_raw too small".into())
@@ -31,6 +35,18 @@ impl CollisionPoint {
         let floor_type = Floor::from_bits(floor)?;
 
         Ok(CollisionPoint{x, y, prop_flag, floor_type})
+    }
+
+    pub fn to_bytes(&self) -> [u8; 6] {
+        let mut output = [0u8; 6];
+        {
+            let mut csr = Cursor::new(output.as_mut());
+            csr.write_i16::<BE>(self.x).unwrap();
+            csr.write_i16::<BE>(self.y).unwrap();
+            csr.write_u8(self.prop_flag.bits()).unwrap();
+            csr.write_u8(self.floor_type as u8).unwrap();
+        }
+        output
     }
 }
 
@@ -105,7 +121,7 @@ impl<'de> Visitor<'de> for ColPropVisitor {
         } else if norm {
             Ok(Default::default())
         } else {
-            Err(E::custom(format!("Improper ColProp flag <{}>", v)))
+            Err(E::custom(format!("Improper \"property\" (ColProp) flag string <{}>", v)))
         }
     }
 }
