@@ -12,6 +12,7 @@ extern crate clap;
 
 #[macro_use]
 mod macros;
+mod traits;
 mod configs;
 mod export;
 mod import;

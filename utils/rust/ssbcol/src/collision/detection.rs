@@ -1,5 +1,6 @@
 use byteorder::{BE, WriteBytesExt};
 use std::io::Cursor;
+use traits::N64Bytes;
 /// This structure represents which planes have collision from which direction
 /// There can be any number (?) of sets to define different collisions
 #[derive(Debug)]
@@ -15,24 +16,12 @@ pub struct ColDetection {
     left_size: u16
 }
 
-impl ColDetection {
-    pub fn sizeof_struct() -> usize {18}
+impl N64Bytes for ColDetection {
+    type Output = [u8; 18];
 
-    pub fn from_raw(raw: &[u16; 9]) -> Self {
-        ColDetection {
-            id: raw[0],
-            top_start: raw[1],
-            top_size: raw[2],
-            bottom_start: raw[3],
-            bottom_size: raw[4],
-            right_start: raw[5],
-            right_size: raw[6],
-            left_start: raw[7],
-            left_size: raw[8]
-        }
-    }
+    fn size() -> usize {18}
 
-    pub fn to_bytes(&self) -> [u8; 18] {
+    fn to_bytes(&self) -> [u8; 18] {
         let mut output = [0u8; 18];
         {
             let mut csr = Cursor::new(output.as_mut());
@@ -48,6 +37,23 @@ impl ColDetection {
         }
         output
     }
+}
+
+impl ColDetection {
+    pub fn from_raw(raw: &[u16; 9]) -> Self {
+        ColDetection {
+            id: raw[0],
+            top_start: raw[1],
+            top_size: raw[2],
+            bottom_start: raw[3],
+            bottom_size: raw[4],
+            right_start: raw[5],
+            right_size: raw[6],
+            left_start: raw[7],
+            left_size: raw[8]
+        }
+    }
+
     pub fn calc_total_planes(&self) -> u16 {
         let s = self;
 

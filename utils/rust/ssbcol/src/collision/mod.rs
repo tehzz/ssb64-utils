@@ -68,9 +68,9 @@ impl FormattedCollision {
             collision: col_sets
         }
     }
-    pub fn to_parts(&self) -> (Vec<&CollisionPoint>, &[Spawn], Vec<PlaneInfo>, Vec<u16>, Vec<ColDetection>) {
-        // return (Vec<&CollisionPoint>, &[Spawn], Vec<PlaneInfo>, Vec<u16>, Vec<ColDetection>)
-        let col_points:Vec<&CollisionPoint> = self.points.values().collect();
+    pub fn to_parts(&self) -> (Vec<CollisionPoint>, &[Spawn], Vec<PlaneInfo>, Vec<u16>, Vec<ColDetection>) {
+        // return (Vec<CollisionPoint>, &[Spawn], Vec<PlaneInfo>, Vec<u16>, Vec<ColDetection>)
+        let col_points:Vec<CollisionPoint> = self.points.values().map(|v| *v).collect();
         let spawn_points = &self.spawns;
 
         let mut col_dects: Vec<ColDetection> = Vec::with_capacity(self.collision.len());

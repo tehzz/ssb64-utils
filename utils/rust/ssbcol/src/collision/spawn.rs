@@ -2,9 +2,10 @@ use std::fmt;
 use errors::*;
 use byteorder::{BE, WriteBytesExt};
 use std::io::Cursor;
+use traits::N64Bytes;
 
 /// This struct represents a spawn point in ssb64
-#[derive(Debug, Clone, Copy,Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct Spawn {
     #[serde(rename = "type")]
     stype: SpawnType,
@@ -23,9 +24,24 @@ impl fmt::Display for Spawn {
     }
 }
 
-impl Spawn {
-    pub fn sizeof_struct() -> usize {6}
+impl N64Bytes for Spawn {
+    type Output = [u8; 6];
 
+    fn size() -> usize {6}
+
+    fn to_bytes(&self) -> [u8; 6] {
+        let mut output = [0u8; 6];
+        {
+            let mut csr = Cursor::new(output.as_mut());
+            csr.write_u16::<BE>(self.stype as u16).unwrap();
+            csr.write_i16::<BE>(self.x).unwrap();
+            csr.write_i16::<BE>(self.y).unwrap();
+        }
+        output
+    }
+}
+
+impl Spawn {
     pub fn from_raw(points: &[u16]) -> Result<Self> {
         if points.len() < 3 {
             return Err(format!("input slice {:?} to small for Spawn::from_raw",points).into())
@@ -37,16 +53,6 @@ impl Spawn {
             x: points[1] as i16,
             y: points[2] as i16,
         })
-    }
-    pub fn to_bytes(&self) -> [u8; 6] {
-        let mut output = [0u8; 6];
-        {
-            let mut csr = Cursor::new(output.as_mut());
-            csr.write_u16::<BE>(self.stype as u16).unwrap();
-            csr.write_i16::<BE>(self.x).unwrap();
-            csr.write_i16::<BE>(self.y).unwrap();
-        }
-        output
     }
 }
 
