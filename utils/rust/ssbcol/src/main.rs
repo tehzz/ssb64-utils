@@ -9,20 +9,22 @@ extern crate serde_derive;
 extern crate serde;
 extern crate serde_json;
 extern crate clap;
-use clap::{App, Arg, SubCommand};
-
-use std::fs::File;
-use std::path::{Path, PathBuf};
 
 #[macro_use]
 mod macros;
 mod configs;
-use configs::{ExportConfig, ImportConfig};
 mod export;
-use export::export_collision;
 mod import;
+mod collision;
+
+use std::fs::{File, OpenOptions, copy as fs_copy};
+use std::path::{Path, PathBuf};
+use std::ffi::{OsStr, OsString};
+use clap::{App, Arg, SubCommand};
+
+use configs::{ExportConfig, ImportConfig};
+use export::export_collision;
 use import::import_collision;
-mod collision;      // structs to represent collision data
 use collision::FormattedCollision;
 
 mod errors {
@@ -59,7 +61,7 @@ fn main() {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 enum Mode {
     Import,
     Export
@@ -88,15 +90,21 @@ fn run() -> Result<()> {
                 .chain_err(|| format!("Unable to parse JSON file <{:?}>", i_path))?;
 
             let o_name = submatch.value_of("output").unwrap();
-            let o_path = if matches.is_present("copy") {
-                // change to return tuple of path and file?
-                get_unique_file_name(&o_name)
+            let o_path = if submatch.is_present("copy") {
+                copy_file(&o_name)
+                    .chain_err(||format!("producing copy of output file <{:?}>",&o_name))?
             } else {
                 PathBuf::from(&o_name)
             };
 
-            let o_f = File::create(&o_path)
-                .chain_err(||format!("reading output file <{:?}>", &o_path))?;
+            println!("Import: Output file: <{:?}>", &o_path);
+
+            let o_f = OpenOptions::new()
+                .read(true)
+                .append(true)
+                .create(true)
+                .open(&o_path)
+                .chain_err(||format!("opening output file <{:?}>", &o_path))?;
 
             let resource_pointer = if let Some(val) = submatch.value_of("res-ptr"){
                 let ok = parse_str_to_u32(val)
@@ -159,9 +167,35 @@ fn parse_str_to_u32(input: &str) -> ::std::result::Result<u32, ::std::num::Parse
     }
 }
 
-fn get_unique_file_name(name: &str) -> PathBuf {
+fn copy_file(name: &str) -> Result<PathBuf> {
     // for now, just return the input as a PathBuf
-    PathBuf::from(name)
+    let original = Path::new(&name);
+    let copy = {
+        let ext = if let Some(ext) = original.extension() {
+            ext
+        } else {
+            OsStr::new("bin")
+        };
+
+        let mut start = if let Some(stem) = original.file_stem() {
+            let mut name = stem.to_os_string();
+            name.push("-copy");
+            name
+        } else {
+            OsString::from("output")
+        };
+
+        start.push(".");
+        start.push(ext);
+
+        let mut copy_path = PathBuf::from(name);
+        copy_path.set_file_name(start);
+        copy_path
+    };
+
+    fs_copy(&original, &copy)?;
+
+    Ok(copy)
 }
 
 fn cli<'a,'b>() -> App<'a,'b> {

@@ -2,10 +2,12 @@ mod detection;
 mod point;
 mod spawn;
 mod planeinfo;
+mod pointers;
 pub use self::detection::ColDetection;
 pub use self::point::CollisionPoint;
 pub use self::spawn::Spawn;
 pub use self::planeinfo::PlaneInfo;
+pub use self::pointers::ColPtrs;
 
 
 use std::collections::BTreeMap;

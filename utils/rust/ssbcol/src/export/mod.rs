@@ -3,7 +3,7 @@ use errors::*;
 use byteorder::{BE, ReadBytesExt};
 use std::io::{Seek, SeekFrom};
 use std::fmt;
-use collision::{FormattedCollision, Spawn, PlaneInfo, CollisionPoint, ColDetection};
+use collision::{FormattedCollision, Spawn, PlaneInfo, CollisionPoint, ColDetection, ColPtrs};
 
 pub fn export_collision(config: ExportConfig) -> Result<FormattedCollision> {
     let mut f = config.input;
@@ -124,7 +124,6 @@ pub fn export_collision(config: ExportConfig) -> Result<FormattedCollision> {
     Ok(output)
 }
 
-
 // Possible safe strat:
 // Read collision direction struct since it's a fixed size of 0x14 bytes
 //   map( starting point + number of surfaces ) -> max() = highest used plane
@@ -140,60 +139,4 @@ fn to_plane_info(i: &u32) -> PlaneInfo {
     let l = (*i & 0x0000FFFF) as u16;
 
     PlaneInfo::new(s, l)
-}
-
-fn cnvrt_res_ptr(input: u32) -> u32 {
-    // two MSB == 0x80, probably pointer from a RAM dump
-    if (input >> 24) == 0x80 {
-        input
-    } else {
-        // assume resource file; take lower half and convert from words to bytes
-        (input & 0xFFFF) << 2
-    }
-}
-
-#[derive(Debug)]
-struct ColPtrs {
-    col_count: u16,
-    points: u32,
-    connections: u32,
-    planes: u32,
-    col_direct: u32,
-    spawn_count: u16,
-    spawns: u32
-}
-impl ColPtrs {
-    fn from_raw(i: &[u32; 7]) -> Result<Self> {
-        let col_count = ((i[0] & 0xFFFF0000)>> 16) as u16;
-        if col_count == 0 {
-            return Err("Read initial collision count u16 as 0; \
-            Pointer to collision pointer struct maybe incorrect".into())
-        }
-
-        let points      = cnvrt_res_ptr(i[1]);
-        let connections = cnvrt_res_ptr(i[2]);
-        let planes      = cnvrt_res_ptr(i[3]);
-        let col_direct  = cnvrt_res_ptr(i[4]);
-        let spawn_count = ((i[5] & 0xFFFF0000)>> 16) as u16;
-        let spawns      = cnvrt_res_ptr(i[6]);
-
-        Ok(ColPtrs{col_count, points, connections, planes,
-                    col_direct, spawn_count, spawns})
-    }
-}
-impl fmt::Display for ColPtrs {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let s = self;
-
-        write!(f, "ColPtrs {{
-    col_count:   {:#06X},
-    points:      {:#010X},
-    connections: {:#010X},
-    planes:      {:#010X},
-    col_direct:  {:#010X},
-    spawn_count: {:#06X},
-    spawns:      {:#010X}\n}}",
-        s.col_count, s.points, s.connections, s.planes,
-        s.col_direct, s.spawn_count, s.spawns)
-    }
 }
