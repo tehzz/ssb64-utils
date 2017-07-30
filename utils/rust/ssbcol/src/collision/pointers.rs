@@ -1,7 +1,7 @@
 use std::fmt;
 use errors::*;
 use byteorder::{BE, WriteBytesExt};
-use std::io::{Cursor, SeekFrom};
+use std::io::{Cursor, Seek, SeekFrom};
 
 #[derive(Debug)]
 pub struct ColPtrs {
@@ -47,13 +47,13 @@ impl ColPtrs {
         {
             let mut csr = Cursor::new(output.as_mut());
             csr.write_u16::<BE>(self.col_count)?;
-            csr.seek(SeekFrom::Current(2));
+            csr.seek(SeekFrom::Current(2))?;
             csr.write_u32::<BE>(self.points)?;
             csr.write_u32::<BE>(self.connections)?;
             csr.write_u32::<BE>(self.planes)?;
             csr.write_u32::<BE>(self.col_direct)?;
             csr.write_u16::<BE>(self.spawn_count)?;
-            csr.seek(SeekFrom::Current(2));
+            csr.seek(SeekFrom::Current(2))?;
             csr.write_u32::<BE>(self.spawns)?;
         }
         Ok(output)

@@ -2,7 +2,6 @@ use configs::{ExportConfig};
 use errors::*;
 use byteorder::{BE, ReadBytesExt};
 use std::io::{Seek, SeekFrom};
-use std::fmt;
 use collision::{FormattedCollision, Spawn, PlaneInfo, CollisionPoint, ColDetection, ColPtrs};
 
 pub fn export_collision(config: ExportConfig) -> Result<FormattedCollision> {
