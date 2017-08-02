@@ -102,7 +102,7 @@ fn run() -> Result<()> {
 
             let o_f = OpenOptions::new()
                 .read(true)
-                .append(true)
+                .write(true)
                 .create(true)
                 .open(&o_path)
                 .chain_err(||format!("opening output file <{:?}>", &o_path))?;
@@ -213,7 +213,7 @@ fn cli<'a,'b>() -> App<'a,'b> {
             .index(2)
         )
         .arg(Arg::with_name("res-ptr")
-            .help("Optional pointer to the start of the node resource pointer chain.\n\
+            .help("Optional pointer to the start of the resource file's internal pointer chain.\n\
             If provided, the output collision binary will have proper pointers.")
             .takes_value(true)
             .short("r")

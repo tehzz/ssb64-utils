@@ -58,6 +58,24 @@ impl ColPtrs {
         }
         Ok(output)
     }
+    /// Convert the interal pointers to reference each other,
+    /// and link to the next pointer (if necessary)
+    pub fn to_resource_pointers(&mut self, offset: u32, next_chain: Option<u32> ) {
+        // adjust initial offset to point to self.connections
+        let mut next_ptr = offset + 0x8;
+        self.points = make_res_ptr(Some(next_ptr), self.points);
+        // point to self.planes
+        next_ptr += 0x4;
+        self.connections = make_res_ptr(Some(next_ptr), self.connections);
+        // point to self.col_direct
+        next_ptr += 0x4;
+        self.planes = make_res_ptr(Some(next_ptr), self.planes);
+        // point to self.spawns
+        next_ptr += 0x8;
+        self.col_direct = make_res_ptr(Some(next_ptr), self.col_direct);
+        // encode final pointer to the next chain (if there a next chain)
+        self.spawns = make_res_ptr(next_chain, self.spawns);
+    }
 }
 
 impl fmt::Display for ColPtrs {
@@ -84,5 +102,14 @@ fn cnvrt_res_ptr(input: u32) -> u32 {
     } else {
         // assume resource file; take lower half and convert from words to bytes
         (input & 0xFFFF) << 2
+    }
+}
+
+fn make_res_ptr(next: Option<u32>, ptr: u32) -> u32 {
+    // resource pointers are word offsets: u16 next u16 pointer
+    let u16_word_ptr = (ptr >> 2) & 0xFFFF;
+    match next {
+        Some(next_ptr) => (((next_ptr >> 2) & 0xFFFF) << 16) | u16_word_ptr,
+        None           => (0xFFFF << 16) | u16_word_ptr,
     }
 }
