@@ -10,24 +10,9 @@ use std::io::{Read, Write, Seek, SeekFrom, Cursor};
 use std::fmt::Debug;
 use byteorder::{BE, ByteOrder, WriteBytesExt, ReadBytesExt};
 
-fn grab_req_file_list<O>(mut reader: &mut O, req_offset: Option<u32>) -> Result<(u64, Option<Vec<u8>>)>
-    where O: Read + Seek
-{
-    match req_offset {
-        Some(offset) => {
-            //since offset is at a word boundry
-            let mut req_bytes: Vec<u8> = Vec::new();
-            let align = reader.seek(SeekFrom::Start(offset as u64))?;
-            reader.read_to_end(&mut req_bytes)?;
-            Ok((align, Some(req_bytes)))
-        },
-        None => {
-            reader.seek(SeekFrom::End(0))?;
-            Ok((align_seek(&mut reader, 4)?, None))
-        }
-    }
-}
-
+/// Main import function. This takes an input FormattedCollision struct and writes binary
+/// to the output file (or buffer). It can optionally format pointers into ssb64 resource file chain,
+/// and/or perserve the "req-file" indices at the end of a resource file (if included)
 pub fn import_collision<O>(config: ImportConfig<O>) -> Result<String>
     where O: Read + Write + Seek + Debug
 {
@@ -111,6 +96,27 @@ pub fn import_collision<O>(config: ImportConfig<O>) -> Result<String>
     Ok(format!("Import not fully implemented yet"))
 }
 
+/// This function can optionally read the req file list (if present in the reader). It also aligns
+/// the reader to the end of its buffer. Maybe I should separate these two?
+fn grab_req_file_list<O>(mut reader: &mut O, req_offset: Option<u32>) -> Result<(u64, Option<Vec<u8>>)>
+    where O: Read + Seek
+{
+    match req_offset {
+        Some(offset) => {
+            //since offset is at a word boundry
+            let mut req_bytes: Vec<u8> = Vec::new();
+            let align = reader.seek(SeekFrom::Start(offset as u64))?;
+            reader.read_to_end(&mut req_bytes)?;
+            Ok((align, Some(req_bytes)))
+        },
+        None => {
+            reader.seek(SeekFrom::End(0))?;
+            Ok((align_seek(&mut reader, 4)?, None))
+        }
+    }
+}
+
+/// Take a slice of T: N64Bytes and return a flattened output of [u8]
 fn flatten_collision_slice<T>(input: &[T]) -> Vec<u8>
     where T: N64Bytes
 {
