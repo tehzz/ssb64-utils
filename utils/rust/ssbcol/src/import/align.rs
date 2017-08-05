@@ -5,7 +5,8 @@ use errors::*;
 /// Return the new position of the cursor
 pub fn align_cursor<T>(csr: &mut Cursor<T>, align: u64) -> u64 {
     let pos = csr.position();
-    let aligned = pos + (pos % align);
+    let r = pos % align;
+    let aligned = if r == 0 { pos } else { pos + (align - r) };
     csr.set_position(aligned);
 
     aligned
@@ -16,7 +17,9 @@ pub fn align_cursor<T>(csr: &mut Cursor<T>, align: u64) -> u64 {
 pub fn align_seek<T: Seek>(input: &mut T, align: u64) -> Result<u64> {
     let pos = input.seek(SeekFrom::Current(0))
         .chain_err(||"finding position of cursor for T:Seek (fn align_seek)")?;
-    let aligned = pos + (pos % align);
+
+    let r = pos % align;
+    let aligned = if r == 0 { pos } else { pos + (align - r)};
     input.seek(SeekFrom::Start(aligned))
         .chain_err(||format!("aligning type T:Seek to {:#010X}", aligned))?;
 

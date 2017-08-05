@@ -10,6 +10,24 @@ use std::io::{Read, Write, Seek, SeekFrom, Cursor};
 use std::fmt::Debug;
 use byteorder::{BE, ByteOrder, WriteBytesExt, ReadBytesExt};
 
+fn grab_req_file_list<O>(mut reader: &mut O, req_offset: Option<u32>) -> Result<(u64, Option<Vec<u8>>)>
+    where O: Read + Seek
+{
+    match req_offset {
+        Some(offset) => {
+            //since offset is at a word boundry
+            let mut req_bytes: Vec<u8> = Vec::new();
+            let align = reader.seek(SeekFrom::Start(offset as u64))?;
+            reader.read_to_end(&mut req_bytes)?;
+            Ok((align, Some(req_bytes)))
+        },
+        None => {
+            reader.seek(SeekFrom::End(0))?;
+            Ok((align_seek(&mut reader, 4)?, None))
+        }
+    }
+}
+
 pub fn import_collision<O>(config: ImportConfig<O>) -> Result<String>
     where O: Read + Write + Seek + Debug
 {
@@ -21,11 +39,11 @@ pub fn import_collision<O>(config: ImportConfig<O>) -> Result<String>
         req_start
     } = config;
 
-    //find size of output file and align length to 8 byte boundry?
-    let output_start = {
-        output.seek(SeekFrom::End(0))?;
-        align_seek(&mut output, 8)?
-    };
+    // if there's a req_start offset, read those req halfwords into a vector
+
+    //find true end of output file and align length to 8 byte boundry?
+    let (output_start, req_buf) = grab_req_file_list(&mut output, req_start)
+        .chain_err(||"finding end of output and reading list of req files")?;
 
     let (buffer, mut ptrs, ..) = generate_buffer(&collision, output_start)
         .chain_err(||"generating collision output buffer")?;
@@ -66,11 +84,19 @@ pub fn import_collision<O>(config: ImportConfig<O>) -> Result<String>
     let test = ptrs.to_bytes()?;
     bufcsr.write_all(&test)
         .chain_err(||"writing ColPtrs struct to buffer vector of collision data")?;
+    // if there was a req file offset provided, write the copied req file list buffer back
+    if let Some(ref reqs) = req_buf {
+        let test = align_cursor(&mut bufcsr, 16);
+        println!("Req File Buffer Alignment:\n{:#X}\n{:#X}", test, test+output_start);
+        bufcsr.write_all(&reqs)
+            .chain_err(||"writing req file buffer back into output")?;
+    }
 
     if verbose {
         println!("Output buffer:\n{:?}", &bufcsr.get_ref());
         println!("Collision Pointers Struct:\n{}\n{:?}", ptrs, &test);
         println!("Offset of Pointers struct in file:\n{:#010X}", ptrs_ptr);
+        println!("Req File Buffer:\n{:?}", &req_buf);
     }
 
     // write to file? align to output start
