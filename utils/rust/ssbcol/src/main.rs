@@ -92,7 +92,7 @@ fn run() -> Result<()> {
 
             let o_name = submatch.value_of("output").unwrap();
             let o_path = if submatch.is_present("copy") {
-                copy_file(&o_name)
+                copy_file(&o_name, submatch.value_of("copy"))
                     .chain_err(||format!("producing copy of output file <{:?}>",&o_name))?
             } else {
                 PathBuf::from(&o_name)
@@ -168,28 +168,32 @@ fn parse_str_to_u32(input: &str) -> ::std::result::Result<u32, ::std::num::Parse
     }
 }
 
-fn copy_file(name: &str) -> Result<PathBuf> {
-    // for now, just return the input as a PathBuf
-    let original = Path::new(&name);
-    let copy = {
-        let ext = if let Some(ext) = original.extension() {
-            ext
-        } else {
-            OsStr::new("bin")
+fn copy_file(original: &str, copy: Option<&str>) -> Result<PathBuf> {
+    // get path to original <output> file for copying
+    let original = Path::new(&original);
+    let copy = if let Some(user_path) = copy {
+        // use the user provided a path to copy the original to, use that.
+        PathBuf::from(user_path)
+    } else {
+        // else, use "<original>-copy.<original-ext>" as copied output file
+        let ext = match original.extension() {
+            Some(ext) => ext,
+            None => OsStr::new("bin"),
         };
 
-        let mut start = if let Some(stem) = original.file_stem() {
-            let mut name = stem.to_os_string();
-            name.push("-copy");
-            name
-        } else {
-            OsString::from("output")
+        let mut start = match original.file_stem() {
+            Some(stem) => {
+                let mut name = stem.to_os_string();
+                name.push("-copy");
+                name
+            },
+            None => OsString::from("copied-output"),
         };
 
         start.push(".");
         start.push(ext);
 
-        let mut copy_path = PathBuf::from(name);
+        let mut copy_path = PathBuf::from(original);
         copy_path.set_file_name(start);
         copy_path
     };
@@ -208,7 +212,8 @@ fn cli<'a,'b>() -> App<'a,'b> {
             .index(1)
         )
         .arg(Arg::with_name("output")
-            .help("Output file to write collision binary to")
+            .help("Output file to write collision binary to. This will write-over the original file, \
+            unless the \"copy\" flag is set")
             .required(true)
             .index(2)
         )
@@ -219,13 +224,27 @@ fn cli<'a,'b>() -> App<'a,'b> {
             .short("r")
             .long("resource")
         )
+        .arg(Arg::with_name("ptr-replace")
+            .help("Replace current collision pointer information in <output> starting at this location")
+            .takes_value(true)
+            .multiple(false)
+            .conflicts_with("res-ptr")
+            .short("p")
+            .long("pointers")
+        )
         .arg(Arg::with_name("req-start")
             .help("Beginning of required file list. Assumed to go from value to end of file")
             .takes_value(true)
             .short("q")
             .long("reqstart")
         )
-        .arg_from_usage("--copy 'Make a copy of the output file'");
+        .arg(Arg::with_name("copy")
+            .help("Make a copy of the output file. If no file name is given, default to \"<output>-copy.bin\"")
+            .takes_value(true)
+            .multiple(false)
+            .short("c")
+            .long("copy")
+        );
 
     let export = SubCommand::with_name("export")
         .about("Export collision information into a JSON file")
