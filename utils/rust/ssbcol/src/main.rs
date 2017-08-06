@@ -18,7 +18,7 @@ mod export;
 mod import;
 mod collision;
 
-use std::fs::{File, OpenOptions, copy as fs_copy};
+use std::fs::{self, File, OpenOptions};
 use std::path::{Path, PathBuf};
 use std::ffi::{OsStr, OsString};
 use clap::{App, Arg, SubCommand};
@@ -204,7 +204,17 @@ fn copy_file(original: &str, copy: Option<&str>) -> Result<PathBuf> {
         copy_path
     };
 
-    fs_copy(&original, &copy)?;
+    //mkdir for copy if it doesn't exist
+    match copy.parent() {
+        Some(path) => {
+            fs::create_dir_all(&path)
+                .chain_err(||format!("making directories <{}>", path.display()))?
+        },
+        None => ()
+    };
+
+    fs::copy(&original, &copy)
+        .chain_err(||format!("making copy of <{:?}> to <{:?}>", &original, &copy))?;
 
     Ok(copy)
 }
