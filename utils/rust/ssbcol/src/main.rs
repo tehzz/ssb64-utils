@@ -131,8 +131,7 @@ fn run() -> Result<()> {
                 resource_pointer, req_list_start, collision_ptrs_ptr);
 
             let output = import_collision(config).chain_err(||"importing collision")?;
-            println!("Import Output:\n {:?}", output);
-            println!("Import not implemented yet T-T");
+            println!("Offset to Collision Pointers:\n{:#x}", output);
         },
         Mode::Export => {
             let submatch = matches.subcommand_matches("export").unwrap();

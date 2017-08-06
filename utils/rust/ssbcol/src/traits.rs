@@ -5,5 +5,4 @@ pub trait N64Bytes {
 
     fn size() -> usize;
     fn to_bytes(&self) -> Self::Output;
-    //fn to_byte_iter<'a>(&self) -> Iter<'a, u8>;
 }

@@ -13,7 +13,7 @@ use byteorder::{BE, ByteOrder, WriteBytesExt, ReadBytesExt};
 /// Main import function. This takes an input FormattedCollision struct and writes binary
 /// to the output file (or buffer). It can optionally format pointers into ssb64 resource file chain,
 /// and/or perserve the "req-file" indices at the end of a resource file (if included)
-pub fn import_collision<O>(config: ImportConfig<O>) -> Result<String>
+pub fn import_collision<O>(config: ImportConfig<O>) -> Result<u32>
     where O: Read + Write + Seek + Debug
 {
     let ImportConfig{
@@ -40,7 +40,7 @@ pub fn import_collision<O>(config: ImportConfig<O>) -> Result<String>
         .chain_err(||"aliging to end of collision data buffer")?;
 
     // check if the collision pointers need to be manipulated in place, or not.
-    if let Some(col_ptrs_ptr) = collision_ptrs {
+    let offset_col_ptrs = if let Some(col_ptrs_ptr) = collision_ptrs {
         //get the "next" pointer from the last of the in-place original ColPtrs struct
         let final_ptr = col_ptrs_ptr as u64 + 0x18;
         output.seek(SeekFrom::Start(final_ptr))
@@ -69,6 +69,8 @@ pub fn import_collision<O>(config: ImportConfig<O>) -> Result<String>
                 , col_ptrs_ptr))?;
         output.write(colptrs_bytes.as_ref())
             .chain_err(||"writing collision pointers in-place into output")?;
+
+        col_ptrs_ptr
     } else {
         // if the pointer struct is not manipulated in place, add to end of new buffer
         let col_ptrs_ptr = {
@@ -107,7 +109,9 @@ pub fn import_collision<O>(config: ImportConfig<O>) -> Result<String>
         bufcsr.seek(SeekFrom::Start(output_location))?;
         bufcsr.write_all(&colptrs_bytes)
             .chain_err(||"writing ColPtrs struct to buffer vector of collision data")?;
-    }
+
+        col_ptrs_ptr
+    };
 
     // fill collision data buffer to 16 byte boundry
     fill_cursor(&mut bufcsr, 16, 0)
@@ -127,13 +131,13 @@ pub fn import_collision<O>(config: ImportConfig<O>) -> Result<String>
         .chain_err(||"writing full buffer to output file")?;
 
     if verbose {
-        println!("Output buffer:\n{:?}", &bufcsr.get_ref());
-        //println!("Collision Pointers Struct:\n{}\n{:?}", ptrs, &test);
-        //println!("Offset of Pointers struct in file:\n{:#010X}", ptrs_ptr);
+        println!("Collision data buffer:\n{:?}", &bufcsr.get_ref());
+        println!("Collision Pointers Struct:\n{}", &ptrs);
+        println!("Offset of Pointers struct in file:\n{:#010X}", offset_col_ptrs);
         println!("Req File Buffer:\n{:?}", &req_buf);
     }
 
-    Ok(format!("Import not fully implemented yet"))
+    Ok(offset_col_ptrs)
 }
 
 /// This function can optionally read the req file list (if present in the reader). It also aligns
