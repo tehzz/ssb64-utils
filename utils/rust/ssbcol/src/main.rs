@@ -121,8 +121,14 @@ fn run() -> Result<()> {
                 Some(ok)
             } else { None };
 
+            let collision_ptrs_ptr = if let Some(ptr) = submatch.value_of("ptr-replace") {
+                let ok = parse_str_to_u32(ptr)
+                    .chain_err(||format!("parsing pointer <{}> to collision pointers struct for in-place import", ptr))?;
+                Some(ok)
+            } else { None };
 
-            let config = ImportConfig::new(collision, o_f, verbose, resource_pointer, req_list_start);
+            let config = ImportConfig::new(collision, o_f, verbose,
+                resource_pointer, req_list_start, collision_ptrs_ptr);
 
             let output = import_collision(config).chain_err(||"importing collision")?;
             println!("Import Output:\n {:?}", output);

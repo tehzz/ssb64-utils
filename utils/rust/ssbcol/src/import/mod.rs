@@ -1,5 +1,5 @@
 mod align;
-use self::align::{align_seek, align_cursor};
+use self::align::{align_seek, align_cursor, fill_cursor};
 
 use configs::{ImportConfig};
 use errors::*;
@@ -21,7 +21,8 @@ pub fn import_collision<O>(config: ImportConfig<O>) -> Result<String>
         mut output,
         verbose,
         res_ptr,
-        req_start
+        req_start,
+        collision_ptrs,
     } = config;
 
     // if there's a req_start offset, read those req halfwords into a vector
@@ -33,55 +34,89 @@ pub fn import_collision<O>(config: ImportConfig<O>) -> Result<String>
     let (buffer, mut ptrs, ..) = generate_buffer(&collision, output_start)
         .chain_err(||"generating collision output buffer")?;
 
-    // align buffer to store ColPtrs struct
+    // make cursor into returned buffer and align at the end
     let mut bufcsr = Cursor::new(buffer);
-    let ptrs_ptr = {
-        bufcsr.seek(SeekFrom::End(0))?;
-        align_cursor(&mut bufcsr, 4) + output_start
-    } as u32;
+    bufcsr.seek(SeekFrom::End(0))
+        .chain_err(||"aliging to end of collision data buffer")?;
 
-    // if there is a resource pointer chain, include collision pointers in chain
-    if let Some(chain) = res_ptr {
-        // convert pointers to resource file list pointer
-        ptrs.to_resource_pointers(ptrs_ptr, None);
+    // check if the collision pointers need to be manipulated in place, or not.
+    if let Some(col_ptrs_ptr) = collision_ptrs {
+        //get the "next" pointer from the last of the in-place original ColPtrs struct
+        let final_ptr = col_ptrs_ptr as u64 + 0x18;
+        output.seek(SeekFrom::Start(final_ptr))
+            .chain_err(||format!("seeking to final pointer of original collision pointers struct at <{:#X}>",
+                final_ptr))?;
 
-        // add collision pointers to the file's resource pointer list
-        let mut chain = (chain >> 2) as u16;
-        let mut ptr = 0u64;
+        let pointer_to_next = output.read_u16::<BE>()
+            .map(|offset| {
+                match offset {
+                    0xFFFF => None,
+                    o @ _ => {
+                        let o = (o as u32) << 2;
+                        Some(o)
+                    }
+                }
+            })
+            .chain_err(||"reading value from last pointer in original outfile Collsion Pointer Struct")?;
 
-        while chain != 0xFFFF {
-            ptr = (chain << 2) as u64;
+        // convert ColPtrs struct to resource file style chain
+        ptrs.to_resource_pointers(col_ptrs_ptr, pointer_to_next);
+        // write bytes back into output
+        let colptrs_bytes = ptrs.to_bytes()?;
+
+        output.seek(SeekFrom::Start(col_ptrs_ptr as u64))
+            .chain_err(||format!("seeking to start of original collision pointers struct at <{:#X}>"
+                , col_ptrs_ptr))?;
+        output.write(colptrs_bytes.as_ref())
+            .chain_err(||"writing collision pointers in-place into output")?;
+    } else {
+        // if the pointer struct is not manipulated in place, add to end of new buffer
+        let col_ptrs_ptr = {
+            align_cursor(&mut bufcsr, 4) + output_start
+        } as u32;
+
+        // if there is a resource pointer chain, include collision pointers in chain
+        // this should only be one of "res_ptr"
+        if let Some(chain) = res_ptr {
+            // convert pointers to resource file list pointer with the offset where the pointers will be written
+            ptrs.to_resource_pointers(col_ptrs_ptr, None);
+
+            // add collision pointers to the file's resource pointer list
+            let mut chain = (chain >> 2) as u16;
+            let mut ptr = 0u64;
+
+            while chain != 0xFFFF {
+                ptr = (chain << 2) as u64;
+                output.seek(SeekFrom::Start(ptr))
+                    .chain_err(||format!("seeking to node pointer at {:#010X}", ptr))?;
+                chain = output.read_u16::<BE>()
+                    .chain_err(||format!("reading u16 at {:#010X}", ptr))?;
+            }
+
+            // replace the end chain (0xFFFFu16) with the u16 word offset
+            // to the first pointer in the ColPtrs struct
+            let ptrs_word_offset = (((col_ptrs_ptr + 4) >> 2) & 0xFFFF) as u16;
             output.seek(SeekFrom::Start(ptr))
-                .chain_err(||format!("seeking to node pointer at {:#010X}", ptr))?;
-            chain = output.read_u16::<BE>()
-                .chain_err(||format!("reading u16 at {:#010X}", ptr))?;
+                .chain_err(||format!("seeking to {:#010X} to update original resource file pointer list end", ptr))?;
+            output.write_u16::<BE>(ptrs_word_offset)?;
         }
 
-        // replace the end chain (0xFFFFu16) with the u16 word offset
-        // to the first pointer in the ColPtrs struct
-        let ptrs_word_offset = (((ptrs_ptr + 4) >> 2) & 0xFFFF) as u16;
-        output.seek(SeekFrom::Start(ptr))
-            .chain_err(||format!("seeking to {:#010X} to update original resource file pointer list end", ptr))?;
-        output.write_u16::<BE>(ptrs_word_offset)?;
+        //write ColPtrs struct into buffer as big endian bytes at the end of the buffer
+        let colptrs_bytes = ptrs.to_bytes()?;
+        let output_location = (col_ptrs_ptr as u64) - output_start;
+        bufcsr.seek(SeekFrom::Start(output_location))?;
+        bufcsr.write_all(&colptrs_bytes)
+            .chain_err(||"writing ColPtrs struct to buffer vector of collision data")?;
     }
 
-    //write ColPtrs struct into buffer as big endian bytes
-    let test = ptrs.to_bytes()?;
-    bufcsr.write_all(&test)
-        .chain_err(||"writing ColPtrs struct to buffer vector of collision data")?;
+    // fill collision data buffer to 16 byte boundry
+    fill_cursor(&mut bufcsr, 16, 0)
+        .chain_err(||"filling collision data buffer to 16 byte boundry")?;
+
     // if there was a req file offset provided, write the copied req file list buffer back
     if let Some(ref reqs) = req_buf {
-        let test = align_cursor(&mut bufcsr, 16);
-        println!("Req File Buffer Alignment:\n{:#X}\n{:#X}", test, test+output_start);
         bufcsr.write_all(&reqs)
             .chain_err(||"writing req file buffer back into output")?;
-    }
-
-    if verbose {
-        println!("Output buffer:\n{:?}", &bufcsr.get_ref());
-        println!("Collision Pointers Struct:\n{}\n{:?}", ptrs, &test);
-        println!("Offset of Pointers struct in file:\n{:#010X}", ptrs_ptr);
-        println!("Req File Buffer:\n{:?}", &req_buf);
     }
 
     // write to file? align to output start
@@ -90,8 +125,13 @@ pub fn import_collision<O>(config: ImportConfig<O>) -> Result<String>
 
     output.write_all(bufcsr.get_ref())
         .chain_err(||"writing full buffer to output file")?;
-    // fill output file to 4 word boundry ?
 
+    if verbose {
+        println!("Output buffer:\n{:?}", &bufcsr.get_ref());
+        //println!("Collision Pointers Struct:\n{}\n{:?}", ptrs, &test);
+        //println!("Offset of Pointers struct in file:\n{:#010X}", ptrs_ptr);
+        println!("Req File Buffer:\n{:?}", &req_buf);
+    }
 
     Ok(format!("Import not fully implemented yet"))
 }

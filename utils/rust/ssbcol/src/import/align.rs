@@ -1,5 +1,6 @@
-use std::io::{Seek, SeekFrom, Cursor};
+use std::io::{Seek, SeekFrom, Cursor, Write};
 use errors::*;
+use byteorder::{WriteBytesExt};
 
 /// Move the position in the Cursor forward until its aligned with align
 /// Return the new position of the cursor
@@ -24,4 +25,15 @@ pub fn align_seek<T: Seek>(input: &mut T, align: u64) -> Result<u64> {
         .chain_err(||format!("aligning type T:Seek to {:#010X}", aligned))?;
 
     Ok(aligned)
+}
+
+/// Fill the `csr` with `fill` until `align`
+pub fn fill_cursor<T>(csr: &mut Cursor<T>, align: u64, fill: u8) -> Result<u64>
+    where Cursor<T>: Write
+{
+    while csr.position() % align != 0 {
+        csr.write_u8(fill)?
+    };
+
+    Ok(csr.position())
 }
