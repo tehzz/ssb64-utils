@@ -2,6 +2,7 @@
 #[macro_use]
 extern crate error_chain;
 extern crate getopts;
+extern crate byteorder;
 mod parse;
 
 use getopts::Options;
@@ -22,7 +23,6 @@ mod errors {
 use errors::*;
 quick_main!(run);
 
-
 fn run() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     let config = parse_args(&args)?;
@@ -31,11 +31,14 @@ fn run() -> Result<()> {
         Config::Parse{ref input, ref output, kind} => {
             let input_file = File::open(&input)
                 .chain_err(||format!("opening file <{:?}> for reading", &input))?;
-            let output_file = File::create(&output)
-                .chain_err(||format!("creating file <{:?}> for writing output", &output))?;
 
-            let o = parse::stage_to_json(input_file, output_file, kind);
+            let o = parse::stage_to_json(input_file, kind)
+                .chain_err(||format!("parsing <{:?}> to stage main JSON file <{:?}>", &input, &output))?;
             println!("{:?}", o);
+
+            /* let output_file = File::create(&output)
+                .chain_err(||format!("creating file <{:?}> for writing output", &output))?;
+            */
         },
         Config::Build{..} => println!("Not implemented"),
         Config::Help => (),
