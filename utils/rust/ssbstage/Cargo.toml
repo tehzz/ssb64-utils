@@ -1,0 +1,12 @@
+[package]
+name = "ssbstage"
+version = "0.1.0"
+authors = ["tehzz"]
+
+[dependencies]
+error-chain = "0.10.0"
+serde = "1.0.11"
+serde_derive = "1.0.11"
+serde_json = "1.0"
+byteorder = "1.1.0"
+getopts = "0.2.14"
