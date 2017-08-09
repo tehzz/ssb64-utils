@@ -3,7 +3,8 @@ use errors::*;
 
 
 /// This `struct` represents the "main stage file" in ssb64. This is the file that points to
-/// all other components of the stage (geometry, collision, background, etc.).
+/// all other components of the stage (geometry, collision, background, etc.). It also contains
+/// some "general" information about the stage. 
 struct StageMain {
     item_bytes: Option<[u8; 14]>,
     item_bytes_ptr: Option<u32>,
@@ -32,7 +33,7 @@ impl StageMain {
     }
 }
 
-/// A 32bit color wrapper -> (R, G, B, A)
+/// A 32bit color wrapper. Will accept/return bytes in RGBA8888
 #[#[derive(Debug, Copy, Clone, PartialEq, Eq)]]
 struct Color{
     r: u8,
@@ -58,7 +59,7 @@ impl Color {
     }
 }
 
-/// A struct wrapper to represent the +Y, -Y, +X, -X
+/// A struct wrapper to represent the +Y, -Y, +X, -X "limits" of a box 
 struct Bounds {
     top: i16,
     bottom: i16,
@@ -75,14 +76,20 @@ impl Bounds {
     }
 }
 
-/// Holds the Coords for both the normal and 1P CPU Blastzones
+/// Holds the Coords for both the normal and 1P CPU Blastzones. The normal
+/// blastzones are used at all times for human controlled characters. The 1P Mode
+/// CPU blastzones are used only for the computer controlled characters in the 
+/// 1P mode (surprise!). 
 struct BlastZones {
-    Normal: Bounds,
-    Cpu1P: Bounds,
+    normal: Bounds,
+    cpu_1p: Bounds,
 }
 
-/// Holds the camera frame "bounding box" for the both VS and 1P Mode
+/// Holds the camera frame "bounding box" for the both VS and 1P Game Mode. The set 
+/// "Bounds" struct defines how far the camera will zoom out (relative to the distance 
+/// between multiple characters). If a character goes outside of this bound, they will
+/// in a maginfying glass
 struct CameraBox {
-    VsMode: Bounds,
-    OnePlayer: Bounds,
+    versus: Bounds,
+    one_player_game: Bounds,
 }
