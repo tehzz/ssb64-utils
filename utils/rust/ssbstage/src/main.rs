@@ -4,6 +4,7 @@ extern crate error_chain;
 extern crate getopts;
 extern crate byteorder;
 mod parse;
+mod stage;
 
 use getopts::Options;
 use std::env;
@@ -16,6 +17,7 @@ mod errors {
     error_chain!{
         foreign_links {
             GetOpts(::getopts::Fail);
+            Io(::std::io::Error);
         }
     }
 }
@@ -32,7 +34,7 @@ fn run() -> Result<()> {
             let input_file = File::open(&input)
                 .chain_err(||format!("opening file <{:?}> for reading", &input))?;
 
-            let o = parse::stage_to_json(input_file, kind)
+            let o = parse::stage_binary(input_file, kind)
                 .chain_err(||format!("parsing <{:?}> to stage main JSON file <{:?}>", &input, &output))?;
             println!("{:?}", o);
 

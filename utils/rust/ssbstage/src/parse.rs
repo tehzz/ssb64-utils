@@ -1,10 +1,11 @@
-use std::io::{Read, Write, Seek};
+use std::io::{Read};
 use byteorder::{BE, ByteOrder};
 use errors::*;
 use StageFileKind;
+use stage::StageMain;
 
-pub fn stage_to_json<I,O>(mut input: I, kind: Option<StageFileKind>) -> Result<String>
-    where I: Read, O: Write + Seek
+pub fn stage_binary<I>(mut input: I, kind: Option<StageFileKind>) -> Result<StageMain>
+    where I: Read
 {
     // Read binary into a vec, and capture the filesize
     let mut stage_bin = Vec::new();
@@ -39,7 +40,40 @@ pub fn stage_to_json<I,O>(mut input: I, kind: Option<StageFileKind>) -> Result<S
     },|val| { Ok(val) } )
         .chain_err(|| "attempting to automatically determine the type of the stage main file")?;
 
-    println!("Kind result? {:?}", &kind);
+    let (items, main, extra) = match kind {
+        StageFileKind::Item => {
+            let i = Some(&stage_bin[0..0x14]);
+            let m = &stage_bin[0x14..0xBC];
+            let x = &stage_bin[0xBC..];
+            let e = check_padding(x);
 
-    Ok(format!("Parsing stage main file to JSON not yet implemented T=T"))
+            (i, m, e)
+        },
+        StageFileKind::NoItem => {
+            let (m, x) = stage_bin.split_at(0xa8);
+            let e = check_padding(x);
+
+            (None, m, e)
+        }
+    };
+
+    //println!("Testing chunks:\n{:?}\n\n{:?}\n\n{:?}", items, main, extra);
+    let test = StageMain::from_bytes(&main, items, extra)
+        .chain_err(||"parsing binary")?;
+
+    println!("\n{:#?}\n", test);
+    println!("Sum of item bytes: {}", items.unwrap_or(&[0]).iter().map(|v| *v as u64).sum::<u64>());
+
+    Ok(test)
+}
+
+fn check_padding(input: &[u8]) -> Option<&[u8]> {
+    //println!("Debug check_padding:\n{:?}", input);
+    if input.is_empty() {
+        None
+    } else if input.iter().all(|b| *b == 0) {
+        None
+    } else {
+        Some(input)
+    }
 }

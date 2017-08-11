@@ -1,12 +1,14 @@
 use errors::*;
-
+use byteorder::{BE, ReadBytesExt};
+use std::io::{Cursor, Seek, SeekFrom};
 
 
 /// This `struct` represents the "main stage file" in ssb64. This is the file that points to
 /// all other components of the stage (geometry, collision, background, etc.). It also contains
-/// some "general" information about the stage. 
-struct StageMain {
-    item_bytes: Option<[u8; 14]>,
+/// some "general" information about the stage.
+#[derive(Debug)]
+pub struct StageMain {
+    item_bytes: Option<[u8; 0x14]>,
     item_bytes_ptr: Option<u32>,
     geometries: [StageGeo; 4],
     collision_ptr: u32,
@@ -22,19 +24,155 @@ struct StageMain {
     background_music: u32,
     pad_0x80: u32,
     falling_whistle: i16,
+    unknown_0x9c: u32,
+    unknown_0xa0: u32,
+    end_of_file_0xa4: u32,
     extra_info: Option<Vec<u8>>,
 }
 
 impl StageMain {
-    from_bytes(main: &[u8], item_bytes: Option<&[u8]>, extra_info: Option<&[u8]>)
+    /// This assumes that the underlying bytes are Big-Endian (n64)
+    pub fn from_bytes(main: &[u8], item_bytes: Option<&[u8]>, extra_info: Option<&[u8]>)
     -> Result<Self>
     {
-        // main.len < 0xa8 ; item_bytes < 0x14
+        // sanity checks to ensure minimum sized slices
+        if main.len() < 0xa8 {
+            bail!("Main stage data was less than 0xa8 bytes")
+        } else if let Some(ref b) = item_bytes {
+            if b.len() < 0x14 {
+                bail!("Item data was less than 0x14 bytes")
+            }
+        }
+
+        // start parsing the main stage data
+        let mut csr = Cursor::new(main);
+
+        // Four StageGeo structs in a row
+        let mut geometries: [StageGeo; 4] = [StageGeo::default(); 4];
+        for geo in geometries.iter_mut() {
+            let mut bytes = [0u32; 4];
+            csr.read_u32_into::<BE>(&mut bytes)?;
+            *geo = StageGeo::from_bytes(&bytes);
+        }
+        // Various Pointers
+        let collision_ptr  = csr.read_u32::<BE>()?;
+        let unknown_0x44   = csr.read_u32::<BE>()?;
+        let background_ptr = csr.read_u32::<BE>()?;
+        // 5 color structs in a row!
+        let magnifier_color = {
+            let color = csr.read_u32::<BE>()?;
+            Color::from_u32(color)
+        };
+        let mut player_logo_color = [Color::default(); 4];
+        for player in player_logo_color.iter_mut() {
+            let color = csr.read_u32::<BE>()?;
+            *player = Color::from_u32(color);
+        }
+        // 3 float32 values for lighting and camera
+        let lighting1   = csr.read_f32::<BE>()?;
+        let lighting2   = csr.read_f32::<BE>()?;
+        let camera_tilt = csr.read_f32::<BE>()?;
+
+        // get camera boundries
+        let camera_bounds = {
+            let mut vals = [0i16; 4];
+            csr.read_i16_into::<BE>(&mut vals)?;
+            let vs = Bounds::from_i16(&vals);
+            csr.seek(SeekFrom::Start(0x8a))?;
+            csr.read_i16_into::<BE>(&mut vals)?;
+            let single = Bounds::from_i16(&vals);
+
+            CameraBox::from_bounds(vs, single)
+        };
+        // get blastzones
+        let blastzones = {
+            let mut vals = [0i16; 4];
+            //cursor already at 1p mode blastzones
+            csr.read_i16_into::<BE>(&mut vals)?;
+            let single = Bounds::from_i16(&vals);
+            // move cursor back to regular blastzones + back "in order"
+            csr.seek(SeekFrom::Start(0x74))?;
+            csr.read_i16_into::<BE>(&mut vals)?;
+            let regular = Bounds::from_i16(&vals);
+
+            BlastZones::from_bounds(regular, single)
+        };
+        // back to reading sequentially at 0x7c
+        let background_music = csr.read_u32::<BE>()?;
+        let pad_0x80         = csr.read_u32::<BE>()?;
+        let item_bytes_ptr = if item_bytes.is_some() {
+            Some(csr.read_u32::<BE>()?)
+        } else {
+            csr.seek(SeekFrom::Current(4))?;
+            None
+        };
+        let falling_whistle  = csr.read_i16::<BE>()?;
+
+        // as yet unknown values?
+        csr.seek(SeekFrom::Start(0x9c))?;
+        let unknown_0x9c = csr.read_u32::<BE>()?;
+        let unknown_0xa0 = csr.read_u32::<BE>()?;
+        let end_of_file_0xa4 = csr.read_u32::<BE>()?;
+
+        // Convert the optional parts of the file, if present
+        let item_bytes = item_bytes.map(|vals| {
+            let mut arr = [0u8;0x14];
+            for i in 0..0x14 {
+                arr[i] = vals[i];
+            }
+
+            arr
+        });
+
+        let extra_info = extra_info.map(|slice| slice.to_vec() );
+
+        // finally, return the very large mess
+        Ok(StageMain {
+            item_bytes,
+            item_bytes_ptr,
+            geometries,
+            collision_ptr,
+            unknown_0x44,
+            background_ptr,
+            magnifier_color,
+            player_logo_color,
+            lighting1,
+            lighting2,
+            camera_tilt,
+            camera_bounds,
+            blastzones,
+            background_music,
+            pad_0x80,
+            falling_whistle,
+            unknown_0x9c,
+            unknown_0xa0,
+            end_of_file_0xa4,
+            extra_info,
+        })
+    }
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Default)]
+struct StageGeo {
+    geometry_ptr: u32,
+    move_script_ptr: u32,
+    colored_ptr: u32,
+    colored_script_ptr: u32,
+}
+
+impl StageGeo {
+    fn from_bytes(input: &[u32; 4]) -> Self {
+        StageGeo {
+            geometry_ptr:       input[0],
+            move_script_ptr:    input[1],
+            colored_ptr:        input[2],
+            colored_script_ptr: input[3],
+        }
     }
 }
 
 /// A 32bit color wrapper. Will accept/return bytes in RGBA8888
-#[#[derive(Debug, Copy, Clone, PartialEq, Eq)]]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Default)]
 struct Color{
     r: u8,
     g: u8,
@@ -42,7 +180,7 @@ struct Color{
     a: u8,
 }
 impl Color {
-    from_bytes(bytes: &[u8]) -> Result<Self> {
+    fn from_bytes(bytes: &[u8]) -> Result<Self> {
         if bytes.len() < 4 {
             bail!("Need four bytes to generate a Color; got {:?}", &bytes)
         };
@@ -53,13 +191,22 @@ impl Color {
 
         Ok(Color{ r, g, b, a })
     }
-    as_bytes(&self) -> [u8; 4] {
+    fn as_bytes(&self) -> [u8; 4] {
         let s = self;
         [s.r, s.g, s.b, s.a]
     }
+    fn from_u32(val: u32) -> Self {
+        let r = (val >> 24) as u8;
+        let g = ((val & 0x00FF0000) >> 16) as u8;
+        let b = ((val & 0x0000FF00) >>  8) as u8;
+        let a = (val & 0x000000FF) as u8;
+
+        Color{ r, g, b, a }
+    }
 }
 
-/// A struct wrapper to represent the +Y, -Y, +X, -X "limits" of a box 
+/// A struct wrapper to represent the +Y, -Y, +X, -X "limits" of a box
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Default)]
 struct Bounds {
     top: i16,
     bottom: i16,
@@ -68,28 +215,44 @@ struct Bounds {
 }
 
 impl Bounds {
-    from_i16(&[i16]) -> Self {
-
-    }
-    from_bytes(&[u8], le: bool) -> Self {
-        
+    fn from_i16(input: &[i16; 4]) -> Self {
+        Bounds {
+            top: input[0],
+            bottom: input[1],
+            right: input[2],
+            left: input[3],
+        }
     }
 }
 
 /// Holds the Coords for both the normal and 1P CPU Blastzones. The normal
 /// blastzones are used at all times for human controlled characters. The 1P Mode
-/// CPU blastzones are used only for the computer controlled characters in the 
-/// 1P mode (surprise!). 
+/// CPU blastzones are used only for the computer controlled characters in the
+/// 1P mode (surprise!).
+#[derive(Debug, Copy, Clone)]
 struct BlastZones {
-    normal: Bounds,
+    regular: Bounds,
     cpu_1p: Bounds,
 }
 
-/// Holds the camera frame "bounding box" for the both VS and 1P Game Mode. The set 
-/// "Bounds" struct defines how far the camera will zoom out (relative to the distance 
+impl BlastZones {
+    fn from_bounds(regular: Bounds, cpu_1p: Bounds) -> Self {
+        BlastZones{regular, cpu_1p}
+    }
+}
+
+/// Holds the camera frame "bounding box" for the both VS and 1P Game Mode. The set
+/// "Bounds" struct defines how far the camera will zoom out (relative to the distance
 /// between multiple characters). If a character goes outside of this bound, they will
-/// in a maginfying glass
+/// be in a maginfying glass
+#[derive(Debug, Copy, Clone)]
 struct CameraBox {
     versus: Bounds,
-    one_player_game: Bounds,
+    one_player: Bounds,
+}
+
+impl CameraBox {
+    fn from_bounds(versus: Bounds, one_player: Bounds) -> Self {
+        CameraBox{versus, one_player}
+    }
 }
