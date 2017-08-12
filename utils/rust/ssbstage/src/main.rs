@@ -1,8 +1,13 @@
 #![recursion_limit = "32"]
 #[macro_use]
 extern crate error_chain;
+#[macro_use]
+extern crate serde_derive;
+extern crate serde_json;
 extern crate getopts;
 extern crate byteorder;
+#[macro_use]
+mod macros;
 mod parse;
 mod stage;
 
@@ -18,6 +23,7 @@ mod errors {
         foreign_links {
             GetOpts(::getopts::Fail);
             Io(::std::io::Error);
+            Json(::serde_json::Error);
         }
     }
 }
@@ -30,17 +36,19 @@ fn run() -> Result<()> {
     let config = parse_args(&args)?;
 
     match config {
-        Config::Parse{ref input, ref output, kind} => {
+        Config::Parse{ref input, ref output, kind, verbose} => {
             let input_file = File::open(&input)
                 .chain_err(||format!("opening file <{:?}> for reading", &input))?;
 
-            let o = parse::stage_binary(input_file, kind)
+            let stage_struct = parse::stage_binary(input_file, kind, verbose)
                 .chain_err(||format!("parsing <{:?}> to stage main JSON file <{:?}>", &input, &output))?;
-            println!("{:?}", o);
+            println!("{}", serde_json::to_string_pretty(&stage_struct)?);
 
-            /* let output_file = File::create(&output)
+             let output_file = File::create(&output)
                 .chain_err(||format!("creating file <{:?}> for writing output", &output))?;
-            */
+
+            serde_json::to_writer_pretty(output_file, &stage_struct)
+                .chain_err(||format!("writing JSON to ouptut file <{:?}>", &output))?;
         },
         Config::Build{..} => println!("Not implemented"),
         Config::Help => (),
@@ -55,10 +63,12 @@ enum Config {
         input: PathBuf,
         output: PathBuf,
         kind: Option<StageFileKind>,
+        verbose: bool,
     },
     Build {
         input: PathBuf,
         output: PathBuf,
+        verbose: bool,
     },
     Help
 }
@@ -101,6 +111,7 @@ fn parse_args(args: &[String]) -> Result<Config>
     let subcmd = &matches.free[0];
     let input = &matches.free[1];
     let output = matches.opt_str("o");
+    let verbose = matches.opt_present("verbose");
 
     let config = match subcmd.as_str() {
         "parse" => {
@@ -124,7 +135,7 @@ fn parse_args(args: &[String]) -> Result<Config>
                 None => None
             };
 
-            Parse{ input, output, kind}
+            Parse{input, output, kind, verbose}
         },
         "build" => {
             let input = PathBuf::from(&input);
@@ -136,7 +147,7 @@ fn parse_args(args: &[String]) -> Result<Config>
                     o
                 }
             };
-            Build{ input, output }
+            Build{input, output, verbose}
         },
         _ => {
             eprintln!("Unknown subcommand <{}> entered.", subcmd);
@@ -154,6 +165,7 @@ fn cli_options() -> Options {
     opts.optopt("t", "type", "manually set the type of stage file when parsing\n\
         Either \"no-item\" or \"item\"", "TYPE");
     opts.optflag("h", "help", "print this help menu");
+    opts.optflag("", "verbose", "print additional information to the console");
 
     opts
 }

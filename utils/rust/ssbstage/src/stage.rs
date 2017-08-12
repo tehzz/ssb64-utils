@@ -6,7 +6,7 @@ use std::io::{Cursor, Seek, SeekFrom};
 /// This `struct` represents the "main stage file" in ssb64. This is the file that points to
 /// all other components of the stage (geometry, collision, background, etc.). It also contains
 /// some "general" information about the stage.
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct StageMain {
     item_bytes: Option<[u8; 0x14]>,
     item_bytes_ptr: Option<u32>,
@@ -21,7 +21,7 @@ pub struct StageMain {
     camera_tilt: f32,
     camera_bounds: CameraBox,
     blastzones: BlastZones,
-    background_music: u32,
+    background_music: BGM,
     pad_0x80: u32,
     falling_whistle: i16,
     unknown_0x9c: u32,
@@ -98,7 +98,7 @@ impl StageMain {
             BlastZones::from_bounds(regular, single)
         };
         // back to reading sequentially at 0x7c
-        let background_music = csr.read_u32::<BE>()?;
+        let background_music = BGM::from_bits(csr.read_u32::<BE>()?)?;
         let pad_0x80         = csr.read_u32::<BE>()?;
         let item_bytes_ptr = if item_bytes.is_some() {
             Some(csr.read_u32::<BE>()?)
@@ -152,7 +152,7 @@ impl StageMain {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Default)]
+#[derive(Serialize, Debug, Copy, Clone, PartialEq, Eq, Default)]
 struct StageGeo {
     geometry_ptr: u32,
     move_script_ptr: u32,
@@ -172,7 +172,7 @@ impl StageGeo {
 }
 
 /// A 32bit color wrapper. Will accept/return bytes in RGBA8888
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Default)]
+#[derive(Serialize, Debug, Copy, Clone, PartialEq, Eq, Default)]
 struct Color{
     r: u8,
     g: u8,
@@ -206,7 +206,7 @@ impl Color {
 }
 
 /// A struct wrapper to represent the +Y, -Y, +X, -X "limits" of a box
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Default)]
+#[derive(Serialize, Debug, Copy, Clone, PartialEq, Eq, Default)]
 struct Bounds {
     top: i16,
     bottom: i16,
@@ -229,7 +229,7 @@ impl Bounds {
 /// blastzones are used at all times for human controlled characters. The 1P Mode
 /// CPU blastzones are used only for the computer controlled characters in the
 /// 1P mode (surprise!).
-#[derive(Debug, Copy, Clone)]
+#[derive(Serialize, Debug, Copy, Clone)]
 struct BlastZones {
     regular: Bounds,
     cpu_1p: Bounds,
@@ -245,7 +245,7 @@ impl BlastZones {
 /// "Bounds" struct defines how far the camera will zoom out (relative to the distance
 /// between multiple characters). If a character goes outside of this bound, they will
 /// be in a maginfying glass
-#[derive(Debug, Copy, Clone)]
+#[derive(Serialize, Debug, Copy, Clone)]
 struct CameraBox {
     versus: Bounds,
     one_player: Bounds,
@@ -254,5 +254,60 @@ struct CameraBox {
 impl CameraBox {
     fn from_bounds(versus: Bounds, one_player: Bounds) -> Self {
         CameraBox{versus, one_player}
+    }
+}
+
+/// This is the list of background music (BGM) tracks in ssb64
+
+enum_bits!{
+    #[derive(Serialize)]
+    enum BGM: u32 {
+        Dreamland       = 0x00,
+        PlanetZebes     = 0x01,
+        MushroomKingdom = 0x02,
+        MushroomKingdomFast = 0x03,
+        SectorZ         = 0x04,
+        CongoJungle     = 0x05,
+        PeachsCastle    = 0x06,
+        SaffronCity     = 0x07,
+        YoshisIsland    = 0x08,
+        HyruleCastle    = 0x09,
+        CharacterSelect = 0x0a,
+        BetaFanfare     = 0x0b,
+        MarioWins       = 0x0c,
+        SamusWins       = 0x0d,
+        DKWins          = 0x0e,
+        KirbyWins       = 0x0f,
+        FoxWins         = 0x10,
+        NessWins        = 0x11,
+        YoshiWins       = 0x12,
+        CaptainFalconWins = 0x13,
+        PokemonWins     = 0x14,
+        LinkWins        = 0x15,
+        ResultsScreen   = 0x16,
+        PreMasterHand1  = 0x17,
+        PreMasterHand2  = 0x18,
+        FinalDestination = 0x19,
+        BonusStage      = 0x1a,
+        StageClear      = 0x1b,
+        BonusStageClear = 0x1c,
+        MasterHandClear = 0x1d,
+        BonusStageFailure = 0x1e,
+        Continue        = 0x1f,
+        GameOver        = 0x20,
+        Intro           = 0x21,
+        HowtoPlay       = 0x22,
+        Pre1PBattle     = 0x23,
+        Battlefield     = 0x24,
+        MetalCavern     = 0x25,
+        GameComplete    = 0x26,
+        Credits         = 0x27,
+        Secret          = 0x28,
+        HiddenCharacter = 0x29,
+        TrainingMode    = 0x2a,
+        VSRecord        = 0x2b,
+        MainMenu        = 0x2c,
+        Hammer          = 0x2d,
+        Invincibility   = 0x2E,
     }
 }
