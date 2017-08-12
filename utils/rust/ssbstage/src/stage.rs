@@ -41,21 +41,21 @@ impl StageMain {
             }
         }
 
-        // start parsing the main stage data
+        // start parsing the main stage data; it should have a fixed size of 0xa8 bytes (or 0xa6 aligned)
         let mut csr = Cursor::new(main);
 
-        // Four StageGeo structs in a row
+        // Four StageGeo structs in a row [0x00..0x40]
         let mut geometries: [StageGeo; 4] = [StageGeo::default(); 4];
         for geo in geometries.iter_mut() {
             let mut bytes = [0u32; 4];
             csr.read_u32_into::<BE>(&mut bytes)?;
             *geo = StageGeo::from_u32s(&bytes);
         }
-        // Various Pointers
+        // Read two pointers sandwiching a unknown word [0x40..0x4c]
         let collision_ptr  = csr.read_u32::<BE>()?;
         let unknown_0x44   = csr.read_u32::<BE>()?;
         let background_ptr = csr.read_u32::<BE>()?;
-        // 5 color structs in a row!
+        // 5 color structs in a row! [0x4c..0x60]
         let magnifier_color = {
             let color = csr.read_u32::<BE>()?;
             Color::from_u32(color)
@@ -65,12 +65,12 @@ impl StageMain {
             let color = csr.read_u32::<BE>()?;
             *player = Color::from_u32(color);
         }
-        // 3 float32 values for lighting and camera
+        // 3 float32 values for lighting and camera [0x60..0x6c]
         let lighting1   = csr.read_f32::<BE>()?;
         let lighting2   = csr.read_f32::<BE>()?;
         let camera_tilt = csr.read_f32::<BE>()?;
 
-        // get camera boundries
+        // get camera boundries [0x6c..0x74] and [0x8a..0x92]
         let camera_bounds = {
             let mut vals = [0i16; 4];
             csr.read_i16_into::<BE>(&mut vals)?;
@@ -81,7 +81,7 @@ impl StageMain {
 
             CameraBox::from_bounds(vs, single)
         };
-        // get blastzones
+        // get blastzones [0x74..0x7c] [0x92..0x9a]
         let blastzones = {
             let mut vals = [0i16; 4];
             //cursor already at 1p mode blastzones
@@ -94,7 +94,8 @@ impl StageMain {
 
             BlastZones::from_bounds(regular, single)
         };
-        // back to reading sequentially at 0x7c
+        // cursor has been moved to 0x7c while reading blastzones 
+        // read 3 u32 values + 1 i16 value [0x7c..0x8a]
         let background_music = BGM::from_bits(csr.read_u32::<BE>()?)?;
         let pad_0x80         = csr.read_u32::<BE>()?;
         let item_bytes_ptr = if item_bytes.is_some() {
@@ -105,20 +106,19 @@ impl StageMain {
         };
         let falling_whistle  = csr.read_i16::<BE>()?;
 
-        // read the set of 6 i16 values used to set-up the 1P bonus game cameras [0x9a..0xa6]
+        // since the 1P mode camera and blastzones were already read, seek to 0x9a and
+        // read the set of 6 i16 values used to set-up the 1P bonus game pause camera [0x9a..0xa6]
         csr.seek(SeekFrom::Start(0x9a))?;
         let bonus_pause_camera = {
             let mut arr = [0i16; 6];
-            println!("cursor position: {:#x}", csr.position());
-
             csr.read_i16_into::<BE>(&mut arr)?;
-            println!("test pause camera array:\n{:?}", &arr);
+
             BonusPauseCamera::from_i16_arr(&arr)
         };
 
         // Convert the types of the optional parts of the file, if present
         let item_bytes = item_bytes.map(|vals| {
-            let mut arr = [0u8;0x14];
+            let mut arr = [0u8; 0x14];
             for i in 0..0x14 {
                 arr[i] = vals[i];
             }
