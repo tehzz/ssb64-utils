@@ -14,8 +14,8 @@ mod builder;
 
 use getopts::Options;
 use std::env;
-use std::fs::{File};
-use std::path::{PathBuf};
+use std::fs::{File, self};
+use std::path::{PathBuf, Path};
 use std::io::{Write};
 
 /// error_chain errors mod
@@ -48,6 +48,10 @@ fn run() -> Result<()> {
             let stage_struct = parse::stage_binary(input_file, kind, verbose)
                 .chain_err(||format!("parsing <{:?}> to stage main JSON file <{:?}>", &input, &output))?;
 
+            // create any directories if needed for output
+            create_dir(output.as_path())
+                .chain_err(||format!("creating output directory for <{:?}>", &output))?;
+
              let output_file = File::create(&output)
                 .chain_err(||format!("creating file <{:?}> for writing output", &output))?;
 
@@ -61,6 +65,10 @@ fn run() -> Result<()> {
             let input_stage_data = serde_json::from_reader(input_json)
                 .chain_err(||format!("deserializing JSON file <{:?}>", &input))?;
             let stage_binary     = builder::build_binary(&input_stage_data, verbose)?;
+
+            // create any directories if needed for output
+            create_dir(output.as_path())
+                .chain_err(||format!("creating output directory for <{:?}>", &output))?;
 
             let mut output_file = File::create(&output)
                 .chain_err(||format!("creating file <{:?}> for writing output", &output))?;
@@ -93,7 +101,7 @@ enum Config {
 
 impl Config {
     fn is_verbose(&self) -> bool {
-        use Config::*;
+        use Config::{Parse, Build};
 
         match self {
             &Parse{verbose: true, ..} => true,
@@ -107,6 +115,19 @@ impl Config {
 pub enum StageFileKind {
     NoItem = 0x00,
     Item = 0x14
+}
+/// create directories for the Path "full_path" to a file
+/// return `Result<bool>` to indicate if a directory was made
+fn create_dir(full_path: &Path) -> Result<bool> {
+    let dir_only = full_path.parent();
+
+    match dir_only {
+        Some(path) => {
+            fs::create_dir_all(path)?;
+            Ok(true)
+        },
+        None => Ok(false)
+    }
 }
 
 fn parse_args(args: &[String]) -> Result<Config>
