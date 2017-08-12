@@ -59,6 +59,7 @@ pub fn stage_binary<I>(mut input: I, kind: Option<StageFileKind>, verbose: bool)
         .chain_err(||"parsing binary")?;
 
     if verbose {
+        println!("{:#?}", &output);
         println!("Sum of item bytes: {}", items.unwrap_or(&[0]).iter().map(|v| *v as u64).sum::<u64>());
     }
 

@@ -10,14 +10,15 @@ extern crate byteorder;
 mod macros;
 mod parse;
 mod stage;
+mod builder;
 
 use getopts::Options;
 use std::env;
 use std::fs::{File};
 use std::path::{PathBuf};
+use std::io::{Write};
 
-
-
+/// error_chain errors mod
 mod errors {
     error_chain!{
         foreign_links {
@@ -35,6 +36,10 @@ fn run() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     let config = parse_args(&args)?;
 
+    if config.is_verbose() {
+        println!("settings:\n{:#?}", &config);
+    };
+
     match config {
         Config::Parse{ref input, ref output, kind, verbose} => {
             let input_file = File::open(&input)
@@ -42,7 +47,6 @@ fn run() -> Result<()> {
 
             let stage_struct = parse::stage_binary(input_file, kind, verbose)
                 .chain_err(||format!("parsing <{:?}> to stage main JSON file <{:?}>", &input, &output))?;
-            println!("{}", serde_json::to_string_pretty(&stage_struct)?);
 
              let output_file = File::create(&output)
                 .chain_err(||format!("creating file <{:?}> for writing output", &output))?;
@@ -50,10 +54,24 @@ fn run() -> Result<()> {
             serde_json::to_writer_pretty(output_file, &stage_struct)
                 .chain_err(||format!("writing JSON to ouptut file <{:?}>", &output))?;
         },
-        Config::Build{..} => println!("Not implemented"),
+        Config::Build{ref input, ref output, verbose} =>
+        {
+            let input_json       = File::open(&input)
+                .chain_err(||format!("opening json file <{:?}>", &input))?;
+            let input_stage_data = serde_json::from_reader(input_json)
+                .chain_err(||format!("deserializing JSON file <{:?}>", &input))?;
+            let stage_binary     = builder::build_binary(&input_stage_data, verbose)?;
+
+            let mut output_file = File::create(&output)
+                .chain_err(||format!("creating file <{:?}> for writing output", &output))?;
+
+            output_file.write_all(&stage_binary)
+                .chain_err(||format!("writing binary stage data to <{:?}>", &output))?;
+
+        },
         Config::Help => (),
     }
-    println!("{:#?}", config);
+
 
     Ok(())
 }
@@ -71,6 +89,18 @@ enum Config {
         verbose: bool,
     },
     Help
+}
+
+impl Config {
+    fn is_verbose(&self) -> bool {
+        use Config::*;
+
+        match self {
+            &Parse{verbose: true, ..} => true,
+            &Build{verbose: true, ..} => true,
+            _ => false
+        }
+    }
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
