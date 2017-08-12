@@ -149,6 +149,11 @@ fn parse_args(args: &[String]) -> Result<Config>
         return Ok(Help);
     }
 
+    if matches.opt_present("V") {
+        print_version();
+        return Ok(Help);
+    }
+
     if matches.free.len() < 2 {
         let free = matches.free.len();
         if free == 0 {
@@ -217,6 +222,7 @@ fn cli_options() -> Options {
         Either \"no-item\" or \"item\"", "TYPE");
     opts.optflag("h", "help", "print this help menu");
     opts.optflag("", "verbose", "print additional information to the console");
+    opts.optflag("V", "version", "print version information");
 
     opts
 }
@@ -226,4 +232,9 @@ fn print_usage(program: &str, opts: Options) {
     {p} parse FILE [options]
     {p} build FILE [options]", p=program);
     print!("{}", opts.usage(&brief));
+}
+
+fn print_version() {
+    println!("{} {}\n{}",
+    env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"), env!("CARGO_PKG_AUTHORS"));
 }
