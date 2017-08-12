@@ -23,9 +23,7 @@ pub struct StageMain {
     background_music: BGM,
     pad_0x80: u32,
     falling_whistle: i16,
-    unknown_0x9c: u32,
-    unknown_0xa0: u32,
-    end_of_file_0xa4: u32,
+    bonus_pause_camera: BonusPauseCamera,
     extra_info: Option<Vec<u8>>,
 }
 
@@ -107,13 +105,18 @@ impl StageMain {
         };
         let falling_whistle  = csr.read_i16::<BE>()?;
 
-        // as yet unknown values?
-        csr.seek(SeekFrom::Start(0x9c))?;
-        let unknown_0x9c = csr.read_u32::<BE>()?;
-        let unknown_0xa0 = csr.read_u32::<BE>()?;
-        let end_of_file_0xa4 = csr.read_u32::<BE>()?;
+        // read the set of 6 i16 values used to set-up the 1P bonus game cameras [0x9a..0xa6]
+        csr.seek(SeekFrom::Start(0x9a))?;
+        let bonus_pause_camera = {
+            let mut arr = [0i16; 6];
+            println!("cursor position: {:#x}", csr.position());
 
-        // Convert the optional parts of the file, if present
+            csr.read_i16_into::<BE>(&mut arr)?;
+            println!("test pause camera array:\n{:?}", &arr);
+            BonusPauseCamera::from_i16_arr(&arr)
+        };
+
+        // Convert the types of the optional parts of the file, if present
         let item_bytes = item_bytes.map(|vals| {
             let mut arr = [0u8;0x14];
             for i in 0..0x14 {
@@ -143,9 +146,7 @@ impl StageMain {
             background_music,
             pad_0x80,
             falling_whistle,
-            unknown_0x9c,
-            unknown_0xa0,
-            end_of_file_0xa4,
+            bonus_pause_camera,
             extra_info,
         })
     }
@@ -179,8 +180,6 @@ impl StageMain {
     }
 
     fn base_stage_bytes(&self) -> Result<[u8; 0xa8]> {
-        use self::SeekFrom::{Current};
-
         let mut output = [0u8; 0xa8];
         {
             let mut csr = Cursor::new(output.as_mut());
@@ -221,13 +220,9 @@ impl StageMain {
             // write 1P mode camera and 1P CPU blastzones [0x8a..0x9a]
             csr.write_all(&cam_1p)?;
             csr.write_all(&bz_1p_cpu)?;
-            // skip ahead two bytes to re-word-align [0x9a..0x9c]
-            csr.seek(Current(2))?;
-            // write the two unknown u32 (prob i16s, though) [0x9c..0xa4]
-            csr.write_u32::<BE>(self.unknown_0x9c)?;
-            csr.write_u32::<BE>(self.unknown_0xa0)?;
-            // finally, write the end-of-file word? [0xa4..0xa8]
-            csr.write_u32::<BE>(self.end_of_file_0xa4)?;
+            // write the pause camera settings for the bonus 1P games (BtT, BtP, Race) [0x9a..0xa6]
+            csr.write_all(self.bonus_pause_camera.as_bytes().as_ref())?;
+            // final two bytes are 0u8? [0xa6..0xa8]
         } // end cursor lifetime + end ref mut to array
 
         Ok(output)
@@ -236,6 +231,59 @@ impl StageMain {
 fn align_usize(val: usize, align: usize) -> usize {
     let off = val % align;
     if off != 0 { val + (align - off) } else { val }
+}
+
+/// Hold the settings for the "zoomed-out" camera for the 1P bonus games (BtT, BtP, Race to the Finish)
+/// Technically, the PanX and PanY are two separate values, that can sort of "rotate" the camera.
+/// If they are the same, set Pan{Axis}2 to None.
+#[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq, Eq)]
+struct BonusPauseCamera {
+    x_pan1: i16,
+    x_pan2: Option<i16>,
+    y_pan1: i16,
+    y_pan2: Option<i16>,
+    /// I don't really know what this value is or does...
+    bg_zoom: i16,
+    zoom: i16,
+}
+
+impl BonusPauseCamera {
+    /// from processed i16s in same order as file binary
+    fn from_i16_arr(input: &[i16; 6]) -> Self {
+        let x_pan1 = input[0];
+        let x_pan2 = input[3];
+        let x_pan2 = if x_pan1 == x_pan2 { None } else { Some(x_pan2) };
+
+        let y_pan1 = input[1];
+        let y_pan2 = input[4];
+        let y_pan2 = if y_pan1 == y_pan2 { None } else { Some(y_pan2) };
+
+        BonusPauseCamera {
+            x_pan1,
+            y_pan1,
+            bg_zoom: input[2],
+            x_pan2,
+            y_pan2,
+            zoom:    input[5],
+        }
+    }
+    fn as_bytes(&self) -> [u8; 12] {
+        let mut o = [0u8; 12];
+        let x_pan2 = if let Some(ref pan) = self.x_pan2 {
+            *pan } else {self.x_pan1};
+        let y_pan2 = if let Some(ref pan) = self.y_pan2 {
+            *pan } else {self.y_pan1};
+
+        BE::write_i16(&mut o[0..2],   self.x_pan1);
+        BE::write_i16(&mut o[2..4],   self.y_pan1);
+        BE::write_i16(&mut o[4..6],   self.bg_zoom);
+        BE::write_i16(&mut o[6..8],   x_pan2);
+        BE::write_i16(&mut o[8..10],  y_pan2);
+        BE::write_i16(&mut o[10..12], self.zoom);
+
+        o
+    }
+
 }
 
 #[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq, Eq, Default)]
