@@ -20,7 +20,7 @@ pub fn stage_binary<I>(mut input: I, kind: Option<StageFileKind>, verbose: bool)
 
         if verbose {
             println!("No file type for stage main file was supplied.\n\
-            Attemping to determine from file...\n\
+            Attempting to determine from file...\n\
             size: {:#x}\n0x84 ptr: {:#010x}\n0x9C ptr: {:#010x}",
             input_size, item_ptr_84, item_ptr_9c);
         }
