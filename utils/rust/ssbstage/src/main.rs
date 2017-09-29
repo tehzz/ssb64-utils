@@ -8,6 +8,7 @@ extern crate getopts;
 extern crate byteorder;
 #[macro_use]
 mod macros;
+mod ssbpointers;
 mod parse;
 mod stage;
 mod builder;
