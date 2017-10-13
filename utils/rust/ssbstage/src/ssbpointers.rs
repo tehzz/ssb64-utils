@@ -23,7 +23,7 @@ impl ResPtr {
         ResPtr{next, offset}
     }
 
-    pub fn to_u32(&self) -> u32 {
+    pub fn as_u32(&self) -> u32 {
         let &ResPtr{ next, offset } = self;
         let next = if let Some(ref val) = next { *val >> 2 } else { 0xFFFF };
         
@@ -31,6 +31,7 @@ impl ResPtr {
     }
 }
 
+/*
 // convert to reader/Result type...
 // maybe use a HashMap instead...? Or a sorted btree?
 pub fn read_res_chain(start: usize, buffer: &[u8]) -> Vec<(usize, ResPtr)> {
@@ -51,7 +52,7 @@ pub fn read_res_chain(start: usize, buffer: &[u8]) -> Vec<(usize, ResPtr)> {
     }
 
     output
-}
+}*/
 
 // make possible enum to encode null value?
 pub fn check_res_ptr(value: u32) -> Option<ResPtr> {
@@ -66,6 +67,27 @@ pub fn check_res_ptr(value: u32) -> Option<ResPtr> {
     } 
 
     Some(possible)
+}
+
+/// Encode either a "fixed," standard u32 pointer or a ResPtr
+enum SsbPtr {
+    fixed(u32),
+    resource(ResPtr),
+}
+
+impl SsbPtr {
+    fn from_u32(input: u32) -> Self {
+        match check_res_ptr(input) {
+            Some(ptr) => SsbPtr::resource(ptr),
+            None      => SsbPtr::fixed(input),
+        }
+    }
+    fn to_u32(self) -> u32 {
+        match self {
+            SsbPtr::fixed(value)  => value,
+            SsbPtr::resource(ptr) => ptr.as_u32(),
+        }
+    }
 }
 
 #[cfg(test)]
