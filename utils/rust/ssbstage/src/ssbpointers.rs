@@ -65,6 +65,10 @@ pub enum SSBPtr {
     Null,
 }
 
+impl Default for SSBPtr {
+    fn default() -> Self { SSBPtr::Null }
+}
+
 impl SSBPtr {
     pub fn from_u32(input: u32) -> Self {
         // First, check for null pointer

@@ -1,6 +1,7 @@
 use errors::*;
 use byteorder::{BE, ReadBytesExt, ByteOrder, WriteBytesExt};
 use std::io::{Write, Cursor, Seek, SeekFrom};
+use ssbpointers::SSBPtr;
 
 /// This `struct` represents the "main stage file" in ssb64. This is the file that points to
 /// all other components of the stage (geometry, collision, background, etc.). It also contains
@@ -8,11 +9,11 @@ use std::io::{Write, Cursor, Seek, SeekFrom};
 #[derive(Debug, Serialize, Deserialize)]
 pub struct StageMain {
     item_bytes: Option<[u8; 0x14]>,
-    item_bytes_ptr: Option<u32>,
+    item_bytes_ptr: SSBPtr,
     geometries: [StageGeo; 4],
-    collision_ptr: u32,
+    collision_ptr: SSBPtr,
     unknown_0x44: u32,
-    background_ptr: u32,
+    background_ptr: SSBPtr,
     magnifier_color: Color,
     player_logo_color: [Color; 4],
     lighting1: f32,
@@ -21,7 +22,7 @@ pub struct StageMain {
     camera_bounds: CameraBox,
     blastzones: BlastZones,
     background_music: BGM,
-    pad_0x80: u32,
+    other_movescript_ptr: SSBPtr,
     falling_whistle: i16,
     bonus_pause_camera: BonusPauseCamera,
     extra_info: Option<Vec<u8>>,
@@ -52,9 +53,9 @@ impl StageMain {
             *geo = StageGeo::from_u32s(&bytes);
         }
         // Read two pointers sandwiching a unknown word [0x40..0x4c]
-        let collision_ptr  = csr.read_u32::<BE>()?;
+        let collision_ptr  = SSBPtr::from_u32(csr.read_u32::<BE>()?);
         let unknown_0x44   = csr.read_u32::<BE>()?;
-        let background_ptr = csr.read_u32::<BE>()?;
+        let background_ptr = SSBPtr::from_u32(csr.read_u32::<BE>()?);
         // 5 color structs in a row! [0x4c..0x60]
         let magnifier_color = {
             let color = csr.read_u32::<BE>()?;
@@ -74,10 +75,10 @@ impl StageMain {
         let camera_bounds = {
             let mut vals = [0i16; 4];
             csr.read_i16_into::<BE>(&mut vals)?;
-            let vs = Bounds::from_i16(&vals);
+            let vs = Bounds::from_i16_arr(&vals);
             csr.seek(SeekFrom::Start(0x8a))?;
             csr.read_i16_into::<BE>(&mut vals)?;
-            let single = Bounds::from_i16(&vals);
+            let single = Bounds::from_i16_arr(&vals);
 
             CameraBox::from_bounds(vs, single)
         };
@@ -86,25 +87,20 @@ impl StageMain {
             let mut vals = [0i16; 4];
             //cursor already at 1p mode blastzones
             csr.read_i16_into::<BE>(&mut vals)?;
-            let single = Bounds::from_i16(&vals);
+            let single = Bounds::from_i16_arr(&vals);
             // move cursor back to regular blastzones + back "in order"
             csr.seek(SeekFrom::Start(0x74))?;
             csr.read_i16_into::<BE>(&mut vals)?;
-            let regular = Bounds::from_i16(&vals);
+            let regular = Bounds::from_i16_arr(&vals);
 
             BlastZones::from_bounds(regular, single)
         };
         // cursor has been moved to 0x7c while reading blastzones 
         // read 3 u32 values + 1 i16 value [0x7c..0x8a]
-        let background_music = BGM::from_bits(csr.read_u32::<BE>()?)?;
-        let pad_0x80         = csr.read_u32::<BE>()?;
-        let item_bytes_ptr = if item_bytes.is_some() {
-            Some(csr.read_u32::<BE>()?)
-        } else {
-            csr.seek(SeekFrom::Current(4))?;
-            None
-        };
-        let falling_whistle  = csr.read_i16::<BE>()?;
+        let background_music     = BGM::from_bits(csr.read_u32::<BE>()?)?;
+        let other_movescript_ptr = SSBPtr::from_u32(csr.read_u32::<BE>()?);
+        let item_bytes_ptr       = SSBPtr::from_u32(csr.read_u32::<BE>()?);
+        let falling_whistle      = csr.read_i16::<BE>()?;
 
         // since the 1P mode camera and blastzones were already read, seek to 0x9a and
         // read the set of 6 i16 values used to set-up the 1P bonus game pause camera [0x9a..0xa6]
@@ -144,7 +140,7 @@ impl StageMain {
             camera_bounds,
             blastzones,
             background_music,
-            pad_0x80,
+            other_movescript_ptr,
             falling_whistle,
             bonus_pause_camera,
             extra_info,
@@ -169,8 +165,8 @@ impl StageMain {
             output.write_all(bytes)?;
         }
         output.write_all(main_info.as_ref())?;
-        if let Some(ref bytes) = self.extra_info {
-            output.write_all(bytes)?;
+        if let Some(ref ex_bytes) = self.extra_info {
+            output.write_all(ex_bytes)?;
         }
         // fill vec with 0u8 until capacity / alignment?
         let fill = size - output.len();
@@ -188,9 +184,9 @@ impl StageMain {
                 csr.write_all(geo.as_bytes().as_ref())?;
             }
             // write some individual u32 values [0x40..0x4c]
-            csr.write_u32::<BE>(self.collision_ptr)?;
+            csr.write_u32::<BE>(self.collision_ptr.as_u32())?;
             csr.write_u32::<BE>(self.unknown_0x44)?;
-            csr.write_u32::<BE>(self.background_ptr)?;
+            csr.write_u32::<BE>(self.background_ptr.as_u32())?;
             // write the five color rgba32 structs [0x4c..0x60]
             csr.write_all(self.magnifier_color.as_bytes().as_ref())?;
             for color in self.player_logo_color.iter() {
@@ -208,13 +204,9 @@ impl StageMain {
             csr.write_all(&bz_norm)?;
             // write music and the "pad?" u32 [0x7c..0x84]
             csr.write_u32::<BE>(self.background_music as u32)?;
-            csr.write_u32::<BE>(self.pad_0x80)?;
-            // write item_bytes pointer if there; else write 0u32 [0x84..0x88]
-            if let Some(ref ptr) = self.item_bytes_ptr {
-                csr.write_u32::<BE>(*ptr)?;
-            } else {
-                csr.write_u32::<BE>(0u32)?;
-            };
+            csr.write_u32::<BE>(self.other_movescript_ptr.as_u32())?;
+            // write item_bytes pointer [0x84..0x88]
+            csr.write_u32::<BE>(self.item_bytes_ptr.as_u32())?;
             // write the falling whistle threshold i16; this breaks word alignment [0x88..0x8a]
             csr.write_i16::<BE>(self.falling_whistle)?;
             // write 1P mode camera and 1P CPU blastzones [0x8a..0x9a]
@@ -288,27 +280,27 @@ impl BonusPauseCamera {
 
 #[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq, Eq, Default)]
 struct StageGeo {
-    geometry_ptr: u32,
-    move_script_ptr: u32,
-    colored_ptr: u32,
-    colored_script_ptr: u32,
+    geometry_ptr: SSBPtr,
+    move_script_ptr: SSBPtr,
+    colored_ptr: SSBPtr,
+    colored_script_ptr: SSBPtr,
 }
 
 impl StageGeo {
     fn from_u32s(input: &[u32; 4]) -> Self {
         StageGeo {
-            geometry_ptr:       input[0],
-            move_script_ptr:    input[1],
-            colored_ptr:        input[2],
-            colored_script_ptr: input[3],
+            geometry_ptr:       SSBPtr::from_u32(input[0]),
+            move_script_ptr:    SSBPtr::from_u32(input[1]),
+            colored_ptr:        SSBPtr::from_u32(input[2]),
+            colored_script_ptr: SSBPtr::from_u32(input[3]),
         }
     }
     fn as_bytes(&self) -> [u8; 16] {
         let mut o = [0u8; 16];
-        BE::write_u32(&mut o[0..4], self.geometry_ptr);
-        BE::write_u32(&mut o[4..8], self.move_script_ptr);
-        BE::write_u32(&mut o[8..12], self.colored_ptr);
-        BE::write_u32(&mut o[12..16], self.colored_script_ptr);
+        BE::write_u32(&mut o[0..4], self.geometry_ptr.as_u32());
+        BE::write_u32(&mut o[4..8], self.move_script_ptr.as_u32());
+        BE::write_u32(&mut o[8..12], self.colored_ptr.as_u32());
+        BE::write_u32(&mut o[12..16], self.colored_script_ptr.as_u32());
 
         o
     }
@@ -359,7 +351,7 @@ struct Bounds {
 }
 
 impl Bounds {
-    fn from_i16(input: &[i16; 4]) -> Self {
+    fn from_i16_arr(input: &[i16; 4]) -> Self {
         Bounds {
             top: input[0],
             bottom: input[1],
