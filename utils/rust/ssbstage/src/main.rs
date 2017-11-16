@@ -9,8 +9,8 @@ extern crate byteorder;
 #[macro_use]
 mod macros;
 mod ssbpointers;
-mod parse;
 mod stage;
+mod parser;
 mod builder;
 
 use getopts::Options;
@@ -46,7 +46,7 @@ fn run() -> Result<()> {
             let input_file = File::open(&input)
                 .chain_err(||format!("opening file <{:?}> for reading", &input))?;
 
-            let stage_struct = parse::stage_binary(input_file, kind, verbose)
+            let stage_struct = parser::parse_stage_binary(input_file, kind, verbose)
                 .chain_err(||format!("parsing <{:?}> to stage main JSON file <{:?}>", &input, &output))?;
 
             // create any directories if needed for output

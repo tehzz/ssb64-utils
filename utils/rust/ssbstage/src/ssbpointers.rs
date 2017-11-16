@@ -7,7 +7,7 @@
 /// value is equal to 0xFFFF. 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ResPtr {
-    next:   Option<u32>,
+    next_ptr:   Option<u32>,
     offset: u32,
 }
 
@@ -18,17 +18,17 @@ impl ResPtr {
         let next   = (val & 0xFFFF0000) >> 16;
         let offset = (val & 0xFFFF) << 2;
         // check next value to see if it has the "end chain" value, and parse accordingly
-        let next = if next == END_CHAIN { None } else { Some(next << 2) };
+        let next_ptr = if next == END_CHAIN { None } else { Some(next << 2) };
 
-        ResPtr{next, offset}
+        ResPtr{next_ptr, offset}
     }
 
     /// This function returns the 32 bit pack version of the resource pointer
     pub fn as_packed_u32(&self) -> u32 {
-        let &ResPtr{ next, offset } = self;
-        let next = if let Some(ref val) = next { *val >> 2 } else { 0xFFFF };
+        let &ResPtr{ next_ptr, offset } = self;
+        let next_ptr = if let Some(ref val) = next_ptr { *val >> 2 } else { 0xFFFF };
         
-        (next << 16) | (offset >> 2)
+        (next_ptr << 16) | (offset >> 2)
     }
 }
 
@@ -73,17 +73,17 @@ impl SSBPtr {
     pub fn from_u32(input: u32) -> Self {
         // First, check for null pointer
         if input == 0x00000000 { return SSBPtr::Null }
+
+        // Check for N64 RAM pointers (0x80------ and 0xA0------)
+        let tlb_addr = input >> 24;
+        if tlb_addr == 0x80 || tlb_addr == 0xA0 { return SSBPtr::Fixed(input) }
         
         // Parse the u32 bit value as a packed pointer to check the offset and next values
         let possible = ResPtr::from_u32(input);
 
         // an offset of '0' for 'next' probably won't happen with Nintendo, but it is a valid case...
-        if let Some(ref next) = possible.next {
-            if *next == 0 { return SSBPtr::Fixed(input) }
-
-            // Check if the input value has an obvious pointer with the top bit set (0x8-------),
-            // as the u32 didn't contain the "end" magic number (0xFFFF----)
-            if input & 0x80000000 != 0 { return SSBPtr::Fixed(input) }
+        if let Some(ref next_ptr) = possible.next_ptr {
+            if *next_ptr == 0 { return SSBPtr::Fixed(input) }
         }
         // Nothing to really check for if the "end" magic number was found... 
         
@@ -108,13 +108,14 @@ mod tests {
     const VALID_NULL: u32     = 0x00000000; 
     const INVALID_OFFSET: u32 = 0x00004530;
     const REAL_PTR: u32       = 0x800A4D08;
+    const UNCACHED_PTR: u32   = 0xA0124890;
 
     const VALID_PARSED: ResPtr = ResPtr {
-        next: Some((VALID & 0xFFFF0000) >> 14),
+        next_ptr: Some((VALID & 0xFFFF0000) >> 14),
         offset: (VALID & 0xFFFF) << 2,
     };
     const VALID_END_PARSED: ResPtr = ResPtr {
-        next: None,
+        next_ptr: None,
         offset: (VALID_END & 0xFFFF) << 2,
     };
 
@@ -181,12 +182,15 @@ mod tests {
     }
 
     #[test]
-    fn check_ssbptr_fixed_parsing() {
+    fn check_ssbptr_parsing_fixed() {
         let parsed_ptr       = SSBPtr::from_u32(REAL_PTR);
+        let parsed_uncached  = SSBPtr::from_u32(UNCACHED_PTR);
         let parsed_no_offset = SSBPtr::from_u32(INVALID_OFFSET);
 
         assert_eq!(parsed_ptr, SSBPtr::Fixed(REAL_PTR), 
-            "Error when parsing u32 to create fixed ssbptr");
+            "Error when parsing TLB cached RAM u32 pointer to create fixed ssbptr");
+        assert_eq!(parsed_uncached, SSBPtr::Fixed(UNCACHED_PTR), 
+            "Error when parsing TLB uncached RAM u32 pointer to create fixed ssbptr");
         assert_eq!(parsed_no_offset, SSBPtr::Fixed(INVALID_OFFSET), 
             "Error when parsing u32 with empty offset only to create fixed ssbptr");
     }

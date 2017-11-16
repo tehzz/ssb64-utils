@@ -4,7 +4,7 @@ use errors::*;
 use StageFileKind;
 use stage::StageMain;
 
-pub fn stage_binary<I>(mut input: I, kind: Option<StageFileKind>, verbose: bool) -> Result<StageMain>
+pub fn parse_stage_binary<I>(mut input: I, kind: Option<StageFileKind>, verbose: bool) -> Result<StageMain>
     where I: Read
 {
     // Read binary into a vec, and capture the filesize
@@ -15,8 +15,8 @@ pub fn stage_binary<I>(mut input: I, kind: Option<StageFileKind>, verbose: bool)
     // either use the user supplied stage-main file type,
     // or try to determine the type by checking the buffer size, and reading various pointers
     let kind = kind.map_or_else(|| -> Result<StageFileKind> {
-        let item_ptr_84 = BE::read_u32(&stage_bin[0x84..0x88]);
-        let item_ptr_9c = BE::read_u32(&stage_bin[0x98..0x9C]);
+        let item_ptr_84 = BE::read_u32(&stage_bin[0x84..0x88]);     // where the item pointer is in a NoItem file
+        let item_ptr_9c = BE::read_u32(&stage_bin[0x98..0x9C]);     // where the item pointer is in an Item file
 
         if verbose {
             println!("No file type for stage main file was supplied.\n\

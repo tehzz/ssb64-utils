@@ -52,7 +52,7 @@ impl StageMain {
             csr.read_u32_into::<BE>(&mut bytes)?;
             *geo = StageGeo::from_u32s(&bytes);
         }
-        // Read two pointers sandwiching a unknown word [0x40..0x4c]
+        // Read two pointers sandwiching a unknown word (...byte maybe?) [0x40..0x4c]
         let collision_ptr  = SSBPtr::from_u32(csr.read_u32::<BE>()?);
         let unknown_0x44   = csr.read_u32::<BE>()?;
         let background_ptr = SSBPtr::from_u32(csr.read_u32::<BE>()?);
@@ -412,6 +412,7 @@ impl CameraBox {
 
 enum_bits!{
     #[derive(Serialize, Deserialize)]
+    #[serde(rename_all = "kebab-case")]
     enum BGM: u32 {
         Dreamland           = 0x00,
         PlanetZebes         = 0x01,
