@@ -8,8 +8,8 @@ use ssbpointers::SSBPtr;
 /// some "general" information about the stage.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct StageMain {
-    item_bytes: Option<[u8; 0x14]>,
-    item_bytes_ptr: SSBPtr,
+    item_spawn_chance: Option<ItemSpawns>,
+    item_spawn_ptr: SSBPtr,
     geometries: [StageGeo; 4],
     collision_ptr: SSBPtr,
     unknown_0x44: u32,
@@ -95,11 +95,11 @@ impl StageMain {
 
             BlastZones::from_bounds(regular, single)
         };
-        // cursor has been moved to 0x7c while reading blastzones 
+        // cursor has been moved to 0x7c while reading blastzones
         // read 3 u32 values + 1 i16 value [0x7c..0x8a]
         let background_music     = BGM::from_bits(csr.read_u32::<BE>()?)?;
         let other_movescript_ptr = SSBPtr::from_u32(csr.read_u32::<BE>()?);
-        let item_bytes_ptr       = SSBPtr::from_u32(csr.read_u32::<BE>()?);
+        let item_spawn_ptr       = SSBPtr::from_u32(csr.read_u32::<BE>()?);
         let falling_whistle      = csr.read_i16::<BE>()?;
 
         // since the 1P mode camera and blastzones were already read, seek to 0x9a and
@@ -113,21 +113,16 @@ impl StageMain {
         };
 
         // Convert the types of the optional parts of the file, if present
-        let item_bytes = item_bytes.map(|vals| {
-            let mut arr = [0u8; 0x14];
-            for i in 0..0x14 {
-                arr[i] = vals[i];
-            }
-
-            arr
-        });
+        let item_spawn_chance = if let Some(ref byte_slice) = item_bytes {
+            Some(ItemSpawns::from_byte_slice(byte_slice)?)
+        } else { None };
 
         let extra_info = extra_info.map(|slice| slice.to_vec() );
 
         // finally, return the very large mess
         Ok(StageMain {
-            item_bytes,
-            item_bytes_ptr,
+            item_spawn_chance,
+            item_spawn_ptr,
             geometries,
             collision_ptr,
             unknown_0x44,
@@ -149,7 +144,7 @@ impl StageMain {
 
     pub fn as_bytes(&self) -> Result<Vec<u8>> {
         //calculate output size to allocate vec?
-        let sizeof_item_bytes  = if self.item_bytes.is_some()
+        let sizeof_item_bytes  = if self.item_spawn_chance.is_some()
             { 0x14 } else { 0 };
         let sizeof_extra_bytes = if let Some(ref ex) = self.extra_info
             { ex.len() } else { 0 };
@@ -161,8 +156,8 @@ impl StageMain {
         let main_info  = self.base_stage_bytes()
             .chain_err(||"generating bytes from StageMain struct")?;
 
-        if let Some(ref bytes) = self.item_bytes {
-            output.write_all(bytes)?;
+        if let Some(ref chances) = self.item_spawn_chance {
+            output.write_all(&chances.as_bytes())?;
         }
         output.write_all(main_info.as_ref())?;
         if let Some(ref ex_bytes) = self.extra_info {
@@ -206,7 +201,7 @@ impl StageMain {
             csr.write_u32::<BE>(self.background_music as u32)?;
             csr.write_u32::<BE>(self.other_movescript_ptr.as_u32())?;
             // write item_bytes pointer [0x84..0x88]
-            csr.write_u32::<BE>(self.item_bytes_ptr.as_u32())?;
+            csr.write_u32::<BE>(self.item_spawn_ptr.as_u32())?;
             // write the falling whistle threshold i16; this breaks word alignment [0x88..0x8a]
             csr.write_i16::<BE>(self.falling_whistle)?;
             // write 1P mode camera and 1P CPU blastzones [0x8a..0x9a]
@@ -223,6 +218,104 @@ impl StageMain {
 fn align_usize(val: usize, align: usize) -> usize {
     let off = val % align;
     if off != 0 { val + (align - off) } else { val }
+}
+
+/// Structure to represent the item spawn chance in the main stage file
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
+struct ItemSpawns {
+    /// Integer sum of all interger "probabilities" for item spawns
+    sum_chance: u32,
+    /// The other fields are the (range || percent) chance for that item to spawn
+    item_crate:         f32,
+    item_barrel:        f32,
+    item_capsule:       f32,
+    item_egg:           f32,
+    maxim_tomato:       f32,
+    heart:              f32,
+    star:               f32,
+    beam_sword:         f32,
+    home_run_bat:       f32,
+    fan:                f32,
+    star_rod:           f32,
+    ray_gun:            f32,
+    fire_flower:        f32,
+    hammer:             f32,
+    motion_sensor_bomb: f32,
+    bom_omb:            f32,
+    bumper:             f32,
+    green_shell:        f32,
+    red_shell:          f32,
+    poke_ball:          f32,
+}
+
+impl ItemSpawns {
+    fn from_byte_slice(bytes: &[u8]) -> Result<Self> {
+        // bound check the array
+        if bytes.len() != 0x14 {
+            bail!(
+                format!("cannot generate ItemSpawns struct from slice of length {:#x}", bytes.len())
+            )
+        }
+        // generate the sum first
+        let sum_chance: u32 = bytes.iter()
+            .map(|byte| *byte as u32)
+            .sum();
+        // map each of the interger item chance into 0..1 range of floats?
+        let mut item_spawn_iter = bytes.iter()
+            .map(|u8_chance| { *u8_chance as f32 / sum_chance as f32});
+
+        // return the calculated structure
+        Ok(ItemSpawns {
+            sum_chance,
+            item_crate:         item_spawn_iter.next().unwrap(),
+            item_barrel:        item_spawn_iter.next().unwrap(),
+            item_capsule:       item_spawn_iter.next().unwrap(),
+            item_egg:           item_spawn_iter.next().unwrap(),
+            maxim_tomato:       item_spawn_iter.next().unwrap(),
+            heart:              item_spawn_iter.next().unwrap(),
+            star:               item_spawn_iter.next().unwrap(),
+            beam_sword:         item_spawn_iter.next().unwrap(),
+            home_run_bat:       item_spawn_iter.next().unwrap(),
+            fan:                item_spawn_iter.next().unwrap(),
+            star_rod:           item_spawn_iter.next().unwrap(),
+            ray_gun:            item_spawn_iter.next().unwrap(),
+            fire_flower:        item_spawn_iter.next().unwrap(),
+            hammer:             item_spawn_iter.next().unwrap(),
+            motion_sensor_bomb: item_spawn_iter.next().unwrap(),
+            bom_omb:            item_spawn_iter.next().unwrap(),
+            bumper:             item_spawn_iter.next().unwrap(),
+            green_shell:        item_spawn_iter.next().unwrap(),
+            red_shell:          item_spawn_iter.next().unwrap(),
+            poke_ball:          item_spawn_iter.next().unwrap(),
+        })
+    }
+
+    fn as_bytes(&self) -> [u8; 0x14] {
+        let s = self;
+        let chance = s.sum_chance as f32;
+
+        [(s.item_crate * chance).round() as u8,
+         (s.item_barrel * chance).round() as u8,
+         (s.item_capsule * chance).round() as u8,
+         (s.item_egg * chance).round() as u8,
+         (s.maxim_tomato * chance).round() as u8,
+         (s.heart * chance).round() as u8,
+         (s.star * chance).round() as u8,
+         (s.beam_sword * chance).round() as u8,
+         (s.home_run_bat * chance).round() as u8,
+         (s.fan * chance).round() as u8,
+         (s.star_rod * chance).round() as u8,
+         (s.ray_gun * chance).round() as u8,
+         (s.fire_flower * chance).round() as u8,
+         (s.hammer * chance).round() as u8,
+         (s.motion_sensor_bomb * chance).round() as u8,
+         (s.bom_omb * chance).round() as u8,
+         (s.bumper * chance).round() as u8,
+         (s.green_shell * chance).round() as u8,
+         (s.red_shell * chance).round() as u8,
+         (s.poke_ball * chance).round() as u8,
+        ]
+    }
 }
 
 /// Hold the settings for the "zoomed-out" camera for the 1P bonus games (BtT, BtP, Race to the Finish)

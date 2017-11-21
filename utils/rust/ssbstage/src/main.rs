@@ -1,4 +1,5 @@
 #![recursion_limit = "32"]
+#![allow(unused_doc_comment)]
 #[macro_use]
 extern crate error_chain;
 #[macro_use]
@@ -19,7 +20,6 @@ use std::fs::{File, self};
 use std::path::{PathBuf, Path};
 use std::io::{Write};
 
-/// error_chain errors mod
 mod errors {
     error_chain!{
         foreign_links {
