@@ -1,7 +1,6 @@
 use std::fmt;
 use errors::*;
-use byteorder::{BE, WriteBytesExt};
-use std::io::Cursor;
+use byteorder::{BE, ByteOrder};
 use traits::N64Bytes;
 
 /// This struct represents a spawn point in ssb64
@@ -31,18 +30,17 @@ impl N64Bytes for Spawn {
 
     fn to_bytes(&self) -> [u8; 6] {
         let mut output = [0u8; 6];
-        {
-            let mut csr = Cursor::new(output.as_mut());
-            csr.write_u16::<BE>(self.stype as u16).unwrap();
-            csr.write_i16::<BE>(self.x).unwrap();
-            csr.write_i16::<BE>(self.y).unwrap();
-        }
+
+        BE::write_u16(&mut output[0..2], self.stype as u16);
+        BE::write_i16(&mut output[2..4], self.x);
+        BE::write_i16(&mut output[4..6], self.y);
+        
         output
     }
 }
 
 impl Spawn {
-    pub fn from_raw(points: &[u16]) -> Result<Self> {
+    pub fn from_u16_slice(points: &[u16]) -> Result<Self> {
         if points.len() < 3 {
             return Err(format!("input slice {:?} to small for Spawn::from_raw",points).into())
         }
@@ -60,23 +58,26 @@ enum_bits! {
     #[derive(Serialize, Deserialize)]
     #[serde(rename_all = "kebab-case")]
     enum SpawnType: u16 {
-        P1SpawnVs = 0x00,
-        P2SpawnVs = 0x01,
-        P3SpawnVs = 0x02,
-        P4SpawnVs = 0x03,
-        ItemSpawn = 0x04,
-        TornadoSpawn = 0x0D,
-        BumperSpawn  = 0x13,
-        Unk0x15      = 0x15,
-        Unk0x18      = 0x18,
-        Unk0x19      = 0x19,
-        Unk0x1a      = 0x1A,
-        Unk0x1b      = 0x1B,
-        Unk0x1c      = 0x1C,
-        Unk0x1d      = 0x1D,
-        Unk0x1e      = 0x1E,
-        Unk0x1f      = 0x1F,
-        VsRespawn    = 0x20,
+        P1SpawnVs     = 0x00,
+        P2SpawnVs     = 0x01,
+        P3SpawnVs     = 0x02,
+        P4SpawnVs     = 0x03,
+        ItemSpawn     = 0x04,
+        TornadoSpawn  = 0x0D,
+        BumperSpawn   = 0x13,
+        Unk0x14       = 0x14,
+        Unk0x15       = 0x15,
+        Unk0x16       = 0x16,
+        Unk0x17       = 0x17,
+        Unk0x18       = 0x18,
+        Unk0x19       = 0x19,
+        Unk0x1a       = 0x1A,
+        Unk0x1b       = 0x1B,
+        Unk0x1c       = 0x1C,
+        Unk0x1d       = 0x1D,
+        Unk0x1e       = 0x1E,
+        Unk0x1f       = 0x1F,
+        VsRespawn     = 0x20,
         PlayerSpawn1p = 0x21,
         Ally1Spawn1p  = 0x22,
         Ally2Spawn1p  = 0x23,
@@ -85,7 +86,7 @@ enum_bits! {
         Cpu2Spawn1p   = 0x26,
         Cpu3Spawn1p   = 0x27,
         CpuRespawn1p  = 0x2B,
-        Unk0x23      = 0x2C,
-        Unk0x2d      = 0x2D,
+        Unk0x23       = 0x2C,
+        Unk0x2d       = 0x2D,
     }
 }

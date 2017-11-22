@@ -100,7 +100,7 @@ pub fn export_collision(config: ExportConfig) -> Result<FormattedCollision> {
     f.read_u16_into::<BE>(&mut spawns_raw)
         .chain_err(||"reading spawn points area as u16 BE")?;
 
-    let spawn_res: Result<Vec<_>> = spawns_raw.chunks(3).map(Spawn::from_raw).collect();
+    let spawn_res: Result<Vec<_>> = spawns_raw.chunks(3).map(Spawn::from_u16_slice).collect();
     let spawns = spawn_res.chain_err(||"converting raw u16 slice into Spawn vec")?;
 
 
